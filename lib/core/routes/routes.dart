@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../presentation/screens/onbording/onbording1.dart';
+import '../../presentation/screens/onbording/onbording2.dart';
+import '../../presentation/screens/onbording/splashScreen.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -15,17 +18,17 @@ class AppRouter {
       GoRoute(
         name: RoutePath.splashScreen,
         path: RoutePath.splashScreen.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
         name: RoutePath.onBoarding1,
         path: RoutePath.onBoarding1.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const OnBoarding1Screen(),
       ),
       GoRoute(
         name: RoutePath.onBoarding2,
         path: RoutePath.onBoarding2.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const OnBoarding2Screen(),
       ),
 
       /// Authentication
