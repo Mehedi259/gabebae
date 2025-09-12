@@ -16,8 +16,9 @@ class AppColors {
   static const darkText090A0A = Color(0xFF090A0A);
   static const lightGreyTextB3B3B3 = Color(0xFFB3B3B3);
   static const whiteFFFFFF = Color(0xFFFFFFFF);
-  static const borderE1E1E1 = Color(0xFFE1E1E1);
-  static const backgroundColor = Color(0xFFFAF4EB);
+  static const primaryColor = Color(0xFFE27B4F);//Using
+  static const backgroundColor = Color(0xFFFAF4EB);//Using
   static const subscriptionModalBackground = Color(0xFFF2F3F6);
+
 // Add other colors as needed
 }

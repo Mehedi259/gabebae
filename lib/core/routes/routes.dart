@@ -2,9 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../presentation/screens/authentication/forget_password.dart';
+import '../../presentation/screens/authentication/verify_code.dart';
 import '../../presentation/screens/onbording/onbording1.dart';
 import '../../presentation/screens/onbording/onbording2.dart';
 import '../../presentation/screens/onbording/splashScreen.dart';
+import '../../presentation/screens/profileSetup/profile_setup1.dart';
+import '../../presentation/screens/profileSetup/profile_setup2.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -35,12 +39,12 @@ class AppRouter {
       GoRoute(
         name: RoutePath.enterEmail,
         path: RoutePath.enterEmail.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const EnterEmailScreen(),
       ),
       GoRoute(
         name: RoutePath.verifyCode,
         path: RoutePath.verifyCode.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const OtpScreen(),
       ),
 
 
@@ -48,12 +52,12 @@ class AppRouter {
       GoRoute(
         name: RoutePath.profileSetup1,
         path: RoutePath.profileSetup1.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup1Screen(),
       ),
       GoRoute(
         name: RoutePath.profileSetup2,
         path: RoutePath.profileSetup2.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup2Screen(),
       ),
       GoRoute(
         name: RoutePath.profileSetup3,

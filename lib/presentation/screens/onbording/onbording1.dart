@@ -6,14 +6,12 @@ import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
-
 /// =======================================================
 /// OnBoarding1Screen
 /// -------------------------------------------------------
-/// - Shows Splash-style image + heading
-/// - Subheading with flower icon
-/// - Description text
-/// - Reusable custom button
+/// - Responsive design (double.infinity for width)
+/// - Uses assets via AssetGen
+/// - Professional, compact, and scalable
 /// =======================================================
 class OnBoarding1Screen extends StatelessWidget {
   const OnBoarding1Screen({super.key});
@@ -28,7 +26,7 @@ class OnBoarding1Screen extends StatelessWidget {
 
           /// ============= Top Container (Image + Title) =============
           SizedBox(
-            width: 390,
+            width: double.infinity,
             height: 276,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -62,7 +60,7 @@ class OnBoarding1Screen extends StatelessWidget {
 
           /// ============= Middle Container (Subtitle + Description) =============
           SizedBox(
-            width: 390,
+            width: double.infinity,
             height: 150,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -82,7 +80,7 @@ class OnBoarding1Screen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Assets.images.flower.image( // flower icon from assets
+                    Assets.images.flower.image(
                       width: 24,
                       height: 24,
                     ),
@@ -113,9 +111,16 @@ class OnBoarding1Screen extends StatelessWidget {
           const SizedBox(height: 40),
 
           /// ============= Bottom Button =============
-          CustomButton(
-            text: "Let’s Begin ✨",
-            onTap: () => context.go(RoutePath.onBoarding2.addBasePath)),
+          SizedBox(
+            width: double.infinity,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: CustomButton(
+                text: "Let’s Begin ✨",
+                onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
+              ),
+            ),
+          ),
         ],
       ),
     );

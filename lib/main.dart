@@ -9,18 +9,19 @@ import 'utils/app_colors/app_colors.dart';
 /// =======================================
 /// Main Entry Point of the Application
 /// =======================================
+
 late final List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize cameras if needed
+  // Uncomment only if you need camera support
   // cameras = await availableCameras();
 
   runApp(
     /// Wrap the whole app with DevicePreview for responsive testing
     DevicePreview(
-      enabled: true, // set false before production release
+      enabled: true,
       builder: (context) => const MyApp(),
     ),
   );
@@ -32,22 +33,26 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(393, 852),
-      minTextAdapt: true,
-      splitScreenMode: true,
+      /// 👇 Match your Figma/iPhone design reference size
+      designSize: const Size(390, 844), // iPhone 13/14 reference
+      minTextAdapt: true, // adapt text for small devices
+      splitScreenMode: true, // handle tablets & split-screen
       builder: (_, __) {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: "Gabebae",
+
+          /// ================= THEME =================
           theme: ThemeData(
             scaffoldBackgroundColor: AppColors.backgroundColor,
             useMaterial3: true,
           ),
-          // Bind DevicePreview for locale & size simulation
+
+          /// ================= Device Preview =================
           locale: DevicePreview.locale(context),
           builder: DevicePreview.appBuilder,
 
-          // Router configuration
+          /// ================= Routing =================
           routeInformationParser: AppRouter.route.routeInformationParser,
           routerDelegate: AppRouter.route.routerDelegate,
           routeInformationProvider:

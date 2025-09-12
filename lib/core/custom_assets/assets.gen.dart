@@ -295,6 +295,10 @@ class $AssetsImagesGen {
   AssetGenImage get crossround =>
       const AssetGenImage('assets/images/crossround.png');
 
+  /// File path: assets/images/crosswhite.png
+  AssetGenImage get crosswhite =>
+      const AssetGenImage('assets/images/crosswhite.png');
+
   /// File path: assets/images/dibbaback.png
   AssetGenImage get dibbaback =>
       const AssetGenImage('assets/images/dibbaback.png');
@@ -530,6 +534,7 @@ class $AssetsImagesGen {
         colar,
         corss,
         crossround,
+        crosswhite,
         dibbaback,
         drawerlogo,
         edit,

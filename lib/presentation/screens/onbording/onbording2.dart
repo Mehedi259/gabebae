@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:gabebae/presentation/screens/onbording/splashScreen.dart';
-import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
-
+import '../authentication/signin.dart';
 
 /// =======================================================
 /// OnBoarding2Screen
 /// -------------------------------------------------------
+/// - Responsive (double.infinity for width)
 /// - Progress indicator (dots)
 /// - Heading "How It Works ✨"
 /// - Illustration image
@@ -25,34 +25,33 @@ class OnBoarding2Screen extends StatelessWidget {
           children: [
 
             /// ================= Progress Indicator =================
-            Container(
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  /// Dot 1 (Inactive)
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFD1D5DB),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /// Dot 1 (Inactive)
+                Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFD1D5DB),
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
                   ),
+                ),
 
-                  /// Dot 2 (Active)
-                  Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: const Color(0xFFFF6B35),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
-                    ),
+                /// Dot 2 (Active)
+                Container(
+                  width: 8,
+                  height: 8,
+                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFFF6B35),
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
 
             const SizedBox(height: 16),
@@ -74,19 +73,39 @@ class OnBoarding2Screen extends StatelessWidget {
 
             /// ================= Illustration Image =================
             SizedBox(
-              width: 390,
-              height: 296.25,
-              child: Assets.images.onb2.image(
-                fit: BoxFit.contain,
+              width: double.infinity,
+              height: 296,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Assets.images.onb2.image(
+                  fit: BoxFit.contain,
+                ),
               ),
             ),
 
             const SizedBox(height: 40),
 
             /// ================= Bottom Button =================
-            CustomButton(
-              text: "I’m Ready 💛",
-              onTap: () => Get.to(() => const SplashScreen()),
+            SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: CustomButton(
+                  text: "I’m Ready 💛",
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(20.r),
+                        ),
+                      ),
+                      builder: (_) => const SignInPopup(),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
