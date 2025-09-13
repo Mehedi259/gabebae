@@ -9,6 +9,7 @@ import '../../presentation/screens/onbording/onbording2.dart';
 import '../../presentation/screens/onbording/splashScreen.dart';
 import '../../presentation/screens/profileSetup/profile_setup1.dart';
 import '../../presentation/screens/profileSetup/profile_setup2.dart';
+import '../../presentation/screens/profileSetup/profile_setup3.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -62,7 +63,7 @@ class AppRouter {
       GoRoute(
         name: RoutePath.profileSetup3,
         path: RoutePath.profileSetup3.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup3Screen(),
       ),
       GoRoute(
         name: RoutePath.profileSetup4,

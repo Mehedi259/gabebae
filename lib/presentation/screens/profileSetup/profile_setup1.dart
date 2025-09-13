@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:gabebae/core/routes/routes.dart';
+import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_heading.dart';
+import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart';
+import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_bottom_sheet.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../core/routes/route_path.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
-import 'custom_hedding_widget/profile_heading1.dart';
-
 
 class ProfileSetup1Screen extends StatefulWidget {
   const ProfileSetup1Screen({super.key});
@@ -26,7 +30,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
             children: [
               const SizedBox(height: 24),
 
-              // ====== Top Heading + Progress ======
+              /// ====== Top Heading + Progress ======
               const ProfileHeading1(
                 stepText: "Step 1 of 5",
                 progress: 0.2,
@@ -36,7 +40,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
 
               const SizedBox(height: 24),
 
-              // ====== Food/Diet Cards ======
+              /// ====== Food/Diet Cards ======
               Wrap(
                 spacing: 16,
                 runSpacing: 16,
@@ -77,14 +81,12 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
 
               const SizedBox(height: 40),
 
-              // ====== Bottom Next Button ======
+              /// ====== Bottom Next Button ======
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(
                   text: "Next Up ✨",
-                  onTap: () {
-                    // Navigate to next onboarding step
-                  },
+                  onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
                 ),
               ),
               const SizedBox(height: 24),
@@ -95,6 +97,10 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
     );
   }
 
+  /// =======================================================
+  /// Build Food Card
+  /// - On tap: select card + show popup/bottomsheet
+  /// =======================================================
   Widget buildFoodCard({
     required String title,
     required String subtitle,
@@ -107,6 +113,27 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
         setState(() {
           selectedFood = title;
         });
+
+        if (isSeeMore) {
+          /// 👉 Show BottomSheet when See More clicked
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => const ProfileSetup1BottomSheet(),
+          );
+        } else {
+          /// 👉 Show Dialog for normal food cards
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => const Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: EdgeInsets.all(24),
+              child: ProfileSetup1BalanceControllerPopup(),
+            ),
+          );
+        }
       },
       child: Container(
         width: 155,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gabebae/core/routes/routes.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/custom_assets/assets.gen.dart';
+import '../../../../core/routes/route_path.dart';
 
 class ProfileHeading1 extends StatelessWidget {
   final String stepText;
@@ -46,7 +49,7 @@ class ProfileHeading1 extends StatelessWidget {
 
             // Close Button (Asset Image)
             IconButton(
-              onPressed: onClose ?? () => Navigator.of(context).pop(),
+              onPressed: onClose ?? () => context.go(RoutePath.home.addBasePath),
               icon: Assets.images.crosswhite.image(width: 40, height: 40),
               splashRadius: 24,
             ),
