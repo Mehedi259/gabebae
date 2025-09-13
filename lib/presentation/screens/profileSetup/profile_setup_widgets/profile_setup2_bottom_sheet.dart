@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gabebae/core/custom_assets/assets.gen.dart';
-import 'package:gabebae/core/routes/routes.dart';
+import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routes/route_path.dart';
 import '../../../widgets/custom_bottons/custom_button/button.dart';

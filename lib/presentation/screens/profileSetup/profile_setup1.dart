@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gabebae/core/routes/routes.dart';
-import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_heading.dart';
-import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart';
-import 'package:gabebae/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_bottom_sheet.dart';
+import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_heading.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_bottom_sheet.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
