@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
       builder: (_, __) {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: "Gabebae",
+          title: "MenuSideKick",
 
           /// ================= THEME =================
           theme: ThemeData(
