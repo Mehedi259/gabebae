@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
-import '../../../core/custom_assets/assets.gen.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';

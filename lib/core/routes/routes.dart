@@ -10,6 +10,9 @@ import '../../presentation/screens/onbording/splashScreen.dart';
 import '../../presentation/screens/profileSetup/profile_setup1.dart';
 import '../../presentation/screens/profileSetup/profile_setup2.dart';
 import '../../presentation/screens/profileSetup/profile_setup3.dart';
+import '../../presentation/screens/profileSetup/profile_setup4.dart';
+import '../../presentation/screens/profileSetup/profile_setup5.dart';
+import '../../presentation/screens/profileSetup/profile_setup6.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -68,17 +71,17 @@ class AppRouter {
       GoRoute(
         name: RoutePath.profileSetup4,
         path: RoutePath.profileSetup4.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup4Screen(),
       ),
       GoRoute(
         name: RoutePath.profileSetup5,
         path: RoutePath.profileSetup5.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup5Screen(),
       ),
       GoRoute(
         name: RoutePath.profileSetup6,
         path: RoutePath.profileSetup6.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileSetup6Screen(),
       ),
 
       /// Home

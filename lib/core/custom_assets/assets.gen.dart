@@ -50,6 +50,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/cross.svg
   SvgGenImage get cross => const SvgGenImage('assets/icons/cross.svg');
 
+  /// File path: assets/icons/crossSvg.svg
+  SvgGenImage get crossSvg => const SvgGenImage('assets/icons/crossSvg.svg');
+
   /// File path: assets/icons/edit.svg
   SvgGenImage get edit => const SvgGenImage('assets/icons/edit.svg');
 
@@ -89,6 +92,7 @@ class $AssetsIconsGen {
         av8,
         back,
         cross,
+        crossSvg,
         edit,
         google,
         mail,
@@ -221,6 +225,30 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/av2.jpg
   AssetGenImage get av2 => const AssetGenImage('assets/images/av2.jpg');
+
+  /// File path: assets/images/avt1.png
+  AssetGenImage get avt1 => const AssetGenImage('assets/images/avt1.png');
+
+  /// File path: assets/images/avt2.png
+  AssetGenImage get avt2 => const AssetGenImage('assets/images/avt2.png');
+
+  /// File path: assets/images/avt3.png
+  AssetGenImage get avt3 => const AssetGenImage('assets/images/avt3.png');
+
+  /// File path: assets/images/avt4.png
+  AssetGenImage get avt4 => const AssetGenImage('assets/images/avt4.png');
+
+  /// File path: assets/images/avt5.png
+  AssetGenImage get avt5 => const AssetGenImage('assets/images/avt5.png');
+
+  /// File path: assets/images/avt6.png
+  AssetGenImage get avt6 => const AssetGenImage('assets/images/avt6.png');
+
+  /// File path: assets/images/avt7.png
+  AssetGenImage get avt7 => const AssetGenImage('assets/images/avt7.png');
+
+  /// File path: assets/images/avt8.png
+  AssetGenImage get avt8 => const AssetGenImage('assets/images/avt8.png');
 
   /// File path: assets/images/backround.png
   AssetGenImage get backround =>
@@ -514,6 +542,14 @@ class $AssetsImagesGen {
         activityfood,
         av1,
         av2,
+        avt1,
+        avt2,
+        avt3,
+        avt4,
+        avt5,
+        avt6,
+        avt7,
+        avt8,
         backround,
         bargerplace,
         blueright,
