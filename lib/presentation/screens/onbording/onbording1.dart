@@ -117,7 +117,7 @@ class OnBoarding1Screen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CustomButton(
                 text: "Let’s Begin ✨",
-                onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
+                onTap: () => context.go(RoutePath.scanMenu.addBasePath),
               ),
             ),
           ),

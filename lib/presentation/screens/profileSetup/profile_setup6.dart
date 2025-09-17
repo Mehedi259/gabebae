@@ -23,7 +23,7 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
     Timer.periodic(const Duration(milliseconds: 30), (timer) {
       if (progress < 1.0) {
         setState(() {
-          progress = min(progress + 0.02, 1.0); // ✅ clamp between 0.0 & 1.0
+          progress = min(progress + 0.02, 1.0);
         });
       } else {
         timer.cancel();

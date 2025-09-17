@@ -4,15 +4,22 @@ import 'package:go_router/go_router.dart';
 
 import '../../presentation/screens/authentication/forget_password.dart';
 import '../../presentation/screens/authentication/verify_code.dart';
+import '../../presentation/screens/home/activity.dart';
+import '../../presentation/screens/home/home.dart';
 import '../../presentation/screens/onbording/onbording1.dart';
 import '../../presentation/screens/onbording/onbording2.dart';
-import '../../presentation/screens/onbording/splashScreen.dart';
+import '../../presentation/screens/onbording/splash_screen.dart';
 import '../../presentation/screens/profileSetup/profile_setup1.dart';
 import '../../presentation/screens/profileSetup/profile_setup2.dart';
 import '../../presentation/screens/profileSetup/profile_setup3.dart';
 import '../../presentation/screens/profileSetup/profile_setup4.dart';
 import '../../presentation/screens/profileSetup/profile_setup5.dart';
 import '../../presentation/screens/profileSetup/profile_setup6.dart';
+import '../../presentation/screens/scanMenu/scan_menu.dart';
+import '../../presentation/screens/scanMenu/scan_result_all.dart';
+import '../../presentation/screens/scanMenu/scan_result_build_my_plate.dart';
+import '../../presentation/screens/scanMenu/scan_result_ordering_tips.dart';
+import '../../presentation/screens/scanMenu/scan_result_save_your_meal.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -88,7 +95,7 @@ class AppRouter {
       GoRoute(
         name: RoutePath.home,
         path: RoutePath.home.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
         name: RoutePath.favourites,
@@ -98,14 +105,14 @@ class AppRouter {
       GoRoute(
         name: RoutePath.activity,
         path: RoutePath.activity.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const YourActivityScreen(),
       ),
 
       /// Scan Menu
       GoRoute(
         name: RoutePath.scanMenu,
         path: RoutePath.scanMenu.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ScanMenuScreen(),
       ),
       GoRoute(
         name: RoutePath.body,
@@ -115,7 +122,7 @@ class AppRouter {
       GoRoute(
         name: RoutePath.scanResultAll,
         path: RoutePath.scanResultAll.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const MealResultsScreen(),
       ),
       GoRoute(
         name: RoutePath.scanResultSafe,
@@ -135,17 +142,17 @@ class AppRouter {
       GoRoute(
         name: RoutePath.scanResultBuildMyPlate,
         path: RoutePath.scanResultBuildMyPlate.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const BuildMyPlateScreen(),
       ),
       GoRoute(
         name: RoutePath.scanResultOrderingTips,
         path: RoutePath.scanResultOrderingTips.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const OrderingTipsScreen(),
       ),
       GoRoute(
         name: RoutePath.scanResultSaveYourMeals,
         path: RoutePath.scanResultSaveYourMeals.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const SaveMealScreen(),
       ),
       GoRoute(
         name: RoutePath.myQrCode,
