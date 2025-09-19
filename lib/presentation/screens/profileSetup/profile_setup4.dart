@@ -5,6 +5,7 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class ProfileSetup4Screen extends StatefulWidget {
@@ -34,7 +35,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
 
       /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
@@ -58,7 +59,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
                 progress: 0.8,
                 title: "Should we watch out for any health needs?",
                 subtitle: "We’ve got your back, always ✨",
-                onBack: () => context.go(RoutePath.profileSetup2.addBasePath),
+                onBack: () => context.go(RoutePath.profileSetup3.addBasePath),
               ),
             ),
 

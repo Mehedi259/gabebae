@@ -25,11 +25,30 @@ class _OtpScreenState extends State<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Verify",
+          onTap: () {
+            if (isOtpComplete) {
+              context.go(RoutePath.profileSetup1.addBasePath);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Please enter 4 digit code"),
+                ),
+              );
+            }
+          },
+        ),
+      ),
 
       /// ---------------- APP BAR ----------------
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.backgroundColor,
         elevation: 0,
         leading: IconButton(
           onPressed: () => context.go(RoutePath.enterEmail.addBasePath),
@@ -141,28 +160,6 @@ class _OtpScreenState extends State<OtpScreen> {
                       },
                   ),
                 ],
-              ),
-            ),
-
-
-            const SizedBox(height: 60),
-
-            /// ---------------- VERIFY BUTTON ----------------
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                text: "Verify",
-                onTap: () {
-                  if (isOtpComplete) {
-                    context.go(RoutePath.profileSetup1.addBasePath);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Please enter 4 digit code"),
-                      ),
-                    );
-                  }
-                },
               ),
             ),
           ],

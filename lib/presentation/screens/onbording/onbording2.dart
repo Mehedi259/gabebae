@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 import '../authentication/signin.dart';
 
@@ -19,6 +20,28 @@ class OnBoarding2Screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "All set here 💛",
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20.r),
+                ),
+              ),
+              builder: (_) => const SignInPopup(),
+            );
+          },
+        ),
+      ),
+
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -79,31 +102,6 @@ class OnBoarding2Screen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Assets.images.onb2.image(
                   fit: BoxFit.contain,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            /// ================= Bottom Button =================
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: CustomButton(
-                  text: "I’m Ready 💛",
-                  onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(20.r),
-                        ),
-                      ),
-                      builder: (_) => const SignInPopup(),
-                    );
-                  },
                 ),
               ),
             ),

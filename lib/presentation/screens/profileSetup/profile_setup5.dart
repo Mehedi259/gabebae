@@ -6,6 +6,7 @@ import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/b
 import 'package:go_router/go_router.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class ProfileSetup5Screen extends StatefulWidget {
   const ProfileSetup5Screen({super.key});
@@ -34,7 +35,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFCF8),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),

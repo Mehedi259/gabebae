@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -17,7 +18,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5F0),
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         leading: IconButton(
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
@@ -27,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "My Profile",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Colors.black, fontWeight: FontWeight.bold),
+              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -213,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => context.go(RoutePath.home.addBasePath),
+                  onPressed: () => context.go(RoutePath.onBoarding2.addBasePath),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     side: const BorderSide(color: Color(0xFFF4A261)),

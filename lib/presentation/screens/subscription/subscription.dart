@@ -1,4 +1,5 @@
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/subscription/widget/sucess_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,14 +7,43 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
+import '../../widgets/custom_bottons/custom_button/button.dart';
 
-class SubscriptionsScreen extends StatelessWidget {
+class SubscriptionsScreen extends StatefulWidget {
   const SubscriptionsScreen({super.key});
+
+  @override
+  State<SubscriptionsScreen> createState() => _SubscriptionsScreenState();
+}
+
+class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
+  String selectedPlan = "Yearly"; // ✅ Default selected plan
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Start My 3-Day Free Trial ✨",
+            onTap: () {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => SuccessPopup(
+                  onContinue: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              );
+            }
+
+        ),
+      ),
+
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(64),
         child: _buildHeader(context),
@@ -21,13 +51,21 @@ class SubscriptionsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 16),
-            _buildTrialBanner(),
+            const Text(
+              "🌿 Start your 3-day FREE trial to continue ✨",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF374151),
+              ),
+            ),
             const SizedBox(height: 24),
-            _buildTrialTimeline(),
-            const SizedBox(height: 24),
+            Assets.images.plan.image(width: double.infinity, height: 338),
+            const SizedBox(height: 16),
             _buildSubscriptionOptions(),
             const SizedBox(height: 16),
             _buildStartTrialButton(),
@@ -39,151 +77,22 @@ class SubscriptionsScreen extends StatelessWidget {
 
   Widget _buildHeader(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-      elevation: 1,
-      titleSpacing: 16,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: Assets.images.dibbaback.image(width: 40, height: 40),
-            onPressed: () => context.go(RoutePath.myProfile.addBasePath),
-          ),
-          Text(
-            "💸 Subscriptions",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              color: const Color(0xFF1F2937),
-            ),
-          ),
-          Container(width: 75),
-        ],
+      leading: IconButton(
+        icon: Assets.icons.back.svg(width: 16, height: 18),
+        onPressed: () => context.go(RoutePath.myProfile.addBasePath),
       ),
-    );
-  }
-
-  Widget _buildTrialBanner() {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF0F9EB),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.eco, color: Color(0xFF65A30D), size: 24),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              "Start your 3-day FREE trial to continue ✨",
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: const Color(0xFF1F2937),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTrialTimeline() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTimelineItem(
-          icon: Icons.lock,
-          color: const Color(0xFFFDAA5D),
-          day: 'Day 1',
-          description:
-          'Unlock all the app\'s foodie magic — scan menus, see your safe dishes, get tips & tweaks',
+      title: const Text(
+        "Subscriptions",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Color(0xFF1F2937),
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
         ),
-        _buildTimelineConnector(),
-        _buildTimelineItem(
-          icon: Icons.notifications,
-          color: const Color(0xFFFDBA74),
-          day: 'Day 2',
-          description:
-          'We\'ll send you a gentle reminder that your trial is ending soon 🌸',
-        ),
-        _buildTimelineConnector(),
-        _buildTimelineItem(
-          icon: Icons.check_circle_outline,
-          color: const Color(0xFF65A30D),
-          day: 'Day 3',
-          description:
-          'Your subscription begins — cancel anytime before then if it\'s not your vibe ✨',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTimelineItem({
-    required IconData icon,
-    required Color color,
-    required String day,
-    required String description,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, size: 16, color: Colors.white),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  day,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    color: const Color(0xFF1F2937),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
       ),
-    );
-  }
-
-  Widget _buildTimelineConnector() {
-    return Container(
-      margin: const EdgeInsets.only(left: 11.0),
-      width: 2,
-      height: 20,
-      color: const Color(0xFFE5E7EB),
+      centerTitle: true,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 
@@ -193,25 +102,26 @@ class SubscriptionsScreen extends StatelessWidget {
         _buildSubscriptionOption(
           title: 'Monthly',
           price: '\$4.99/mo',
-          isSelected: true,
-          icon: Icons.eco,
+          isSelected: selectedPlan == "Monthly",
+          showFreeTag: selectedPlan == "Monthly", // ✅ Only show when selected
+          onTap: () => setState(() => selectedPlan = "Monthly"),
         ),
         const SizedBox(height: 12),
         _buildSubscriptionOption(
           title: 'Yearly',
-          price: '\$24.99/mo (\$29.99/year)',
-          isSelected: false,
-          icon: Icons.star,
-          isHighlighted: true,
+          price: '\$24.99/mo \n(\$29.99/year)',
+          isSelected: selectedPlan == "Yearly",
+          showFreeTag: selectedPlan == "Yearly", // ✅ Only show when selected
+          onTap: () => setState(() => selectedPlan = "Yearly"),
         ),
         const SizedBox(height: 8),
         Center(
           child: Text(
             '💛 No payment due today.',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w500,
+            style: GoogleFonts.quicksand(
+              fontWeight: FontWeight.w400,
               fontSize: 14,
-              color: const Color(0xFFFDAA5D),
+              color: const Color(0xFF444444),
             ),
           ),
         ),
@@ -223,78 +133,114 @@ class SubscriptionsScreen extends StatelessWidget {
     required String title,
     required String price,
     required bool isSelected,
-    required IconData icon,
-    bool isHighlighted = false,
+    required bool showFreeTag,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: isHighlighted ? const Color(0xFFFDEDD8) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            offset: Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GestureDetector(
+      onTap: onTap,
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          Row(
-            children: [
-              Icon(icon,
-                  color: isSelected ? const Color(0xFF65A30D) : Colors.grey,
-                  size: 20),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      color: const Color(0xFF1F2937),
-                    ),
-                  ),
-                  Text(
-                    price,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
+          Container(
+            width: 336,
+            height: 120,
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: isSelected ? const Color(0x1AD97D54) : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isSelected ? const Color(0xFFD97D54) : const Color(0x8888A096),
+                width: 2,
               ),
-            ],
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x23000000),
+                  blurRadius: 25,
+                  offset: Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Title + Price
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 6),
+                    Text(
+                      title,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF444444),
+                      ),
+                    ),
+                    Text(
+                      price,
+                      style: GoogleFonts.quicksand(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        color: isSelected
+                            ? const Color(0xFFD97D54)
+                            : const Color(0xFF88A096),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Custom Checkbox
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFFD97D54) : Colors.white,
+                    border: Border.all(
+                      color: isSelected
+                          ? const Color(0xFFD97D54)
+                          : const Color(0xFF88A096),
+                      width: 2,
+                    ),
+                    shape: BoxShape.circle,
+                  ),
+                  child: isSelected
+                      ? Center(
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+                      : null,
+                ),
+              ],
+            ),
           ),
-          if (isHighlighted)
-            Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFDAA5D),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                '3 Days Free',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 12,
-                  color: Colors.white,
+
+          // ✅ Show Free Tag Only When Selected
+          if (showFreeTag)
+            Positioned(
+              right: -10,
+              top: -10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC97B63),
+                  borderRadius: BorderRadius.circular(9999),
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                ),
+                child: Text(
+                  "3 Days Free",
+                  style: GoogleFonts.quicksand(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            )
-          else
-            Radio<bool>(
-              value: isSelected,
-              groupValue: true,
-              onChanged: (value) {},
-              activeColor: const Color(0xFF65A30D),
             ),
         ],
       ),
@@ -304,38 +250,12 @@ class SubscriptionsScreen extends StatelessWidget {
   Widget _buildStartTrialButton() {
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFE27B4F),
-            borderRadius: BorderRadius.circular(100),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                offset: Offset(0, 3),
-                blurRadius: 6,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              "Start My 3-Day Free Trial ✨",
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 8),
         Text(
           "3 days free, then \$29.99 per year. Cancel anytime during trial.",
-          style: GoogleFonts.poppins(
+          style: GoogleFonts.quicksand(
             fontWeight: FontWeight.w400,
             fontSize: 12,
-            color: Colors.grey,
+            color: const Color(0xff88a096),
           ),
           textAlign: TextAlign.center,
         ),

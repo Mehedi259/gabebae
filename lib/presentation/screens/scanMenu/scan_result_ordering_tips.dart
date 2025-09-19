@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class OrderingTipsScreen extends StatefulWidget {
   const OrderingTipsScreen({super.key});
@@ -45,7 +46,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(

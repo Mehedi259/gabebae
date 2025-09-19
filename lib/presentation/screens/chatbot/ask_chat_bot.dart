@@ -9,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
+import '../../../utils/app_colors/app_colors.dart';
+
 // Chat Message Model
 class ChatMessage {
   final String id;
@@ -145,7 +147,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5DC),
+      backgroundColor: AppColors.backgroundColor,
 
       /// APP BAR
       appBar: AppBar(

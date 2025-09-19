@@ -7,8 +7,8 @@ import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
-class AboutUsScreen extends StatelessWidget {
-  const AboutUsScreen({super.key});
+class TermsOfServiceScreenAuth extends StatelessWidget {
+  const TermsOfServiceScreenAuth({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +17,10 @@ class AboutUsScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
-          onPressed: () => context.go(RoutePath.accountSettings.addBasePath),
+          onPressed: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
         title: const Text(
-          "About us",
+          "Terms of Conditions",
           textAlign: TextAlign.center,
           style: TextStyle(
               color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),

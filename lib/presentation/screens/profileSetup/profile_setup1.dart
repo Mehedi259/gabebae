@@ -6,6 +6,7 @@ import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_wid
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class ProfileSetup1Screen extends StatefulWidget {
@@ -21,7 +22,16 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Next Up ✨",
+          onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -79,17 +89,6 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
                 ],
               ),
 
-              const SizedBox(height: 40),
-
-              /// ====== Bottom Next Button ======
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  text: "Next Up ✨",
-                  onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
-                ),
-              ),
-              const SizedBox(height: 24),
             ],
           ),
         ),

@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class SaveMealScreen extends StatefulWidget {
   const SaveMealScreen({super.key});
@@ -81,7 +82,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: AppColors.backgroundColor,
 
       /// HEADER
       appBar: PreferredSize(
@@ -95,7 +96,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.go(RoutePath.scanResultOrderingTips.addBasePath),
               ),
               const SizedBox(width: 8),
               Expanded(

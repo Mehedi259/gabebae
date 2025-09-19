@@ -47,9 +47,20 @@ class _SwitchProfileScreenState extends State<SwitchProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(64),
-        child: _buildHeader(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Assets.images.dibbaback.image(width: 32, height: 44),
+          onPressed: () => context.go(RoutePath.myProfile.addBasePath),
+        ),
+        title: const Text(
+          "Switch Profile",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(bottom: 120),
@@ -68,34 +79,7 @@ class _SwitchProfileScreenState extends State<SwitchProfileScreen> {
     );
   }
 
-  Widget _buildHeader() {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-      elevation: 1,
-      titleSpacing: 16,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            icon: Assets.images.dibbaback.image(width: 40, height: 40),
-            onPressed: () => context.go(RoutePath.myProfile.addBasePath),
-          ),
-          Text(
-            "👤 Switch Profile",
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              color: const Color(0xFF1F2937),
-            ),
-          ),
-          Container(width: 75), // Placeholder to match layout
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCurrentProfile() {
+   Widget _buildCurrentProfile() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -131,8 +115,9 @@ class _SwitchProfileScreenState extends State<SwitchProfileScreen> {
               child: Row(
                 children: [
                   CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage(profiles[0].imageUrl),
+                    child: ClipOval(
+                      child: Assets.images.av1.image(width: 56, height: 56),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -232,8 +217,9 @@ class _SwitchProfileScreenState extends State<SwitchProfileScreen> {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        radius: 25,
-                        backgroundImage: NetworkImage(profiles[profileIndex].imageUrl),
+                        child: ClipOval(
+                          child: Assets.images.av2.image(width: 56, height: 56),
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
@@ -292,14 +278,6 @@ class _SwitchProfileScreenState extends State<SwitchProfileScreen> {
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
                 color: Colors.black,
-              ),
-            ),
-            const Spacer(),
-            Text(
-              'Create a profile for family member',
-              style: GoogleFonts.poppins(
-                color: Colors.grey,
-                fontSize: 14,
               ),
             ),
           ],

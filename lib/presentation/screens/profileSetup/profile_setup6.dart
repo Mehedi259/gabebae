@@ -6,6 +6,8 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../utils/app_colors/app_colors.dart';
+
 class ProfileSetup6Screen extends StatefulWidget {
   const ProfileSetup6Screen({super.key});
 
@@ -29,7 +31,7 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
         timer.cancel();
 
         Future.delayed(const Duration(milliseconds: 900), () {
-          context.go(RoutePath.home.addBasePath);
+          context.go(RoutePath.privacyPolicy.addBasePath);
         });
       }
     });
@@ -38,7 +40,7 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDFCF8),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),

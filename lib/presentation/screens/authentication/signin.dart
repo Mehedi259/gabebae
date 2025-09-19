@@ -20,7 +20,7 @@ class SignInPopup extends StatelessWidget {
       height: 400,
       padding: const EdgeInsets.only(bottom: 24),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: AppColors.backgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SingleChildScrollView(
@@ -108,7 +108,7 @@ class SignInPopup extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.go(RoutePath.termsAndCondition.addBasePath),
+                        ..onTap = () => context.go(RoutePath.termsAndConditionAuth.addBasePath),
                     ),
                     const TextSpan(text: " and "),
                     TextSpan(
@@ -118,7 +118,7 @@ class SignInPopup extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.go(RoutePath.privacyPolicy.addBasePath),
+                        ..onTap = () => context.go(RoutePath.privacyPolicyAuth.addBasePath),
                     ),
                   ],
                 ),

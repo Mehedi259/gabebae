@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 // First Screen: À la carte QR Screen
 class AlaCarteQRScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class AlaCarteQRScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: AppColors.backgroundColor,
 
       /// HEADER
       appBar: PreferredSize(
@@ -34,7 +35,7 @@ class AlaCarteQRScreen extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
+                onPressed: () => context.go(RoutePath.home.addBasePath),
               ),
               const SizedBox(width: 8),
               Row(
@@ -43,6 +44,7 @@ class AlaCarteQRScreen extends StatelessWidget {
                   const SizedBox(width: 6),
                   Text(
                     "À la carte",
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,

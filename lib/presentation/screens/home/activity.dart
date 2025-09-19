@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import '../home/home_widgets/history_card.dart'; // ✅ Import HistoryCard widget
 
 class YourActivityScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class _YourActivityScreenState extends State<YourActivityScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF7F2),
+      backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
         child: Column(
           children: [

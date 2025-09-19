@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class BuildMyPlateScreen extends StatefulWidget {
   const BuildMyPlateScreen({super.key});
@@ -25,7 +26,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F0),
+      backgroundColor: AppColors.backgroundColor,
 
       /// HEADER
       appBar: PreferredSize(

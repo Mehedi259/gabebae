@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
+import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class HelpSupportScreen extends StatefulWidget {
   const HelpSupportScreen({super.key});
@@ -20,25 +23,40 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5F0),
+      backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Send",
+          onTap: () => context.go(RoutePath.myProfile.addBasePath),
+        ),
+      ),
+
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black54),
+          icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.myProfile.addBasePath),
         ),
         title: const Text(
           "Help & support",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Color(0xFF1F2937), fontSize: 18, fontWeight: FontWeight.w500),
         ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Padding(
+
+      /// ===== Scrollable Body =====
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset("assets/images/help_support.png", height: 150),
+            Assets.images.helpSupport.image(width: 183, height: 174),
             const SizedBox(height: 16),
             const Text(
               "Hello, how can we assist you?",
@@ -64,26 +82,6 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               maxLines: 5,
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF4A261),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: Text(
-                  "Send",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

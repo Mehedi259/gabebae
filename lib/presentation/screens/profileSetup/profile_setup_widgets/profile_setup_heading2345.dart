@@ -38,7 +38,7 @@ class ProfileSetupHeading extends StatelessWidget {
 
             Expanded(
               child: Align(
-                alignment: Alignment.centerLeft,
+                alignment: Alignment.center,
                 child: Text(
                   stepText,
                   style: const TextStyle(

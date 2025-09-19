@@ -5,6 +5,7 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class ProfileSetup3Screen extends StatefulWidget {
@@ -54,7 +55,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.backgroundColor,
 
       /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(

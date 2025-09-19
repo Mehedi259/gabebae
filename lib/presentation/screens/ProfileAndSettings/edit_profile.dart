@@ -2,8 +2,10 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
+import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -22,16 +24,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5F0),
+      backgroundColor: AppColors.backgroundColor,
+
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Save",
+          onTap: () => context.go(RoutePath.myProfile.addBasePath),
+        ),
+      ),
+
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black54),
+          icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.myProfile.addBasePath),
         ),
         title: const Text(
           "Edit Profile",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Color(0xFF1F2937), fontSize: 18, fontWeight: FontWeight.w500),
         ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -40,9 +55,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const CircleAvatar(
-              radius: 40,
-              backgroundImage: NetworkImage("https://via.placeholder.com/150"),
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.transparent,
+              child: ClipOval(
+                child: Assets.images.av1.image(width: 120, height: 120),
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -68,28 +86,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 16),
 
             _buildLanguageSelection(),
-            const SizedBox(height: 24),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF4A261),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: Text(
-                  "Save",
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -157,7 +153,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
-            suffixIcon: const Icon(Icons.arrow_drop_down),
           ),
         ),
       ],
@@ -165,6 +160,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildLanguageSelection() {
+    final languages = [
+      {"name": "English", "icon": Assets.images.english},
+      {"name": "Français", "icon": Assets.images.french},
+      {"name": "Español", "icon": Assets.images.epsol},
+      // আরও চাইলে add করতে পারেন
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -173,75 +175,33 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           style: GoogleFonts.poppins(fontSize: 14, color: Colors.black54),
         ),
         const SizedBox(height: 8),
-        Row(
-          children: [
-            // English Button
-            ElevatedButton(
-              onPressed: () => setState(() => _language = "English"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _language == "English"
-                    ? const Color(0xFFF4A261)
-                    : Colors.white,
-                side: const BorderSide(color: Color(0xFFF4A261)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: languages.map((lang) {
+              final isSelected = _language == lang["name"];
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: ElevatedButton(
+                  onPressed: () => setState(() => _language = lang["name"] as String),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: isSelected ? const Color(0xFFF4A261) : Colors.white,
+                    side: const BorderSide(color: Color(0xFFF4A261)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      (lang["icon"] as AssetGenImage).image(width: 20, height: 20),
+                      const SizedBox(width: 10),
+                      Text(lang["name"] as String),
+                    ],
+                  ),
                 ),
-              ),
-              child: Row(
-                children: [
-                  Image.asset("assets/flags/uk.png", width: 20),
-                  const SizedBox(width: 4),
-                  const Text("English"),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: 8),
-
-            // French Button
-            ElevatedButton(
-              onPressed: () => setState(() => _language = "Français"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _language == "Français"
-                    ? const Color(0xFFF4A261)
-                    : Colors.white,
-                side: const BorderSide(color: Color(0xFFF4A261)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Image.asset("assets/flags/france.png", width: 20),
-                  const SizedBox(width: 4),
-                  const Text("Français"),
-                ],
-              ),
-            ),
-
-            const SizedBox(width: 8),
-
-            // Spanish Button
-            ElevatedButton(
-              onPressed: () => setState(() => _language = "Español"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _language == "Español"
-                    ? const Color(0xFFF4A261)
-                    : Colors.white,
-                side: const BorderSide(color: Color(0xFFF4A261)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Image.asset("assets/flags/spain.png", width: 20),
-                  const SizedBox(width: 4),
-                  const Text("Español"),
-                ],
-              ),
-            ),
-          ],
+              );
+            }).toList(),
+          ),
         ),
       ],
     );

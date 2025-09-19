@@ -9,6 +9,8 @@ class RoutePath {
   //=================== Auth screens ===================
   static const String verifyCode = 'verifyCode';
   static const String enterEmail = 'enterEmail';
+  static const String termsAndConditionAuth = 'termsAndConditionAuth';
+  static const String privacyPolicyAuth = 'privacyPolicyAuth';
 
   //==================================== Profile Setup screens =====================================
 
@@ -18,6 +20,7 @@ class RoutePath {
   static const String profileSetup4 = 'profileSetup4';
   static const String profileSetup5 = 'profileSetup5';
   static const String profileSetup6 = 'profileSetup6';
+  static const String privacyPolicyPs = 'privacyPolicyPs';
 
   //==================================== Home screens =====================================
 

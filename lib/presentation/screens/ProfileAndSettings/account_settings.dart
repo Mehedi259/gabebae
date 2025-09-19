@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../utils/app_colors/app_colors.dart';
 
 class AccountSettingsScreen extends StatelessWidget {
   const AccountSettingsScreen({super.key});
@@ -11,16 +13,19 @@ class AccountSettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5F0),
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black54),
+          icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.myProfile.addBasePath),
         ),
         title: const Text(
           "Account Settings",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
         ),
+        centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),

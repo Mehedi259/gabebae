@@ -277,6 +277,9 @@ class $AssetsImagesGen {
   AssetGenImage get butterfly =>
       const AssetGenImage('assets/images/butterfly.png');
 
+  /// File path: assets/images/camcam.png
+  AssetGenImage get camcam => const AssetGenImage('assets/images/camcam.png');
+
   /// File path: assets/images/camera.png
   AssetGenImage get camera => const AssetGenImage('assets/images/camera.png');
 
@@ -299,6 +302,12 @@ class $AssetsImagesGen {
   /// File path: assets/images/camerascanner.png
   AssetGenImage get camerascanner =>
       const AssetGenImage('assets/images/camerascanner.png');
+
+  /// File path: assets/images/campdf.png
+  AssetGenImage get campdf => const AssetGenImage('assets/images/campdf.png');
+
+  /// File path: assets/images/camurl.png
+  AssetGenImage get camurl => const AssetGenImage('assets/images/camurl.png');
 
   /// File path: assets/images/catering.png
   AssetGenImage get catering =>
@@ -419,6 +428,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/pdfscanner.png
   AssetGenImage get pdfscanner =>
       const AssetGenImage('assets/images/pdfscanner.png');
+
+  /// File path: assets/images/plan.png
+  AssetGenImage get plan => const AssetGenImage('assets/images/plan.png');
 
   /// File path: assets/images/plateknife.png
   AssetGenImage get plateknife =>
@@ -561,12 +573,15 @@ class $AssetsImagesGen {
         brifcase,
         bulb,
         butterfly,
+        camcam,
         camera,
         camerablack,
         cameranavactive,
         cameranavinactive,
         cameraorange,
         camerascanner,
+        campdf,
+        camurl,
         catering,
         chat,
         chilie,
@@ -602,6 +617,7 @@ class $AssetsImagesGen {
         onb2,
         pdforange,
         pdfscanner,
+        plan,
         plateknife,
         plus,
         qrcode,

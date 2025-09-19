@@ -8,14 +8,14 @@ import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
-class PrivacyPolicyScreenPs extends StatefulWidget {
-  const PrivacyPolicyScreenPs({super.key});
+class PrivacyPolicyScreenAuth extends StatefulWidget {
+  const PrivacyPolicyScreenAuth({super.key});
 
   @override
-  State<PrivacyPolicyScreenPs> createState() => _PrivacyPolicyScreenPsState();
+  State<PrivacyPolicyScreenAuth> createState() => _PrivacyPolicyScreenAuthState();
 }
 
-class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
+class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
   bool agreeTerms = false;
   bool agreePrivacy = false;
 
@@ -29,14 +29,14 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
           text: "Continue",
-          onTap: () => context.go(RoutePath.home.addBasePath),
+          onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
       ),
 
       appBar: AppBar(
         leading: IconButton(
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
-          onPressed: () => context.go(RoutePath.accountSettings.addBasePath),
+          onPressed: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
         title: const Text(
           "Privacy Policy",

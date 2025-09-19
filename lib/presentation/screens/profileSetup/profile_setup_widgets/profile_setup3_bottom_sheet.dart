@@ -1,6 +1,10 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../../core/routes/route_path.dart';
 
 class ProfileSetup3BottomSheet extends StatefulWidget {
   const ProfileSetup3BottomSheet({super.key});
@@ -98,9 +102,7 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
               bottom: 24,
               child: CustomButton(
                 text: "All set here 💛",
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: () => context.go(RoutePath.profileSetup4.addBasePath),
               ),
             ),
           ],

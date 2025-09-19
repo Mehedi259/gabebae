@@ -12,6 +12,8 @@ import '../../presentation/screens/ProfileAndSettings/privacy_policy.dart';
 import '../../presentation/screens/ProfileAndSettings/switch_profile.dart';
 import '../../presentation/screens/ProfileAndSettings/terms_and_condition.dart';
 import '../../presentation/screens/authentication/forget_password.dart';
+import '../../presentation/screens/authentication/privacy_policy.dart';
+import '../../presentation/screens/authentication/terms_condition.dart';
 import '../../presentation/screens/authentication/verify_code.dart';
 import '../../presentation/screens/chatbot/ask_chat_bot.dart';
 import '../../presentation/screens/home/activity.dart';
@@ -69,6 +71,16 @@ class AppRouter {
         path: RoutePath.verifyCode.addBasePath,
         builder: (context, state) => const OtpScreen(),
       ),
+      GoRoute(
+        name: RoutePath.privacyPolicyAuth,
+        path: RoutePath.privacyPolicyAuth.addBasePath,
+        builder: (context, state) => const PrivacyPolicyScreenAuth(),
+      ),
+      GoRoute(
+        name: RoutePath.termsAndConditionAuth,
+        path: RoutePath.termsAndConditionAuth.addBasePath,
+        builder: (context, state) => const TermsOfServiceScreenAuth(),
+      ),
 
 
       /// Profile Setup
@@ -101,6 +113,11 @@ class AppRouter {
         name: RoutePath.profileSetup6,
         path: RoutePath.profileSetup6.addBasePath,
         builder: (context, state) => const ProfileSetup6Screen(),
+      ),
+      GoRoute(
+        name: RoutePath.privacyPolicyPs,
+        path: RoutePath.privacyPolicyPs.addBasePath,
+        builder: (context, state) => const PrivacyPolicyScreenPs(),
       ),
 
       /// Home
@@ -224,7 +241,7 @@ class AppRouter {
       GoRoute(
         name: RoutePath.privacyPolicy,
         path: RoutePath.privacyPolicy.addBasePath,
-        builder: (context, state) => const PrivacyPolicyScreen(),
+        builder: (context, state) => const PrivacyPolicyScreenPs(),
       ),
       GoRoute(
         name: RoutePath.aboutUs,

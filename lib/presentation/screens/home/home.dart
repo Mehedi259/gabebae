@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/presentation/widgets/navigation.dart';
+import '../../../utils/app_colors/app_colors.dart';
 import 'home_widgets/history_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF7F2),
+      backgroundColor: AppColors.backgroundColor,
 
       /// ===== Custom Bottom Navigation Bar =====
       bottomNavigationBar: CustomNavigationBar(

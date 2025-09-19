@@ -21,7 +21,16 @@ class EnterEmailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
 
+      /// ===== Fixed Bottom Button =====
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: "Continue",
+          onTap: () => context.go(RoutePath.verifyCode.addBasePath),
+        ),
+      ),
       /// ---------------- APP BAR ----------------
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
@@ -85,20 +94,6 @@ class EnterEmailScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            ),
-
-            const SizedBox(height: 40),
-
-            /// ============= Bottom Button =============
-            SizedBox(
-              width: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: CustomButton(
-                  text: "Continue",
-                  onTap: () => context.go(RoutePath.verifyCode.addBasePath),
-                ),
               ),
             ),
           ],
