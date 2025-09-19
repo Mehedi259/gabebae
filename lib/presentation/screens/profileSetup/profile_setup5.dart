@@ -190,9 +190,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen> {
                     ),
                     side: const BorderSide(color: Color(0xFFE27B4F)),
                   ),
-                  onPressed: () {
-                    // Handle Add Another Profile
-                  },
+                  onPressed: () => context.go(RoutePath.profileSetup1.addBasePath),
                   child: const Text(
                     "+ Add Another Profile",
                     style: TextStyle(

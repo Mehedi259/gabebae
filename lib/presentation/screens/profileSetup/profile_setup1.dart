@@ -136,7 +136,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen> {
         }
       },
       child: Container(
-        width: 155,
+        width: 145,
         height: 130,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(

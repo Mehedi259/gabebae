@@ -49,8 +49,9 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
                       fontFamily: "Poppins",
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF111827),
+                      color: Color(0xFF669A59),
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),
 

@@ -1,5 +1,9 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../core/routes/route_path.dart';
 
 class OrderingTipsScreen extends StatefulWidget {
   const OrderingTipsScreen({super.key});
@@ -12,7 +16,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
   final List<String> plateCombo = [
     "🥬 Extra Veggies",
     "🌶️ Spicy",
-    "🌶️ Spicy", // Duplicate as shown in image
+    "🌶️ Spicy",
   ];
 
   final List<Map<String, dynamic>> tips = [
@@ -42,7 +46,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F0),
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -51,42 +54,40 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-
                 /// TITLE SECTION
                 Row(
                   children: [
                     const Icon(Icons.lightbulb_outline,
                         color: Color(0xFF10B981), size: 24),
                     const SizedBox(width: 8),
-                    Text(
-                      "Ordering Tips for Your Plate",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                        color: const Color(0xFF10B981),
+                    Expanded(
+                      child: Text(
+                        "Ordering Tips for Your Plate",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20,
+                          color: const Color(0xFF10B981),
+                        ),
                       ),
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 8),
-
                 Row(
                   children: [
-                    Text(
-                      "Quick reminders to keep your meal safe & glowing",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12,
-                        color: const Color(0xFF6B7280),
+                    Expanded(
+                      child: Text(
+                        "Quick reminders to keep your meal safe & glowing✨",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: const Color(0xFF6B7280),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    const Text("✨", style: TextStyle(fontSize: 16)),
                   ],
                 ),
-
                 const SizedBox(height: 32),
 
                 /// PLATE COMBO SECTION
@@ -110,9 +111,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                           letterSpacing: 0.5,
                         ),
                       ),
-
                       const SizedBox(height: 16),
-
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
@@ -157,7 +156,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 32),
 
                 /// TIPS SELECTION TITLE
@@ -169,7 +167,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     color: const Color(0xFF1F2937),
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
                 /// TIPS LIST
@@ -178,8 +175,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                   title: tip["title"],
                   description: tip["description"],
                 )),
-
-                const SizedBox(height: 100), // Space for bottom buttons
+                const SizedBox(height: 100),
               ],
             ),
           ),
@@ -188,6 +184,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
 
       /// BOTTOM BUTTONS
       bottomNavigationBar: Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         color: Colors.white,
         child: Column(
@@ -198,11 +195,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Meal saved! 📋")),
-                      );
-                    },
+                    onPressed: () => context.go(RoutePath.scanResultSaveYourMeals.addBasePath),
                     icon: const Icon(Icons.bookmark, color: Colors.white),
                     label: Text(
                       "Save Meal",
@@ -221,12 +214,10 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(width: 12),
-
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () {},
+                    onPressed: () => context.go(RoutePath.myQrCode.addBasePath),
                     icon: const Icon(Icons.qr_code, color: Colors.white),
                     label: Text(
                       "QR Share",
@@ -247,7 +238,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                 ),
               ],
             ),
-
             const SizedBox(height: 12),
 
             /// AI CHAT BUTTON
@@ -261,7 +251,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                 shadowColor: Colors.black,
                 elevation: 6,
               ),
-              onPressed: () {},
+              onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
               icon: const Icon(Icons.chat, color: Colors.white),
               label: Text(
                 "Ask AI Chat About This",
@@ -297,17 +287,18 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                 style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: const Color(0xFF1F2937),
+              Expanded(
+                child: Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    color: const Color(0xFF1F2937),
+                  ),
                 ),
               ),
             ],
           ),
-
           const SizedBox(height: 8),
 
           /// TIP DESCRIPTION

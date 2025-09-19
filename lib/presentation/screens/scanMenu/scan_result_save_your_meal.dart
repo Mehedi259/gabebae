@@ -1,7 +1,11 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+
+import '../../../core/routes/route_path.dart';
 
 class SaveMealScreen extends StatefulWidget {
   const SaveMealScreen({super.key});
@@ -339,8 +343,8 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
               ),
             );
 
-            // Navigate back or to favorites
-            Navigator.pop(context);
+            // Navigate to Home using GoRouter
+            context.go(RoutePath.home.addBasePath);
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: _mealNameController.text.trim().isEmpty
@@ -363,6 +367,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
           ),
         ),
       ),
+
     );
   }
 }

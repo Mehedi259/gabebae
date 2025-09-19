@@ -9,9 +9,8 @@ import '../../widgets/custom_bottons/custom_button/button.dart';
 /// =======================================================
 /// OnBoarding1Screen
 /// -------------------------------------------------------
-/// - Responsive design (double.infinity for width)
+/// - Responsive design
 /// - Uses assets via AssetGen
-/// - Professional, compact, and scalable
 /// =======================================================
 class OnBoarding1Screen extends StatelessWidget {
   const OnBoarding1Screen({super.key});
@@ -117,7 +116,7 @@ class OnBoarding1Screen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: CustomButton(
                 text: "Let’s Begin ✨",
-                onTap: () => context.go(RoutePath.scanMenu.addBasePath),
+                onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
               ),
             ),
           ),

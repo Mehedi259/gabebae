@@ -2,8 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../presentation/screens/ProfileAndSettings/about_us.dart';
+import '../../presentation/screens/ProfileAndSettings/account_settings.dart';
+import '../../presentation/screens/ProfileAndSettings/change_password.dart';
+import '../../presentation/screens/ProfileAndSettings/edit_profile.dart';
+import '../../presentation/screens/ProfileAndSettings/help_and_support.dart';
+import '../../presentation/screens/ProfileAndSettings/my_profile.dart';
+import '../../presentation/screens/ProfileAndSettings/privacy_policy.dart';
+import '../../presentation/screens/ProfileAndSettings/switch_profile.dart';
+import '../../presentation/screens/ProfileAndSettings/terms_and_condition.dart';
 import '../../presentation/screens/authentication/forget_password.dart';
 import '../../presentation/screens/authentication/verify_code.dart';
+import '../../presentation/screens/chatbot/ask_chat_bot.dart';
 import '../../presentation/screens/home/activity.dart';
 import '../../presentation/screens/home/home.dart';
 import '../../presentation/screens/onbording/onbording1.dart';
@@ -20,6 +30,8 @@ import '../../presentation/screens/scanMenu/scan_result_all.dart';
 import '../../presentation/screens/scanMenu/scan_result_build_my_plate.dart';
 import '../../presentation/screens/scanMenu/scan_result_ordering_tips.dart';
 import '../../presentation/screens/scanMenu/scan_result_save_your_meal.dart';
+import '../../presentation/screens/scanMenu/my_qr_code.dart';
+import '../../presentation/screens/subscription/subscription.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -157,14 +169,14 @@ class AppRouter {
       GoRoute(
         name: RoutePath.myQrCode,
         path: RoutePath.myQrCode.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const AlaCarteQRScreen(),
       ),
 
       /// Chat Bot
       GoRoute(
         name: RoutePath.askChatBot,
         path: RoutePath.askChatBot.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const MenuSidekickChatScreen(),
       ),
 
 
@@ -172,17 +184,17 @@ class AppRouter {
       GoRoute(
         name: RoutePath.myProfile,
         path: RoutePath.myProfile.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
         name: RoutePath.switchProfile,
         path: RoutePath.switchProfile.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const SwitchProfileScreen(),
       ),
       GoRoute(
         name: RoutePath.editProfile,
         path: RoutePath.editProfile.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
         name: RoutePath.notification,
@@ -192,39 +204,39 @@ class AppRouter {
       GoRoute(
         name: RoutePath.helpAndSupport,
         path: RoutePath.helpAndSupport.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const HelpSupportScreen(),
       ),
       GoRoute(
         name: RoutePath.accountSettings,
         path: RoutePath.accountSettings.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const AccountSettingsScreen(),
       ),
       GoRoute(
         name: RoutePath.changePassword,
         path: RoutePath.changePassword.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const ChangePasswordScreen(),
       ),
       GoRoute(
         name: RoutePath.termsAndCondition,
         path: RoutePath.termsAndCondition.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const TermsOfServiceScreen(),
       ),
       GoRoute(
         name: RoutePath.privacyPolicy,
         path: RoutePath.privacyPolicy.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
       GoRoute(
         name: RoutePath.aboutUs,
         path: RoutePath.aboutUs.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const AboutUsScreen(),
       ),
 
       /// Subscription
       GoRoute(
         name: RoutePath.subscription,
         path: RoutePath.subscription.addBasePath,
-        builder: (context, state) => const Placeholder(),
+        builder: (context, state) => const SubscriptionsScreen(),
       ),
     ],
     observers: [routeObserver],

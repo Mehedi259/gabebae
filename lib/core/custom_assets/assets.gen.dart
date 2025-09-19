@@ -371,6 +371,10 @@ class $AssetsImagesGen {
   AssetGenImage get goldendragon =>
       const AssetGenImage('assets/images/goldendragon.png');
 
+  /// File path: assets/images/help_support.png
+  AssetGenImage get helpSupport =>
+      const AssetGenImage('assets/images/help_support.png');
+
   /// File path: assets/images/history.png
   AssetGenImage get history => const AssetGenImage('assets/images/history.png');
 
@@ -584,6 +588,7 @@ class $AssetsImagesGen {
         french,
         gallery,
         goldendragon,
+        helpSupport,
         history,
         homeactive,
         homeinactive,

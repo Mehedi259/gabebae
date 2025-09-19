@@ -1,12 +1,14 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/scanMenu/widgets/scan_menu_help_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path_provider/path_provider.dart';
+import '../../../core/custom_assets/assets.gen.dart';
+import '../../../core/routes/route_path.dart';
+import 'package:go_router/go_router.dart';
 
 class ScanMenuScreen extends StatefulWidget {
   final List<CameraDescription>? cameras;
@@ -23,7 +25,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   final int _camIndex = 0;
 
   bool _isReady = false, _flashOn = false, _capturing = false;
-  final String _mode = "Photo";
+  String _mode = "Photo";
   File? _image;
 
   late final AnimationController _slideCtrl;
@@ -35,7 +37,6 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     _slideCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
@@ -96,7 +97,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
         child: Stack(
           children: [
             _cameraPreview(),
-            _topBar(),
+            _topBar(), // ✅ এখন টপ বার অ্যাড করলাম
             _bottomControls(),
           ],
         ),
@@ -104,7 +105,6 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     );
   }
 
-  /// ================== UI ==================
   Widget _cameraPreview() => !_isReady
       ? const Center(child: CircularProgressIndicator(color: Colors.blue))
       : SizedBox.expand(
@@ -118,6 +118,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     ),
   );
 
+  /// ✅ Rounded Close + Help Button
   Widget _topBar() => Positioned(
     top: 12,
     left: 12,
@@ -125,10 +126,26 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _roundIconBtn(Icons.close, () => Navigator.pop(context)),
+        _roundIconBtn(Icons.close,
+                () => context.go(RoutePath.home.addBasePath)),
         _roundIconBtn(Icons.help_outline, _helpDialog),
       ],
     ),
+  );
+
+  Widget _roundIconBtn(IconData icon, VoidCallback onTap) => InkWell(
+    onTap: onTap,
+    child: CircleAvatar(
+      backgroundColor: Colors.white24,
+      radius: 20,
+      child: Icon(icon, color: Colors.white),
+    ),
+  );
+
+  void _helpDialog() => showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) => const ScanMenuHelpDialog(),
   );
 
   Widget _bottomControls() => Positioned(
@@ -144,76 +161,136 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
           children: [
             const Text(
               "Position the menu within the frame",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
+              style: TextStyle(color: Colors.white, fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _modeButton("Photo"),
+                const SizedBox(width: 12),
+                _modeButton("PDF"),
+                const SizedBox(width: 12),
+                _modeButton("URL"),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _roundIconBtn(Icons.photo, _openGallery),
+                _roundImageBtn(Assets.images.gallery.path, _openGallery),
                 ScaleTransition(scale: _pulseAnim, child: _captureBtn()),
-                _roundIconBtn(
-                    _flashOn ? Icons.flash_on : Icons.flash_off,
-                    _toggleFlash),
+                _roundImageBtn(Assets.images.flash.path, _toggleFlash,
+                    isFlash: true),
               ],
             ),
-            const SizedBox(height: 20),
-            _primaryBtn("Run Scan", _runScan),
           ],
         ),
       ),
     ),
   );
 
-  /// ================== Widgets ==================
-  Widget _roundIconBtn(IconData icon, VoidCallback onTap) => InkWell(
-    onTap: onTap,
-    borderRadius: BorderRadius.circular(30),
-    child: CircleAvatar(
-      radius: 24,
-      backgroundColor: Colors.grey.shade700,
-      child: Icon(icon, color: Colors.white),
-    ),
-  );
+  Widget _roundImageBtn(String asset, VoidCallback onTap,
+      {bool isFlash = false}) =>
+      InkWell(
+        onTap: onTap,
+        child: CircleAvatar(
+          child: Image.asset(asset, width: 56, height: 56),
+        ),
+      );
 
   Widget _captureBtn() => GestureDetector(
-    onTap: _capture,
+    onTap: () async {
+      await _capture();
+      _showBottomSheet();
+    },
     child: Container(
-      width: 80,
-      height: 80,
+      width: 72,
+      height: 72,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-        border: Border.all(color: Colors.blueAccent, width: 4),
-      ),
-      child: _capturing
-          ? const CircularProgressIndicator(color: Colors.blue)
-          : null,
-    ),
-  );
-
-  Widget _primaryBtn(String t, VoidCallback f) => SizedBox(
-    width: double.infinity,
-    child: ElevatedButton(
-      onPressed: f,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage(Assets.images.shutter.path),
+          fit: BoxFit.contain,
         ),
       ),
-      child: Text(
-        t,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    ),
+  );
+
+  Widget _modeButton(String title) => GestureDetector(
+    onTap: () {
+      setState(() => _mode = title);
+      _showBottomSheet();
+    },
+    child: Container(
+      width: 80,
+      height: 40,
+      decoration: BoxDecoration(
+        color: _mode == title ? Colors.blue : Colors.white24,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Center(
+        child: Text(
+          title,
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     ),
   );
 
-  /// ================== Functions ==================
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Container(
+        width: 390,
+        height: 84,
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (_image != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: Image.file(_image!,
+                    width: 76, height: 48, fit: BoxFit.cover),
+              )
+            else
+              Container(
+                width: 76,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ElevatedButton(
+              onPressed: () =>
+                  context.go(RoutePath.scanResultAll.addBasePath), // ✅ Updated
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF287FBE),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                "Run Scan",
+                style: TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _capture() async {
     if (!_isReady || _capturing) return;
     setState(() => _capturing = true);
@@ -243,282 +320,8 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     if (x != null) {
       _image = File(x.path);
       _msg("Image selected", true);
+      _showBottomSheet();
     }
-  }
-
-  Future<void> _runScan() async {
-    if (_image == null) return _msg("Capture image first", false);
-
-    if (_mode == "PDF") {
-      final pdf = pw.Document();
-      final Uint8List imgBytes = await _image!.readAsBytes();
-
-      pdf.addPage(
-        pw.Page(
-          build: (_) => pw.Center(
-            child: pw.Image(pw.MemoryImage(imgBytes)),
-          ),
-        ),
-      );
-
-      final dir = await getApplicationDocumentsDirectory();
-      final f = File("${dir.path}/scan.pdf");
-      await f.writeAsBytes(await pdf.save());
-
-      _msg("PDF saved: ${f.path}", true);
-    } else {
-      await Future.delayed(const Duration(seconds: 2));
-      _msg("Image processed!", true);
-    }
-  }
-
-// Replace the existing _helpDialog() function in your ScanMenuScreen with this:
-
-  void _helpDialog() => showDialog(
-    context: context,
-    barrierDismissible: true,
-    builder: (context) => Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F5DC), // Cream background like image
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("🌿", style: TextStyle(fontSize: 20)),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Tips for a Clear Scan",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF10B981),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🌿", style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Subtitle
-              Center(
-                child: Text(
-                  "Your dining sidekick works best when the menu is easy to see. Here's how to glow it up:",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: const Color(0xFF8B7355),
-                    height: 1.4,
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Tips List
-              _buildTipItem("✨", "Flat & Steady", "Place the menu flat, hold the phone steady.", const Color(0xFFFFCA28)),
-              const SizedBox(height: 16),
-
-              _buildTipItem("✨", "Good Lighting", "Natural light is best. Avoid strong reflections.", const Color(0xFFFFCA28)),
-              const SizedBox(height: 16),
-
-              _buildTipItem("✨", "No Cropping", "Capture the whole page edge to edge.", const Color(0xFF10B981)),
-              const SizedBox(height: 16),
-
-              _buildTipItem("✨", "Sharp & Clear", "Make sure the text is legible for best results.", const Color(0xFFFFCA28)),
-              const SizedBox(height: 20),
-
-              // Special message
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFCE7F3),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFF472B6)),
-                ),
-                child: Row(
-                  children: [
-                    const Text("🌸", style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            color: const Color(0xFF831843),
-                            height: 1.4,
-                          ),
-                          children: const [
-                            TextSpan(
-                              text: "Think of it as taking a photo for friend- ",
-                              style: TextStyle(fontWeight: FontWeight.w400),
-                            ),
-                            TextSpan(
-                              text: "clear, bright, and cozy. The clearer the shot, the better we can guide you!",
-                              style: TextStyle(fontWeight: FontWeight.w400),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🌸", style: TextStyle(fontSize: 18)),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Choose How to Scan section
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Choose How to Scan",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF10B981),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🦋", style: TextStyle(fontSize: 20)),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // Scanning options
-              _buildScanOption("📷", "Photo", "Place the menu flat, hold the phone steady.", const Color(0xFFE27B4F)),
-              const SizedBox(height: 12),
-
-              _buildScanOption("📄", "PDF", "Natural light is best. Avoid strong reflections.", const Color(0xFFF59E0B)),
-              const SizedBox(height: 12),
-
-              _buildScanOption("🔗", "URL", "Capture the whole page edge to edge.", const Color(0xFF8B7355)),
-
-              const SizedBox(height: 24),
-
-              // Close button
-              Center(
-                child: TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF10B981),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  child: Text(
-                    "Got it!",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-
-// Helper widget for tip items
-  Widget _buildTipItem(String emoji, String title, String description, Color accentColor) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(emoji, style: const TextStyle(fontSize: 16)),
-        const SizedBox(width: 8),
-        Expanded(
-          child: RichText(
-            text: TextSpan(
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                color: const Color(0xFF8B7355),
-                height: 1.4,
-              ),
-              children: [
-                TextSpan(
-                  text: "$title – ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: accentColor,
-                  ),
-                ),
-                TextSpan(
-                  text: description,
-                  style: const TextStyle(fontWeight: FontWeight.w400),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-// Helper widget for scan options
-  Widget _buildScanOption(String emoji, String title, String description, Color accentColor) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: accentColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Text(emoji, style: const TextStyle(fontSize: 16)),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: accentColor,
-                ),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                description,
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  color: const Color(0xFF8B7355),
-                  height: 1.3,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 
   void _msg(String m, bool ok) => ScaffoldMessenger.of(context).showSnackBar(

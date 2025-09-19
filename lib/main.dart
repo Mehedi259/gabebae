@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
-import 'package:device_preview/device_preview.dart';
+// import 'package:device_preview/device_preview.dart'; // ❌ Commented
 import 'core/routes/routes.dart';
 import 'utils/app_colors/app_colors.dart';
 
@@ -16,14 +16,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Uncomment only if you need camera support
-  // cameras = await availableCameras();
+  cameras = await availableCameras();
 
   runApp(
-    /// Wrap the whole app with DevicePreview for responsive testing
-    DevicePreview(
-      enabled: true,
-      builder: (context) => const MyApp(),
-    ),
+    // /// Wrap the whole app with DevicePreview for responsive testing
+    // DevicePreview(
+    //   enabled: true,
+    //   builder: (context) => const MyApp(),
+    // ),
+    const MyApp(), // ✅ Directly load MyApp
   );
 }
 
@@ -49,8 +50,8 @@ class MyApp extends StatelessWidget {
           ),
 
           /// ================= Device Preview =================
-          locale: DevicePreview.locale(context),
-          builder: DevicePreview.appBuilder,
+          // locale: DevicePreview.locale(context),
+          // builder: DevicePreview.appBuilder,
 
           /// ================= Routing =================
           routeInformationParser: AppRouter.route.routeInformationParser,

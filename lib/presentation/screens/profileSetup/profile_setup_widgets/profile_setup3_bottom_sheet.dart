@@ -11,7 +11,7 @@ class ProfileSetup3BottomSheet extends StatefulWidget {
 }
 
 class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
-  /// Track switch states
+  /// Track switch states for health conditions
   final Map<String, bool> _switchStates = {
     "Asthma": false,
     "Kidney Disease": false,
@@ -38,16 +38,32 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
               child: ListView(
                 controller: controller,
                 children: [
-                  /// ===== Header =====
-                  const Text(
-                    "Health-Driven",
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF111827),
+                  /// ===== Updated Health-Driven Header =====
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 15,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Health-Driven",
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF669A59),
+                          height: 1.6, // line-height: 32px (18 * 1.6 ≈ 32)
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
+
                   const SizedBox(height: 24),
 
                   /// ===== Cards =====
@@ -59,17 +75,17 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
                   _buildHealthCard(
                     title: "Kidney Disease",
                     subtitle: "Renal health support",
-                    imagePath: Assets.images.celiacDisease.path,
+                    imagePath: Assets.images.hypertension.path,
                   ),
                   _buildHealthCard(
                     title: "Thyroid Issues",
                     subtitle: "Hyper / Hypo thyroidism",
-                    imagePath: Assets.images.celiacDisease.path,
+                    imagePath: Assets.images.highCholesterol.path,
                   ),
                   _buildHealthCard(
                     title: "Heart Disease",
                     subtitle: "Cardiac health",
-                    imagePath: Assets.images.celiacDisease.path,
+                    imagePath: Assets.images.diabetes.path,
                   ),
                 ],
               ),
@@ -139,7 +155,7 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
           ),
           const SizedBox(width: 12),
 
-          /// Text
+          /// Title & Subtitle
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

@@ -32,7 +32,7 @@ class _OtpScreenState extends State<OtpScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.go(RoutePath.enterEmail.addBasePath),
           icon: Assets.icons.back.svg(
             width: 24,
             height: 24,
@@ -154,7 +154,7 @@ class _OtpScreenState extends State<OtpScreen> {
                 text: "Verify",
                 onTap: () {
                   if (isOtpComplete) {
-                    context.go(RoutePath.onBoarding2.addBasePath);
+                    context.go(RoutePath.profileSetup1.addBasePath);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

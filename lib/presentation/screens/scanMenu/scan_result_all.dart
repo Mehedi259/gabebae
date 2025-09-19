@@ -1,7 +1,10 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 /// Enum for tab states
@@ -37,7 +40,9 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             const SizedBox(height: 8),
             _buildFilterTabs(),
             const SizedBox(height: 8),
-            _buildALaCarteButton(),
+            _buildALaCarteButton(
+              onTap: () => context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
+            ),
             const SizedBox(height: 12),
             _buildCardsView(),
           ],
@@ -61,7 +66,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
         children: [
           IconButton(
             icon: Assets.images.dibbaback.image(width: 40, height: 40),
-            onPressed: () {},
+            onPressed: ()  => context.go(RoutePath.scanMenu.addBasePath),
           ),
           Text(
             "🍽️ Your Meal Results",
@@ -145,30 +150,34 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- A La Carte Button --------------------
-  Widget _buildALaCarteButton() {
-    return Container(
-      width: 352,
-      height: 36,
-      decoration: BoxDecoration(
-        color: const Color(0xFF60A5FA),
-        borderRadius: BorderRadius.circular(9999),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, offset: Offset(0, 3), blurRadius: 6)
-        ],
-      ),
-      child: Center(
-        child: Text(
-          "✨ À La Carte Mode",
-          style: GoogleFonts.quicksand(
-            fontWeight: FontWeight.w400,
-            fontSize: 16,
-            color: Colors.white,
+  Widget _buildALaCarteButton({required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 352,
+        height: 36,
+        decoration: BoxDecoration(
+          color: const Color(0xFF60A5FA),
+          borderRadius: BorderRadius.circular(9999),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+          boxShadow: const [
+            BoxShadow(color: Colors.black26, offset: Offset(0, 3), blurRadius: 6)
+          ],
+        ),
+        child: Center(
+          child: Text(
+            "✨ À La Carte Mode",
+            style: GoogleFonts.quicksand(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
     );
   }
+
 
   /// -------------------- CARD SECTION --------------------
   Widget _buildCardsView() {
@@ -394,7 +403,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
               shadowColor: Colors.black,
               elevation: 6,
             ),
-            onPressed: () {},
+            onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
             icon: const Icon(Icons.chat, color: Colors.white),
             label: Text(
               "Ask AI Chat About This",
@@ -414,7 +423,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                 borderRadius: BorderRadius.circular(100),
               ),
             ),
-            onPressed: () {},
+            onPressed: () => context.go(RoutePath.myQrCode.addBasePath),
             label: Text(
               "Share Your Diet via QR Code",
               style: GoogleFonts.poppins(

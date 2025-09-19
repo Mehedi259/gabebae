@@ -7,7 +7,12 @@ import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
-
+/// ===============================================================
+/// Profile Setup - Step 2
+/// ===============================================================
+/// This screen allows users to select ingredients/foods they want
+/// to avoid (e.g., nuts, dairy, gluten, etc.). It helps the app
+/// personalize recommendations and ensure a worry-free experience.
 class ProfileSetup2Screen extends StatefulWidget {
   const ProfileSetup2Screen({super.key});
 
@@ -16,8 +21,10 @@ class ProfileSetup2Screen extends StatefulWidget {
 }
 
 class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
+  /// Holds the list of selected food restrictions
   final Set<String> selectedFoods = {};
 
+  /// Opens the bottom sheet to display additional food items
   void _openProfileSetup2BottomSheet() {
     showModalBottomSheet(
       context: context,
@@ -39,9 +46,10 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
             children: [
               const SizedBox(height: 24),
 
+              /// ---------- STEP INDICATOR & HEADER ----------
               ProfileSetupHeading(
                 stepText: "Step 2 of 5",
-                progress: 0.4,
+                progress: 0.4, // Shows progress bar filled 40%
                 title: "Anything we should avoid for you?",
                 subtitle: "We'll keep you safe & worry-free.",
                 onBack: () => context.go(RoutePath.profileSetup1.addBasePath),
@@ -49,6 +57,8 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
 
               const SizedBox(height: 24),
 
+              /// ---------- FOOD SELECTION GRID ----------
+              /// Wrap widget automatically positions cards in rows & columns
               Wrap(
                 spacing: 16,
                 runSpacing: 16,
@@ -58,6 +68,8 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
                   buildFoodCard("Gluten", Assets.images.gluten.path),
                   buildFoodCard("Shellfish", Assets.images.shellfish.path),
                   buildFoodCard("Egg", Assets.images.egg.path),
+
+                  /// "See More" opens the bottom sheet for extra options
                   buildFoodCard(
                     "See More",
                     Assets.images.plus.path,
@@ -71,6 +83,7 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
 
               const SizedBox(height: 40),
 
+              /// ---------- CONTINUE BUTTON ----------
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(
@@ -86,6 +99,14 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
     );
   }
 
+  /// ===============================================================
+  /// Builds a selectable Food Card widget
+  /// ---------------------------------------------------------------
+  /// [title]   : Food name to display
+  /// [image]   : Image path for icon/illustration
+  /// [isSeeMore] : If true, tapping opens bottom sheet instead of toggling selection
+  /// [onTap]   : Callback when card is tapped (used for bottom sheet)
+  /// ===============================================================
   Widget buildFoodCard(
       String title,
       String image, {
@@ -99,9 +120,10 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
     return GestureDetector(
       onTap: () {
         if (isSeeMore && onTap != null) {
-          onTap();
+          onTap(); // Opens bottom sheet if it's the "See More" card
         } else {
           setState(() {
+            /// Toggle selection state
             isSelected
                 ? selectedFoods.remove(title)
                 : selectedFoods.add(title);
@@ -109,16 +131,17 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
         }
       },
       child: Container(
-        width: 163,
+        width: 145,
         height: 128,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: backgroundColor,
           borderRadius: BorderRadius.circular(16),
           border: isSelected
-              ? Border.all(color: const Color(0xFFE27B4F), width: 2)
+              ? Border.all(color: const Color(0xFFE27B4F), width: 2) // Highlight border if selected
               : Border.all(color: Colors.transparent, width: 0),
           boxShadow: const [
+            /// Soft shadow for a professional card look
             BoxShadow(
               color: Color(0x1A000000),
               blurRadius: 15,
@@ -134,6 +157,7 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            /// Food/plus icon
             Image.asset(
               image,
               width: 44,
@@ -141,6 +165,8 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
               color: isSeeMore ? const Color(0xFF4B5563) : null,
             ),
             const SizedBox(height: 12),
+
+            /// Food name text
             Text(
               title,
               style: TextStyle(

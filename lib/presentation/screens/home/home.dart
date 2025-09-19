@@ -1,35 +1,47 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:MenuSideKick/core/routes/route_path.dart';
+import 'package:MenuSideKick/presentation/widgets/navigation.dart';
+import 'home_widgets/history_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _currentIndex = 0;
+
+  void _onNavTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+    switch (index) {
+      case 0:
+        context.go(RoutePath.home.addBasePath); // ✅ Fixed
+        break;
+      case 1:
+        context.go(RoutePath.scanMenu.addBasePath); // ✅ Fixed
+        break;
+      case 2:
+        context.go(RoutePath.askChatBot.addBasePath); // ✅ Fixed
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFAF7F2),
 
-      /// ===== Bottom Navigation Bar =====
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        selectedItemColor: const Color(0xFF669A59),
-        unselectedItemColor: const Color(0xFF9CA3AF),
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt),
-            label: "Scan",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.auto_awesome),
-            label: "Sidekick AI",
-          ),
-        ],
+      /// ===== Custom Bottom Navigation Bar =====
+      bottomNavigationBar: CustomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: _onNavTap, // ✅ Added
       ),
 
       /// ===== Body =====
@@ -42,30 +54,36 @@ class HomeScreen extends StatelessWidget {
               /// ===== Top Header =====
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: const Color(0xFFE8F4F5),
-                    child: Image.asset(
-                      Assets.images.avt2.path,
-                      width: 40,
-                      height: 40,
-                      fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: () => context.go(RoutePath.myProfile.addBasePath),
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Colors.transparent,
+                      child: ClipOval(
+                        child: Image.asset(
+                          Assets.images.av1.path,
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
                   const Expanded(
                     child: Text(
-                      "Hi, John",
+                      "Hi, Switee",
                       style: TextStyle(
-                        fontFamily: "Poppins",
+                        fontFamily: "Montserrat",
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF111827),
+                        color: Color(0xFF154452),
                       ),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(9999),
@@ -74,123 +92,39 @@ class HomeScreen extends StatelessWidget {
                     child: const Text("✨ 1"),
                   ),
                   const SizedBox(width: 12),
-                  const Icon(Icons.person, color: Color(0xFFEA580C)),
+                  GestureDetector(
+                    onTap: () => context.go(RoutePath.myProfile.addBasePath),
+                    child: Assets.icons.orangeprofile
+                        .svg(width: 20, height: 20),
+                  ),
                 ],
               ),
 
               const SizedBox(height: 24),
 
               /// ===== Dining Profile Card =====
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x1A000000),
-                      blurRadius: 6,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    /// Title Row
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "✨ Your Dining Profile ✨",
-                          style: TextStyle(
-                            fontFamily: "Poppins",
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF111827),
-                          ),
-                        ),
-                        Icon(Icons.edit_outlined, color: Color(0xFF6B7280)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    /// Diet
-                    const Text("Diet",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        )),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _buildChip("Vegan", Colors.green.shade100, Colors.green),
-                        _buildChip("Dairy-Free", Colors.blue.shade100, Colors.blue),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    /// Allergies
-                    const Text("Allergies",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        )),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        _buildChip("Peanuts", Colors.red.shade100, Colors.red),
-                        _buildChip("Shellfish", Colors.red.shade100, Colors.red),
-                      ],
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    /// Health
-                    const Text("Health",
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        )),
-                    const SizedBox(height: 8),
-                    _buildChip("Diabetic", Colors.yellow.shade100, Colors.orange),
-
-                    const SizedBox(height: 16),
-
-                    /// QR Code link
-                    const Text(
-                      "Share Your Diet via QR Code",
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFEA580C),
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              _buildDiningProfileCard(context),
 
               const SizedBox(height: 24),
 
               /// ===== Favorites Section =====
-              _buildSectionHeader("Your Favorites"),
+              _buildSectionHeader(
+                title: "Your Favorites",
+                onSeeAllTap: () =>
+                    context.go(RoutePath.activity.addBasePath),
+              ),
               const SizedBox(height: 16),
               SizedBox(
-                height: 150,
+                height: 120,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _buildFoodCard("Avocado Toast", Assets.images.avocadoToast.path),
-                    _buildFoodCard("Quinoa Bowl", Assets.images.quinoaBowl.path),
-                    _buildFoodCard("Green Smoothie", Assets.images.greenSmoothie.path),
+                    _buildFoodCard(
+                        "Avocado Toast", Assets.images.avocadoToast.path),
+                    _buildFoodCard(
+                        "Quinoa Bowl", Assets.images.quinoaBowl.path),
+                    _buildFoodCard("Green Smoothie",
+                        Assets.images.greenSmoothie.path),
                   ],
                 ),
               ),
@@ -198,16 +132,20 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 24),
 
               /// ===== Recent Scans Section =====
-              _buildSectionHeader("Recent Scans"),
+              _buildSectionHeader(
+                title: "Recent Scans",
+                onSeeAllTap: () =>
+                    context.go(RoutePath.activity.addBasePath),
+              ),
               const SizedBox(height: 16),
-              _buildScanCard(
+              HistoryCard(
                 title: "Bella Vistal Italian",
                 date: "Scanned On Aug 25, 10:32 AM",
                 safeItems: 3,
                 notSafeItems: 2,
                 imagePath: Assets.images.bellaVistalItalian.path,
               ),
-              _buildScanCard(
+              HistoryCard(
                 title: "Ocean Breeze Seafood",
                 date: "Scanned On Aug 24, 07:15 AM",
                 safeItems: 5,
@@ -221,58 +159,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// ===== Reusable Chip =====
-  static Widget _buildChip(String text, Color bgColor, Color textColor) {
+  /// ===== Dining Profile Card =====
+  Widget _buildDiningProfileCard(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(9999),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          fontFamily: "Poppins",
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-          color: textColor,
-        ),
-      ),
-    );
-  }
-
-  /// ===== Reusable Section Header =====
-  Widget _buildSectionHeader(String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontFamily: "Poppins",
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF111827),
-          ),
-        ),
-        const Text(
-          "See All",
-          style: TextStyle(
-            fontFamily: "Poppins",
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Color(0xFFEA580C),
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// ===== Reusable Food Card =====
-  Widget _buildFoodCard(String title, String imagePath) {
-    return Container(
-      width: 140,
-      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -285,18 +175,91 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(imagePath, height: 100, width: 140, fit: BoxFit.cover),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "✨ Your Dining Profile ✨",
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF111827),
+                ),
+              ),
+              GestureDetector(
+                onTap: () => context.go(RoutePath.profileSetup1.addBasePath),
+                child: Assets.icons.edit.svg(width: 20, height: 20),
+              ),
+            ],
           ),
+
+          const SizedBox(height: 16),
+
+          const Text("Diet",
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF4B5563),
+              )),
           const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontFamily: "Poppins",
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+          Wrap(
+            spacing: 8,
+            children: [
+              _buildChipWithIcon("Vegan", Assets.images.vegan.path,
+                  const Color(0x1A6CA865), const Color(0xFF6CA865)),
+              _buildChipWithIcon("Dairy-Free", Assets.images.dairy.path,
+                  const Color(0x1A3B8F9D), const Color(0xFF3B8F9D)),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          const Text("Allergies",
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              )),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              _buildChipWithIcon("Peanuts", Assets.images.nuts.path,
+                  const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
+              _buildChipWithIcon("Shellfish", Assets.images.shellfish.path,
+                  const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          const Text("Health",
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              )),
+          const SizedBox(height: 8),
+          _buildChipWithIcon("Diabetic", Assets.images.diabetes.path,
+              const Color(0x1AE2B94C), const Color(0xFFE2B94C)),
+
+          const SizedBox(height: 16),
+
+          GestureDetector(
+            onTap: () => context.go(RoutePath.myQrCode.addBasePath),
+            child: const Text(
+              "Share Your Diet via QR Code",
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFFE27B4F),
+                decoration: TextDecoration.underline,
+              ),
             ),
           ),
         ],
@@ -304,72 +267,103 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  /// ===== Reusable Scan Card =====
-  Widget _buildScanCard({
-    required String title,
-    required String date,
-    required int safeItems,
-    required int notSafeItems,
-    required String imagePath,
-  }) {
+  /// ===== Chip with Icon =====
+  static Widget _buildChipWithIcon(
+      String text, String iconPath, Color bgColor, Color textColor) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A000000),
-            blurRadius: 6,
-            offset: Offset(0, 4),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(9999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(iconPath, width: 16, height: 16),
+          const SizedBox(width: 4),
+          Text(
+            text,
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: textColor,
+            ),
           ),
         ],
       ),
-      child: Row(
+    );
+  }
+
+  /// ===== Section Header with See All Click =====
+  Widget _buildSectionHeader(
+      {required String title, required VoidCallback onSeeAllTap}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontFamily: "Poppins",
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF23333C),
+          ),
+        ),
+        GestureDetector(
+          onTap: onSeeAllTap,
+          child: const Text(
+            "See All",
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFFE6764E),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// ===== Food Card =====
+  Widget _buildFoodCard(String title, String imagePath) {
+    return Container(
+      width: 128,
+      height: 118,
+      margin: const EdgeInsets.only(right: 12),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFFE5E7EB)),
+        boxShadow: const [
+          BoxShadow(
+              color: Color(0x1A000000),
+              blurRadius: 6,
+              offset: Offset(0, 4)),
+          BoxShadow(
+              color: Color(0x1A000000),
+              blurRadius: 4,
+              offset: Offset(0, 2)),
+        ],
+      ),
+      child: Column(
         children: [
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(imagePath, width: 64, height: 64, fit: BoxFit.cover),
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(imagePath,
+                width: 112, height: 80, fit: BoxFit.cover),
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  date,
-                  style: const TextStyle(
-                    fontFamily: "Poppins",
-                    fontSize: 12,
-                    color: Color(0xFF6B7280),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    if (safeItems > 0)
-                      Text(
-                        "✅ $safeItems Safe Items  ",
-                        style: const TextStyle(fontSize: 12, color: Colors.green),
-                      ),
-                    if (notSafeItems > 0)
-                      Text(
-                        "⚠️ $notSafeItems Not Safe",
-                        style: const TextStyle(fontSize: 12, color: Colors.red),
-                      ),
-                  ],
-                ),
-              ],
+          const SizedBox(height: 4),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF23333C),
             ),
           ),
         ],

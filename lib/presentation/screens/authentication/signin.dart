@@ -108,7 +108,7 @@ class SignInPopup extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.go(RoutePath.onBoarding2.addBasePath),
+                        ..onTap = () => context.go(RoutePath.termsAndCondition.addBasePath),
                     ),
                     const TextSpan(text: " and "),
                     TextSpan(
@@ -118,7 +118,7 @@ class SignInPopup extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => context.go(RoutePath.onBoarding2.addBasePath),
+                        ..onTap = () => context.go(RoutePath.privacyPolicy.addBasePath),
                     ),
                   ],
                 ),

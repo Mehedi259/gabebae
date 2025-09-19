@@ -1,5 +1,9 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../../core/routes/route_path.dart';
 
 class BuildMyPlateScreen extends StatefulWidget {
   const BuildMyPlateScreen({super.key});
@@ -35,7 +39,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.go(RoutePath.scanResultAll.addBasePath),
               ),
               const SizedBox(width: 15),
               Text(
@@ -202,12 +206,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
 
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Navigate to next screen or save
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text("Plate looks good! 👍")),
-                        );
-                      },
+                      onPressed: () => context.go(RoutePath.scanResultOrderingTips.addBasePath),
                       icon: const Icon(Icons.thumb_up, color: Colors.yellow),
                       label: Text(
                         "Looks Good",

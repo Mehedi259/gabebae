@@ -1,7 +1,9 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
-
+import '../../../core/routes/route_path.dart';
+import '../home/home_widgets/history_card.dart'; // ✅ Import HistoryCard widget
 
 class YourActivityScreen extends StatefulWidget {
   const YourActivityScreen({super.key});
@@ -40,20 +42,21 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                 children: [
                   // Back button
                   IconButton(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.arrow_back),
+                    icon: Assets.images.dibbaback.image(width: 40, height: 40),
+                    onPressed: () => context.go(RoutePath.home.addBasePath),
                   ),
                   const Expanded(
                     child: Text(
                       "Your Activity",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF23333C),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 48), // Balance spacing
+                  const SizedBox(width: 48), // balance spacing
                 ],
               ),
             ),
@@ -65,8 +68,26 @@ class _YourActivityScreenState extends State<YourActivityScreen>
               unselectedLabelColor: Colors.grey,
               indicatorColor: const Color(0xFFE56A2E),
               tabs: const [
-                Tab(icon: Icon(Icons.bookmark), text: "Favorites"),
-                Tab(icon: Icon(Icons.history), text: "History"),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.bookmark, size: 20),
+                      SizedBox(width: 6),
+                      Text("Favorites"),
+                    ],
+                  ),
+                ),
+                Tab(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.history, size: 20),
+                      SizedBox(width: 6),
+                      Text("History"),
+                    ],
+                  ),
+                ),
               ],
             ),
 
@@ -81,8 +102,7 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 0.8,
                         crossAxisSpacing: 12,
@@ -95,37 +115,41 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                     ),
                   ),
 
-                  /// ---- History List ----
+                  /// ---- History List using HistoryCard ----
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        _buildHistoryCard(
-                          image: Assets.images.bellaVistalItalian.path,
+                        HistoryCard(
                           title: "Bella Vistal Italian",
                           date: "Scanned On Aug 25, 10:32 AM",
-                          safe: "3 Safe Items",
-                          unsafe: "2 Not Safe",
+                          safeItems: 3,
+                          notSafeItems: 2,
+                          imagePath: Assets.images.bellaVistalItalian.path,
                         ),
-                        _buildHistoryCard(
-                          image: Assets.images.oceanBreezeSeafood.path,
+                        const SizedBox(height: 12),
+                        HistoryCard(
                           title: "Ocean Breeze Seafood",
                           date: "Scanned On Aug 24, 07:15 AM",
-                          safe: "5 Safe Items",
+                          safeItems: 5,
+                          notSafeItems: 0,
+                          imagePath: Assets.images.oceanBreezeSeafood.path,
                         ),
-                        _buildHistoryCard(
-                          image: Assets.images.bellaVistalItalian.path,
+                        const SizedBox(height: 12),
+                        HistoryCard(
                           title: "Burger Place",
                           date: "Scanned On Aug 23, 1:45 AM",
-                          safe: "3 Safe Items",
-                          unsafe: "4 Not Safe",
+                          safeItems: 3,
+                          notSafeItems: 4,
+                          imagePath: Assets.images.bellaVistalItalian.path,
                         ),
-                        _buildHistoryCard(
-                          image: Assets.images.oceanBreezeSeafood.path,
+                        const SizedBox(height: 12),
+                        HistoryCard(
                           title: "Golden Dragon Asian",
                           date: "Scanned On Aug 22, 10:32 AM",
-                          safe: "3 Safe Items",
-                          unknown: "2 Unknown",
+                          safeItems: 3,
+                          notSafeItems: 0,
+                          imagePath: Assets.images.oceanBreezeSeafood.path,
                         ),
                       ],
                     ),
@@ -156,38 +180,62 @@ class _YourActivityScreenState extends State<YourActivityScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Food Image
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Image.asset(
-              Assets.images.avocadoToast.path,
-              fit: BoxFit.cover,
-              height: 120,
-              width: double.infinity,
-            ),
+          /// Food Image
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(16)),
+                child: Image.asset(
+                  Assets.images.avocadoToast.path,
+                  fit: BoxFit.cover,
+                  height: 120,
+                  width: double.infinity,
+                ),
+              ),
+              /// Yellow star at top-right corner
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: const Icon(Icons.star, color: Colors.amber, size: 18),
+                ),
+              ),
+            ],
           ),
 
-          // Title + Tag
+          /// Title + Tag
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("Grilled Salmon",
-                    style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 4),
+                const Text(
+                  "Grilled Salmon",
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                ),
+                const SizedBox(height: 6),
                 Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  width: 60,
+                  height: 20,
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white12,
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFF6CA865),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   child: const Text(
                     "Healthy",
                     style: TextStyle(
-                        fontSize: 12, color: Colors.green, fontWeight: FontWeight.w500),
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: "Poppins",
+                    ),
                   ),
                 ),
               ],
@@ -195,75 +243,6 @@ class _YourActivityScreenState extends State<YourActivityScreen>
           ),
         ],
       ),
-    );
-  }
-
-  /// ===== History Card Widget =====
-  Widget _buildHistoryCard({
-    required String image,
-    required String title,
-    required String date,
-    required String safe,
-    String? unsafe,
-    String? unknown,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-              color: Colors.black12, blurRadius: 5, offset: Offset(0, 3))
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(image, height: 60, width: 60, fit: BoxFit.cover),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16)),
-                const SizedBox(height: 4),
-                Text(date, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                const SizedBox(height: 6),
-                Row(
-                  children: [
-                    _buildTag(safe, Colors.green),
-                    if (unsafe != null) ...[
-                      const SizedBox(width: 6),
-                      _buildTag(unsafe, Colors.red),
-                    ],
-                    if (unknown != null) ...[
-                      const SizedBox(width: 6),
-                      _buildTag(unknown, Colors.orange),
-                    ],
-                  ],
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  /// ===== Status Tag Widget =====
-  Widget _buildTag(String text, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-          color: color, borderRadius: BorderRadius.circular(12)),
-      child: Text(text,
-          style: TextStyle(color: color, fontWeight: FontWeight.w500, fontSize: 12)),
     );
   }
 }
