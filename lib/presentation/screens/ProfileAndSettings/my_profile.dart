@@ -28,46 +28,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
           "My Profile",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
+            color: Color(0xFF1F2937),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileSection(),
-            const SizedBox(height: 24),
-            _buildMenuItem(
-              icon: Assets.images.editprofile.image(width: 32, height: 32),
-              title: "Edit Profile",
-              onTap: () => context.go(RoutePath.editProfile.addBasePath),
-            ),
-            _buildMenuItem(
-              icon: Assets.images.accountsettings.image(width: 32, height: 32),
-              title: "Account Settings",
-              onTap: () => context.go(RoutePath.accountSettings.addBasePath),
-            ),
-            _buildMenuItem(
-              icon: Assets.images.subscriptions.image(width: 32, height: 32),
-              title: "Subscriptions",
-              onTap: () => context.go(RoutePath.subscription.addBasePath),
-            ),
-            _buildMenuItem(
-              icon: Assets.images.helpSupport.image(width: 32, height: 32),
-              title: "Help & Support",
-              onTap: () => context.go(RoutePath.helpAndSupport.addBasePath),
-            ),
-            _buildMenuItem(
-              icon: Assets.images.logout.image(width: 32, height: 32),
-              title: "Logout",
-              color: const Color(0xFF2D6B8F),
-              onTap: () => _showLogoutDialog(context),
-            ),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfileSection(),
+              const SizedBox(height: 24),
+              _buildMenuItem(
+                icon: Assets.images.editprofile.image(width: 32, height: 32),
+                title: "Edit Profile",
+                onTap: () => context.go(RoutePath.editProfile.addBasePath),
+              ),
+              _buildMenuItem(
+                icon: Assets.images.accountsettings.image(width: 32, height: 32),
+                title: "Account Settings",
+                onTap: () => context.go(RoutePath.accountSettings.addBasePath),
+              ),
+              _buildMenuItem(
+                icon: Assets.images.subscriptions.image(width: 32, height: 32),
+                title: "Subscriptions",
+                onTap: () => context.go(RoutePath.subscription.addBasePath),
+              ),
+              _buildMenuItem(
+                icon: Assets.images.helpSupport.image(width: 32, height: 32),
+                title: "Help & Support",
+                onTap: () => context.go(RoutePath.helpAndSupport.addBasePath),
+              ),
+              _buildMenuItem(
+                icon: Assets.images.logout.image(width: 32, height: 32),
+                title: "Logout",
+                color: const Color(0xFF2D6B8F),
+                onTap: () => _showLogoutDialog(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -185,7 +190,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            // arrow_forward image for all except logout
             title != "Logout"
                 ? Assets.images.entry.image(width: 32, height: 32)
                 : const SizedBox(width: 32, height: 32),
@@ -194,7 +198,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
 
   void _showLogoutDialog(BuildContext context) {
     showDialog(

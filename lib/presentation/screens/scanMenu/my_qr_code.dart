@@ -1,3 +1,4 @@
+import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -6,10 +7,11 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 
-import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
-// First Screen: À la carte QR Screen
+/// =======================================
+/// À la carte QR Screen
+/// =======================================
 class AlaCarteQRScreen extends StatelessWidget {
   final String qrData;
 
@@ -58,75 +60,77 @@ class AlaCarteQRScreen extends StatelessWidget {
         ),
       ),
 
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              /// QR CODE CONTAINER
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 250.0,
-                  backgroundColor: Colors.white,
-                ),
-              ),
+      /// BODY
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 24),
 
-              const SizedBox(height: 40),
-
-              /// DESCRIPTION TEXT
-              Text(
-                "Scan this to view my dietary preferences & safe meals.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: const Color(0xFF6B7280),
-                  height: 1.5,
-                ),
-              ),
-
-              const SizedBox(height: 60),
-
-              /// SHARE BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _shareQRCode(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE27B4F),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    elevation: 6,
-                    shadowColor: Colors.black26,
+            /// QR CODE CONTAINER
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
                   ),
-                  child: Text(
-                    "Share QR Code",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                ],
+              ),
+              child: QrImageView(
+                data: qrData,
+                version: QrVersions.auto,
+                size: 250.0,
+                backgroundColor: Colors.white,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            /// DESCRIPTION TEXT
+            Text(
+              "Scan this to view my dietary preferences & safe meals.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: const Color(0xFF6B7280),
+                height: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 60),
+
+            /// SHARE BUTTON
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => _shareQRCode(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE27B4F),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  elevation: 6,
+                  shadowColor: Colors.black26,
+                ),
+                child: Text(
+                  "Share QR Code",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );
@@ -154,7 +158,9 @@ class AlaCarteQRScreen extends StatelessWidget {
   }
 }
 
-// Second Screen: My QR Code Screen
+/// =======================================
+/// My QR Code Screen
+/// =======================================
 class MyQRCodeScreen extends StatelessWidget {
   final String qrData;
 
@@ -196,82 +202,84 @@ class MyQRCodeScreen extends StatelessWidget {
         ),
       ),
 
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              /// QR CODE CONTAINER
-              Container(
-                padding: const EdgeInsets.all(32),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black,
-                      blurRadius: 10,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: QrImageView(
-                  data: qrData,
-                  version: QrVersions.auto,
-                  size: 250.0,
-                  backgroundColor: Colors.white,
-                ),
-              ),
+      /// BODY
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 24),
 
-              const SizedBox(height: 40),
-
-              /// DESCRIPTION TEXT
-              Text(
-                "Scan this to view my dietary preferences & safe meals.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: const Color(0xFF6B7280),
-                  height: 1.5,
-                ),
-              ),
-
-              const SizedBox(height: 60),
-
-              /// SHARE BUTTON
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => _shareQRCode(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFE27B4F),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    elevation: 6,
-                    shadowColor: Colors.black26,
+            /// QR CODE CONTAINER
+            Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
                   ),
-                  child: Text(
-                    "Share QR Code",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                ],
+              ),
+              child: QrImageView(
+                data: qrData,
+                version: QrVersions.auto,
+                size: 250.0,
+                backgroundColor: Colors.white,
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            /// DESCRIPTION TEXT
+            Text(
+              "Scan this to view my dietary preferences & safe meals.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: const Color(0xFF6B7280),
+                height: 1.5,
+              ),
+            ),
+
+            const SizedBox(height: 60),
+
+            /// SHARE BUTTON
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => _shareQRCode(context),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFE27B4F),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  elevation: 6,
+                  shadowColor: Colors.black26,
+                ),
+                child: Text(
+                  "Share QR Code",
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 24),
+          ],
         ),
       ),
     );
   }
 
   void _shareQRCode(BuildContext context) {
-    // Copy to clipboard option
+    // Copy to clipboard
     Clipboard.setData(ClipboardData(text: qrData)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -296,7 +304,7 @@ class MyQRCodeScreen extends StatelessWidget {
       );
     });
 
-    // Also share via system share
+    // Share via system
     Future.delayed(const Duration(milliseconds: 500), () {
       Share.share(
         'Check out my dietary preferences and safe meals: $qrData',
@@ -306,7 +314,9 @@ class MyQRCodeScreen extends StatelessWidget {
   }
 }
 
-// Navigation helper functions
+/// =======================================
+/// Navigation Helpers
+/// =======================================
 class QRCodeNavigation {
   static void toAlaCarteQR(BuildContext context, {String? qrData}) {
     Navigator.push(
@@ -330,18 +340,3 @@ class QRCodeNavigation {
     );
   }
 }
-
-// Example usage in your existing buttons:
-/*
-// For À la carte button:
-ElevatedButton(
-  onPressed: () => QRCodeNavigation.toAlaCarteQR(context),
-  child: Text("À La Carte Mode"),
-)
-
-// For My QR Code button:
-ElevatedButton(
-  onPressed: () => QRCodeNavigation.toMyQRCode(context),
-  child: Text("My QR Code"),
-)
-*/

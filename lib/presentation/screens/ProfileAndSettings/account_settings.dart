@@ -23,34 +23,40 @@ class AccountSettingsScreen extends StatelessWidget {
           "Account Settings",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
+              color: Color(0xFF1F2937),
+              fontSize: 18,
+              fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildMenuItem(
-              title: "Change Password",
-              onTap: () => context.go(RoutePath.changePassword.addBasePath),
-            ),
-            _buildMenuItem(
-              title: "Terms of Services",
-              onTap: () => context.go(RoutePath.termsAndCondition.addBasePath),
-            ),
-            _buildMenuItem(
-              title: "Privacy Policy",
-              onTap: () => context.go(RoutePath.privacyPolicy.addBasePath),
-            ),
-            _buildMenuItem(
-              title: "About us",
-              onTap: () => context.go(RoutePath.aboutUs.addBasePath),
-            ),
-          ],
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMenuItem(
+                title: "Change Password",
+                onTap: () =>
+                    context.go(RoutePath.changePassword.addBasePath),
+              ),
+              _buildMenuItem(
+                title: "Terms of Services",
+                onTap: () =>
+                    context.go(RoutePath.termsAndCondition.addBasePath),
+              ),
+              _buildMenuItem(
+                title: "Privacy Policy",
+                onTap: () => context.go(RoutePath.privacyPolicy.addBasePath),
+              ),
+              _buildMenuItem(
+                title: "About us",
+                onTap: () => context.go(RoutePath.aboutUs.addBasePath),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -86,7 +92,8 @@ class AccountSettingsScreen extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Color(0xFFF4A261)),
+            const Icon(Icons.arrow_forward_ios,
+                size: 16, color: Color(0xFFF4A261)),
           ],
         ),
       ),

@@ -20,6 +20,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final _confirmPasswordController = TextEditingController();
 
   @override
+  void dispose() {
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -42,29 +49,35 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           "Change Password",
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
+              color: Color(0xFF1F2937),
+              fontSize: 18,
+              fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextField(
-              label: "New Password",
-              controller: _newPasswordController,
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            _buildTextField(
-              label: "New Password",
-              controller: _confirmPasswordController,
-              obscureText: true,
-            ),
-          ],
+
+      /// ===== Scrollable Body =====
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTextField(
+                label: "New Password",
+                controller: _newPasswordController,
+                obscureText: true,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(
+                label: "Confirm Password",
+                controller: _confirmPasswordController,
+                obscureText: true,
+              ),
+            ],
+          ),
         ),
       ),
     );

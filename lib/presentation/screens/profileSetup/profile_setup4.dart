@@ -1,7 +1,7 @@
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
-import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
@@ -47,68 +47,63 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
       ),
 
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 24),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 24),
 
-            /// ===== Fixed Header with Margin =====
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: ProfileSetupHeading(
+              /// ===== Header =====
+              ProfileSetupHeading(
                 stepText: "Step 4 of 5",
                 progress: 0.8,
                 title: "Should we watch out for any health needs?",
                 subtitle: "We’ve got your back, always ✨",
                 onBack: () => context.go(RoutePath.profileSetup3.addBasePath),
               ),
-            ),
 
-            const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-            /// ===== Scrollable Cards =====
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                itemCount: options.length,
-                itemBuilder: (context, index) {
-                  final item = options[index];
+              /// ===== Health Options =====
+              ...List.generate(options.length, (index) {
+                final item = options[index];
 
-                  /// See More Card (No Switch, opens Bottom Sheet)
-                  if (item["title"] == "See More") {
-                    return GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => const ProfileSetup4BottomSheet(),
-                        );
-                      },
-                      child: _buildHealthCard(
-                        title: item["title"],
-                        imagePath: item["image"],
-                        isActive: false,
-                        onChanged: (_) {},
-                        showSwitch: false,
-                      ),
-                    );
-                  }
-
-                  /// Normal Cards with Switch
-                  return _buildHealthCard(
-                    title: item["title"],
-                    imagePath: item["image"],
-                    isActive: switches[item["title"]]!,
-                    onChanged: (val) {
-                      setState(() {
-                        switches[item["title"]!] = val;
-                      });
+                if (item["title"] == "See More") {
+                  return GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (_) => const ProfileSetup4BottomSheet(),
+                      );
                     },
+                    child: _buildHealthCard(
+                      title: item["title"],
+                      imagePath: item["image"],
+                      isActive: false,
+                      onChanged: (_) {},
+                      showSwitch: false,
+                    ),
                   );
-                },
-              ),
-            ),
-          ],
+                }
+
+                return _buildHealthCard(
+                  title: item["title"],
+                  imagePath: item["image"],
+                  isActive: switches[item["title"]] ?? false,
+                  onChanged: (val) {
+                    setState(() {
+                      switches[item["title"]!] = val;
+                    });
+                  },
+                );
+              }),
+
+              const SizedBox(height: 100), // bottom padding for button
+            ],
+          ),
         ),
       ),
     );
@@ -142,7 +137,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
       ),
       child: Row(
         children: [
-          /// ===== Left: Icon =====
+          /// ===== Left Icon =====
           Container(
             width: 48,
             height: 48,
@@ -162,7 +157,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
 
           const SizedBox(width: 12),
 
-          /// ===== Middle: Title Only =====
+          /// ===== Middle Title =====
           Expanded(
             child: Text(
               title,
@@ -175,7 +170,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
             ),
           ),
 
-          /// ===== Right: Switch (Only if enabled) =====
+          /// ===== Right Switch =====
           if (showSwitch)
             GestureDetector(
               onTap: () => onChanged(!isActive),

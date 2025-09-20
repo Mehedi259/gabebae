@@ -1,17 +1,18 @@
+import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
-import '../../../core/routes/route_path.dart';
 import '../../../presentation/widgets/navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-
 import '../../../utils/app_colors/app_colors.dart';
 
-// Chat Message Model
+/// =======================================
+/// Chat Message Model
+/// =======================================
 class ChatMessage {
   final String id;
   final String message;
@@ -28,7 +29,9 @@ class ChatMessage {
   });
 }
 
-// Chat History Model
+/// =======================================
+/// Chat History Model
+/// =======================================
 class ChatHistory {
   final String id;
   final String title;
@@ -45,7 +48,9 @@ class ChatHistory {
   });
 }
 
-// Main Chat Screen
+/// =======================================
+/// Main Chat Screen
+/// =======================================
 class MenuSidekickChatScreen extends StatefulWidget {
   const MenuSidekickChatScreen({super.key});
 
@@ -65,7 +70,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
     ChatMessage(
       id: '1',
       message:
-      "Hey sunshine 👋, I'm your Menu Sidekick — your foodie bestie who speaks fluent menu 🍽️. Whether you're scanning a menu, tweaking dishes to fit your lifestyle, or just curious about what's safe for you to eat, I've got your back 💛.",
+      "Hey sunshine 👋, I'm your Menu Sidekick — your foodie bestie who speaks fluent menu 🍽️...",
       isUser: false,
       timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
     ),
@@ -182,33 +187,36 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
         ],
       ),
 
-      body: Column(
-        children: [
-          const Divider(height: 1, color: Color(0xFFE5E7EB)),
+      /// BODY with SingleChildScrollView
+      body: SafeArea(
+        child: Column(
+          children: [
+            const Divider(height: 1, color: Color(0xFFE5E7EB)),
 
-          /// CHAT MESSAGES
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(16),
-              itemCount: _messages.length,
-              itemBuilder: (context, index) {
-                final message = _messages[index];
-                return _buildMessageBubble(message);
-              },
+            /// Expanded for messages
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    ..._messages.map(_buildMessageBubble),
+                    if (_messages.isNotEmpty &&
+                        _messages.last.quickReplies != null)
+                      _buildQuickReplies(_messages.last.quickReplies!),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
             ),
-          ),
 
-          /// QUICK REPLIES (if available)
-          if (_messages.isNotEmpty && _messages.last.quickReplies != null)
-            _buildQuickReplies(_messages.last.quickReplies!),
-
-          /// MESSAGE INPUT
-          _buildMessageInput(),
-        ],
+            /// MESSAGE INPUT
+            _buildMessageInput(),
+          ],
+        ),
       ),
 
-      /// ✅ Custom Navigation integrated (index = 2)
+      /// ✅ Custom Navigation
       bottomNavigationBar: CustomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onNavTap,
@@ -336,8 +344,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border:
-                Border.all(color: const Color(0xFF669A59), width: 2),
+                border: Border.all(color: const Color(0xFF669A59), width: 2),
                 borderRadius: BorderRadius.circular(25),
               ),
               child: TextField(
@@ -350,11 +357,11 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
                     fontSize: 14,
                   ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.attach_file,
-                        color: Color(0xFF6B7280)),
+                    icon:
+                    const Icon(Icons.attach_file, color: Color(0xFF6B7280)),
                     onPressed: _pickFile,
                   ),
                 ),
@@ -408,7 +415,6 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
     _messageController.clear();
     _scrollToBottom();
 
-    // Simulate AI response
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _messages.add(ChatMessage(
@@ -455,10 +461,8 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading:
-              const Icon(Icons.delete_outline, color: Colors.red),
-              title: Text("Delete This Chat",
-                  style: GoogleFonts.poppins()),
+              leading: const Icon(Icons.delete_outline, color: Colors.red),
+              title: Text("Delete This Chat", style: GoogleFonts.poppins()),
               onTap: () {
                 Navigator.pop(context);
                 _showDeleteConfirmation(context);
@@ -487,13 +491,11 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text("Chat deleted",
-                        style: GoogleFonts.poppins())),
+                SnackBar(content: Text("Chat deleted", style: GoogleFonts.poppins())),
               );
             },
-            child:
-            Text("Delete", style: GoogleFonts.poppins(color: Colors.red)),
+            child: Text("Delete",
+                style: GoogleFonts.poppins(color: Colors.red)),
           ),
         ],
       ),
@@ -510,7 +512,9 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   }
 }
 
-// Chat History Screen
+/// =======================================
+/// Chat History Screen
+/// =======================================
 class ChatHistoryScreen extends StatefulWidget {
   const ChatHistoryScreen({super.key});
 
@@ -574,12 +578,12 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          const Divider(height: 1, color: Color(0xFFE5E7EB)),
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Divider(height: 1, color: Color(0xFFE5E7EB)),
+            Container(
+              padding: const EdgeInsets.all(16),
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () => Navigator.pop(context),
@@ -587,10 +591,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
                 label: Text(
                   "New Chat",
                   style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                      fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFE27B4F),
@@ -601,44 +602,39 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
                 ),
               ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: TextField(
-              controller: _searchController,
-              style: GoogleFonts.poppins(fontSize: 14),
-              decoration: InputDecoration(
-                hintText: "Search chats...",
-                hintStyle: GoogleFonts.poppins(color: const Color(0xFF9CA3AF)),
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _searchController,
+                style: GoogleFonts.poppins(fontSize: 14),
+                decoration: InputDecoration(
+                  hintText: "Search chats...",
+                  hintStyle: GoogleFonts.poppins(color: const Color(0xFF9CA3AF)),
+                  prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
-                contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _chatHistory.length,
-              itemBuilder: (context, index) {
-                final chat = _chatHistory[index];
-                return ListTile(
-                  title: Text(chat.title, style: GoogleFonts.poppins()),
-                  subtitle: Text(chat.subtitle, style: GoogleFonts.poppins()),
-                  trailing: chat.isHighlighted
-                      ? const Icon(Icons.star, color: Colors.yellow)
-                      : null,
-                  onTap: () => Navigator.pop(context),
-                );
-              },
-            ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            ..._chatHistory.map((chat) {
+              return ListTile(
+                title: Text(chat.title, style: GoogleFonts.poppins()),
+                subtitle: Text(chat.subtitle, style: GoogleFonts.poppins()),
+                trailing:
+                chat.isHighlighted ? const Icon(Icons.star, color: Colors.yellow) : null,
+                onTap: () => Navigator.pop(context),
+              );
+            }),
+            const SizedBox(height: 24),
+          ],
+        ),
       ),
     );
   }

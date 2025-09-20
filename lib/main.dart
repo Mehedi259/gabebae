@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
-// import 'package:device_preview/device_preview.dart'; // ❌ Commented
+// import 'package:device_preview/device_preview.dart';
 import 'core/routes/routes.dart';
 import 'utils/app_colors/app_colors.dart';
 
@@ -15,6 +16,9 @@ late final List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+
   // Uncomment only if you need camera support
   cameras = await availableCameras();
 
@@ -24,7 +28,7 @@ Future<void> main() async {
     //   enabled: true,
     //   builder: (context) => const MyApp(),
     // ),
-    const MyApp(), // ✅ Directly load MyApp
+    const MyApp(),
   );
 }
 

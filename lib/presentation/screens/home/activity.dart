@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
-import '../home/home_widgets/history_card.dart'; // ✅ Import HistoryCard widget
+import '../home/home_widgets/history_card.dart';
 
 class YourActivityScreen extends StatefulWidget {
   const YourActivityScreen({super.key});
@@ -41,7 +41,6 @@ class _YourActivityScreenState extends State<YourActivityScreen>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
                 children: [
-                  // Back button
                   IconButton(
                     icon: Assets.images.dibbaback.image(width: 40, height: 40),
                     onPressed: () => context.go(RoutePath.home.addBasePath),
@@ -57,7 +56,7 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(width: 48), // balance spacing
+                  const SizedBox(width: 48), // spacer for alignment
                 ],
               ),
             ),
@@ -97,26 +96,31 @@ class _YourActivityScreenState extends State<YourActivityScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  /// ---- Favorites Grid ----
+                  /// ---- Favorites Tab ----
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.8,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                      ),
-                      itemCount: 6,
-                      itemBuilder: (context, index) {
-                        return _buildFavoriteCard();
-                      },
+                    child: Column(
+                      children: [
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.8,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                          ),
+                          itemCount: 6,
+                          itemBuilder: (context, index) {
+                            return _buildFavoriteCard();
+                          },
+                        ),
+                      ],
                     ),
                   ),
 
-                  /// ---- History List using HistoryCard ----
+                  /// ---- History Tab ----
                   SingleChildScrollView(
                     padding: const EdgeInsets.all(16),
                     child: Column(
@@ -194,7 +198,6 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                   width: double.infinity,
                 ),
               ),
-              /// Yellow star at top-right corner
               Positioned(
                 top: 8,
                 right: 8,
