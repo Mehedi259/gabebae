@@ -58,8 +58,8 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen> {
               ProfileSetupHeading(
                 stepText: "Step 4 of 5",
                 progress: 0.8,
-                title: "Should we watch out for any health needs?",
-                subtitle: "We’ve got your back, always ✨",
+                title: "✨ Here’s the magic list ✨",
+                subtitle: "These are all the ingredients we’re watching for you — switch on or off anytime 🌿",
                 onBack: () => context.go(RoutePath.profileSetup3.addBasePath),
               ),
 

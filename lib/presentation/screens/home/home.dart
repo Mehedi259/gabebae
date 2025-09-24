@@ -92,12 +92,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: const Text("✨ 1"),
                   ),
-                  const SizedBox(width: 12),
-                  GestureDetector(
-                    onTap: () => context.go(RoutePath.myProfile.addBasePath),
-                    child: Assets.icons.orangeprofile
-                        .svg(width: 20, height: 20),
-                  ),
                 ],
               ),
 

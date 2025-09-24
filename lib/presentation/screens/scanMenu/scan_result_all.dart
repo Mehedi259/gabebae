@@ -100,30 +100,49 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
       ),
     );
   }
-
   /// -------------------- FILTER TABS --------------------
   Widget _buildFilterTabs() {
     return SizedBox(
       height: 40,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            _tabButton("📋 All", MealTab.all, Colors.blueGrey),
-            const SizedBox(width: 8),
-            _tabButton("✅ Safe", MealTab.safe, Colors.green),
-            const SizedBox(width: 8),
-            _tabButton("⚠️ Modify", MealTab.modify, Colors.orange),
-            const SizedBox(width: 8),
-            _tabButton("❌ Avoid", MealTab.avoid, Colors.red),
-          ],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _tabButton(
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  onPressed: () {},
+                  icon: Assets.images.blueright.image(width: 14, height: 14),
+                ),
+                const SizedBox(width: 4),
+                const Text("Safe"),
+              ],
+            ),
+            MealTab.safe,
+            Colors.green,
+          ),
+          const SizedBox(width: 8),
+          _tabButton(
+            const Text("⚠️ Modify"),
+            MealTab.modify,
+            Colors.orange,
+          ),
+          const SizedBox(width: 8),
+          _tabButton(
+            const Text("❌ Avoid"),
+            MealTab.avoid,
+            Colors.red,
+          ),
+        ],
       ),
     );
   }
 
-  Widget _tabButton(String text, MealTab tab, Color color) {
+  /// -------------------- TAB BUTTON --------------------
+  Widget _tabButton(Widget child, MealTab tab, Color color) {
     final bool isActive = selectedTab == tab;
     return GestureDetector(
       onTap: () => setState(() => selectedTab = tab),
@@ -136,18 +155,19 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
           border: Border.all(color: color),
         ),
         child: Center(
-          child: Text(
-            text,
+          child: DefaultTextStyle(
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 12,
               color: isActive ? Colors.white : color,
             ),
+            child: child,
           ),
         ),
       ),
     );
   }
+
 
   /// -------------------- A La Carte Button --------------------
   Widget _buildALaCarteButton({required VoidCallback onTap}) {
@@ -305,25 +325,6 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
               Row(
                 children: [
                   Icon(statusIcon, color: statusColor, size: 24),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: () => setState(() {
-                      if (favoriteCards.contains(index)) {
-                        favoriteCards.remove(index);
-                      } else {
-                        favoriteCards.add(index);
-                      }
-                    }),
-                    child: Icon(
-                      favoriteCards.contains(index)
-                          ? Icons.star
-                          : Icons.star_border,
-                      color: favoriteCards.contains(index)
-                          ? Colors.amber
-                          : Colors.grey,
-                      size: 28,
-                    ),
-                  ),
                 ],
               ),
             ],
