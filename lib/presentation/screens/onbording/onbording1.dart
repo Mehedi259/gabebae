@@ -16,62 +16,12 @@ class OnBoarding1Screen extends StatefulWidget {
 
 class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
   String _selectedLang = "EN";
-  String _selectedFlag = "🇺🇸";
 
-  void _openLanguageSelector() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  "Select Language",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1F2937),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _buildLangTile("🇺🇸", "EN", "English"),
-                _buildLangTile("🇪🇸", "ES", "Español"),
-                _buildLangTile("🇫🇷", "FR", "Français"),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLangTile(String flag, String code, String title) {
-    return ListTile(
-      leading: Text(flag, style: const TextStyle(fontSize: 24)),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-      ),
-      trailing: _selectedLang == code
-          ? const Icon(Icons.check_circle, color: Colors.green)
-          : null,
-      onTap: () {
-        setState(() {
-          _selectedLang = code;
-          _selectedFlag = flag;
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
+  final List<Map<String, String>> _languages = [
+    {"flag": "🇺🇸", "code": "EN", "title": "English"},
+    {"flag": "🇪🇸", "code": "ES", "title": "Español"},
+    {"flag": "🇫🇷", "code": "FR", "title": "Français"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +38,7 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
       ),
 
       body: SafeArea(
-        child: SingleChildScrollView(   // 👈 এখানে wrap করা হলো
+        child: SingleChildScrollView(
           child: Stack(
             children: [
               /// ===== Main Content =====
@@ -105,11 +55,10 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 190,
-                          height: 160,
-                          child: Assets.images.splash.image(fit: BoxFit.contain),
+                          width: 214,
+                          height: 180,
+                          child: Assets.images.splash.image(fit: BoxFit.cover),
                         ),
-                        const SizedBox(height: 20),
                         const Text(
                           "Menu\nSidekick",
                           textAlign: TextAlign.center,
@@ -172,41 +121,56 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                 ],
               ),
 
-              /// ========= Top Bar with Language Button =========
+              /// ========= Top Bar with Language Dropdown =========
               Positioned(
                 top: 20,
-                right: 16,
-                child: GestureDetector(
-                  onTap: _openLanguageSelector,
-                  child: Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 6,
-                          offset: Offset(0, 3),
-                        )
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(_selectedFlag,
-                            style: const TextStyle(fontSize: 18)),
-                        const SizedBox(width: 6),
-                        Text(
-                          _selectedLang,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF1F2937),
+                right: 24,
+                child: Container(
+                  width: 79.72,
+                  height: 28,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      )
+                    ],
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      value: _selectedLang,
+                      icon: const Icon(Icons.keyboard_arrow_down, size: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1F2937),
+                        fontSize: 12,
+                      ),
+                      items: _languages.map((lang) {
+                        return DropdownMenuItem<String>(
+                          value: lang["code"],
+                          child: Row(
+                            children: [
+                              Text(lang["flag"]!,
+                                  style: const TextStyle(fontSize: 16)),
+                              const SizedBox(width: 4),
+                              Text(lang["code"]!),
+                            ],
                           ),
-                        ),
-                        const Icon(Icons.keyboard_arrow_down, size: 18),
-                      ],
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          final selected = _languages
+                              .firstWhere((lang) => lang["code"] == value);
+                          setState(() {
+                            _selectedLang = selected["code"]!;
+                          });
+                        }
+                      },
                     ),
                   ),
                 ),

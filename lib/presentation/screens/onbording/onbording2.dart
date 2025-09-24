@@ -20,7 +20,7 @@ class OnBoarding2Screen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "All set here 💛",
+          text: "I’m Ready 💛",
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -93,12 +93,55 @@ class OnBoarding2Screen extends StatelessWidget {
                 /// ================= Illustration Image =================
                 SizedBox(
                   width: double.infinity,
-                  height: 296,
+                  height: 140,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Assets.images.onb2.image(
                       fit: BoxFit.contain,
                     ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                /// ============= Middle Container (Subtitle + Description) =============
+                const SizedBox(
+                  width: double.infinity,
+                  height: 150,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Simply scan any menu and see\n"
+                                "what’s right for you",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: "EB Garamond",
+                              fontWeight: FontWeight.w500,
+                              fontSize: 24,
+                              height: 1.25,
+                              color: Color(0xFFE27B4F),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 24),
+                      Text(
+                        "Personalized for your diet, allergies, and\n"
+                            "health 🌿 — even across languages 🌎",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16,
+                          height: 1.5,
+                          color: Color(0xFF4B5563),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
