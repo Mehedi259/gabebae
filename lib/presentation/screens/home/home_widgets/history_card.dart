@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 
 class HistoryCard extends StatelessWidget {
   final String title;
@@ -18,6 +19,15 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // List of PDF scanned titles
+    final List<String> pdfScannedTitles = [
+      "Ocean Breeze Seafood",
+      "Golden Dragon Asian",
+    ];
+
+    // Check if current item is PDF scanned
+    final bool isPdfItem = pdfScannedTitles.contains(title);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(12),
@@ -34,18 +44,42 @@ class HistoryCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.asset(imagePath, width: 64, height: 64, fit: BoxFit.cover),
+          /// ===== Image / PDF Display =====
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  imagePath,
+                  width: 64,
+                  height: 64,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              /// ===== Camera Icon or PDF Icon =====
+              Positioned(
+                top: 0,
+                right: 0,
+                child: isPdfItem
+                    ? Assets.images.pdforange.image(width: 20, height: 20)
+                    : Assets.images.camera.image(width: 20, height: 20),
+              ),
+            ],
           ),
+
           const SizedBox(width: 12),
+
+          /// ===== Text + Info Section =====
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
                     style: const TextStyle(
-                        fontFamily: "Poppins", fontSize: 16, fontWeight: FontWeight.w500)),
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500)),
                 const SizedBox(height: 4),
                 Text(date,
                     style: const TextStyle(
@@ -58,7 +92,8 @@ class HistoryCard extends StatelessWidget {
                   children: [
                     if (safeItems > 0)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0x1A6CA865),
                           borderRadius: BorderRadius.circular(9999),
@@ -72,16 +107,17 @@ class HistoryCard extends StatelessWidget {
                     if (notSafeItems > 0) const SizedBox(width: 8),
                     if (notSafeItems > 0)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF991B1B),
+                          color: const Color(0x1AF87171),
                           borderRadius: BorderRadius.circular(9999),
                         ),
                         child: Text("⚠️ $notSafeItems Not Safe",
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white)),
+                                color: Color(0xFF991B1B))),
                       ),
                   ],
                 ),

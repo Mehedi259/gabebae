@@ -32,7 +32,7 @@ class ScanMenuBottomControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: 0,
+      bottom: 96,
       left: 0,
       right: 0,
       child: SlideTransition(
@@ -42,41 +42,43 @@ class ScanMenuBottomControls extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Mode Selection Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ScanMenuModeButton(
-                    title: "Photo",
-                    isSelected: selectedMode == "Photo",
-                    onTap: () => onModeChange("Photo"),
-                  ),
-                  const SizedBox(width: 12),
-                  ScanMenuModeButton(
-                    title: "PDF",
-                    isSelected: selectedMode == "PDF",
-                    onTap: () => onModeChange("PDF"),
-                  ),
-                  const SizedBox(width: 12),
-                  ScanMenuModeButton(
-                    title: "URL",
-                    isSelected: selectedMode == "URL",
-                    onTap: () => onModeChange("URL"),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
               const Text(
                 "Position the menu within the frame",
                 style: TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 16),
 
+              /// ===== PDF & URL Buttons in One Row =====
+              Row(
+                children: [
+                  Expanded(
+                    child: ScanMenuModeButton(
+                      title: "PDF",
+                      isSelected: selectedMode == "PDF",
+                      onTap: () => onModeChange("PDF"),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ScanMenuModeButton(
+                      title: "URL",
+                      isSelected: selectedMode == "URL",
+                      onTap: () => onModeChange("URL"),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              /// ===== Bottom Controls =====
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ScanMenuRoundImageButton(asset: galleryAsset, onTap: onOpenGallery),
+                  ScanMenuRoundImageButton(
+                    asset: galleryAsset,
+                    onTap: onOpenGallery,
+                  ),
                   ScaleTransition(
                     scale: pulseAnim,
                     child: ScanMenuCaptureButton(
@@ -84,7 +86,10 @@ class ScanMenuBottomControls extends StatelessWidget {
                       onCapture: onCapture,
                     ),
                   ),
-                  ScanMenuRoundImageButton(asset: flashAsset, onTap: onToggleFlash),
+                  ScanMenuRoundImageButton(
+                    asset: flashAsset,
+                    onTap: onToggleFlash,
+                  ),
                 ],
               ),
             ],

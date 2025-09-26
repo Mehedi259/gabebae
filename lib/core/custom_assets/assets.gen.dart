@@ -325,6 +325,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/colar.png
   AssetGenImage get colar => const AssetGenImage('assets/images/colar.png');
 
+  /// File path: assets/images/congrats.png
+  AssetGenImage get congrats =>
+      const AssetGenImage('assets/images/congrats.png');
+
   /// File path: assets/images/corss.png
   AssetGenImage get corss => const AssetGenImage('assets/images/corss.png');
 
@@ -366,6 +370,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/flash.png
   AssetGenImage get flash => const AssetGenImage('assets/images/flash.png');
+
+  /// File path: assets/images/flashoff.png
+  AssetGenImage get flashoff =>
+      const AssetGenImage('assets/images/flashoff.png');
 
   /// File path: assets/images/flower.png
   AssetGenImage get flower => const AssetGenImage('assets/images/flower.png');
@@ -469,6 +477,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/sheet.png
   AssetGenImage get sheet => const AssetGenImage('assets/images/sheet.png');
+
+  /// File path: assets/images/shild.png
+  AssetGenImage get shild => const AssetGenImage('assets/images/shild.png');
 
   /// File path: assets/images/shutter.png
   AssetGenImage get shutter => const AssetGenImage('assets/images/shutter.png');
@@ -587,6 +598,7 @@ class $AssetsImagesGen {
         chilie,
         clip,
         colar,
+        congrats,
         corss,
         crossround,
         crosswhite,
@@ -599,6 +611,7 @@ class $AssetsImagesGen {
         epsol,
         favourite,
         flash,
+        flashoff,
         flower,
         french,
         gallery,
@@ -629,6 +642,7 @@ class $AssetsImagesGen {
         robot,
         search,
         sheet,
+        shild,
         shutter,
         sidekickinactive,
         sidekicknavactive,

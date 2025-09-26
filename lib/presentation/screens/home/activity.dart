@@ -225,18 +225,18 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                 ),
                 const SizedBox(height: 6),
                 Container(
-                  width: 60,
-                  height: 20,
+                  width: 62,
+                  height: 26,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6CA865),
-                    borderRadius: BorderRadius.circular(6),
+                    color: const Color(0x1A6CA865),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Text(
                     "Healthy",
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.white,
+                      color: Color(0xFF6CA865),
                       fontWeight: FontWeight.w400,
                       fontFamily: "Poppins",
                     ),

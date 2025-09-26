@@ -56,7 +56,8 @@ class _ProfileSetup2BottomSheetState extends State<ProfileSetup2BottomSheet> {
                 fontFamily: "Poppins",
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF669A59), // Theme Green
+                color: Color(0xFF669A59),
+                decoration: TextDecoration.none,
               ),
               textAlign: TextAlign.center,
             ),
@@ -119,6 +120,7 @@ class _ProfileSetup2BottomSheetState extends State<ProfileSetup2BottomSheet> {
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF111827),
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),

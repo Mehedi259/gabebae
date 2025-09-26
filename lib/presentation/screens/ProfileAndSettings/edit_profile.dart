@@ -50,19 +50,53 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.transparent,
-              child: ClipOval(
-                child: Assets.images.av1.image(width: 120, height: 120),
+            /// ===== Avatar with Edit Icon =====
+            Center(
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      child: Assets.images.av1.image(
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black,
+                            blurRadius: 4,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Assets.images.edit.image(
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
 
             _buildTextField(label: "Name", controller: _nameController),
             const SizedBox(height: 16),
@@ -164,7 +198,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       {"name": "English", "icon": Assets.images.english},
       {"name": "Français", "icon": Assets.images.french},
       {"name": "Español", "icon": Assets.images.epsol},
-      // আরও চাইলে add করতে পারেন
     ];
 
     return Column(
@@ -183,9 +216,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               return Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: ElevatedButton(
-                  onPressed: () => setState(() => _language = lang["name"] as String),
+                  onPressed: () =>
+                      setState(() => _language = lang["name"] as String),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isSelected ? const Color(0xFFF4A261) : Colors.white,
+                    backgroundColor:
+                    isSelected ? const Color(0xFFF4A261) : Colors.white,
                     side: const BorderSide(color: Color(0xFFF4A261)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

@@ -27,6 +27,7 @@ import '../../presentation/screens/profileSetup/profile_setup3.dart';
 import '../../presentation/screens/profileSetup/profile_setup4.dart';
 import '../../presentation/screens/profileSetup/profile_setup5.dart';
 import '../../presentation/screens/profileSetup/profile_setup6.dart';
+import '../../presentation/screens/profileSetup/profile_setup7.dart';
 import '../../presentation/screens/scanMenu/scan_menu.dart';
 import '../../presentation/screens/scanMenu/scan_result_all.dart';
 import '../../presentation/screens/scanMenu/scan_result_build_my_plate.dart';
@@ -241,7 +242,7 @@ class AppRouter {
       GoRoute(
         name: RoutePath.privacyPolicy,
         path: RoutePath.privacyPolicy.addBasePath,
-        builder: (context, state) => const PrivacyPolicyScreenPs(),
+        builder: (context, state) => const PrivacyPolicyScreen(),
       ),
       GoRoute(
         name: RoutePath.aboutUs,

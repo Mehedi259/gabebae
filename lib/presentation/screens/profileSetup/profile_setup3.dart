@@ -15,7 +15,8 @@ class ProfileSetup3Screen extends StatefulWidget {
   State<ProfileSetup3Screen> createState() => _ProfileSetup3ScreenState();
 }
 
-class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
+class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
+    with SingleTickerProviderStateMixin {
   /// State of each toggle
   final Map<String, bool> switches = {
     "Diabetes": false,
@@ -52,6 +53,33 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
     },
   ];
 
+  // Animation Controller
+  late AnimationController _controller;
+  late Animation<double> _progressAnim;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+
+    // Progress animation: 0.4 to 0.6 (Step 3)
+    _progressAnim = Tween<double>(begin: 0.4, end: 0.6).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,23 +102,49 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
             children: [
               const SizedBox(height: 24),
 
-              /// ===== Fixed Header =====
-              ProfileSetupHeading(
-                stepText: "Step 3 of 5",
-                progress: 0.6,
-                title: "Should we watch out for any health needs?",
-                subtitle: "We’ve got your back, always ✨",
-                onBack: () => context.go(RoutePath.profileSetup2.addBasePath),
+              /// ===== Animated Header =====
+              AnimatedBuilder(
+                animation: _progressAnim,
+                builder: (context, _) {
+                  return ProfileSetupHeading(
+                    stepText: "Step 3 of 5",
+                    progress: _progressAnim.value,
+                    title: "Should we watch out for any health needs?",
+                    subtitle: "We've got your back, always ✨",
+                    onBack: () => context.go(RoutePath.profileSetup2.addBasePath),
+                  );
+                },
               ),
 
               const SizedBox(height: 24),
 
-              /// ===== Health Options =====
+              /// ===== Animated Health Options =====
               ...List.generate(options.length, (index) {
                 final item = options[index];
 
-                if (item["title"] == "See More") {
-                  return GestureDetector(
+                return AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    final intervalStart = (index * 0.1).clamp(0.0, 1.0);
+                    final anim = CurvedAnimation(
+                      parent: _controller,
+                      curve: Interval(intervalStart, 1.0,
+                          curve: Curves.easeOutBack),
+                    );
+
+                    return FadeTransition(
+                      opacity: anim,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.3),
+                          end: Offset.zero,
+                        ).animate(anim),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: item["title"] == "See More"
+                      ? GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
                         context: context,
@@ -107,19 +161,18 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
                       onChanged: (_) {},
                       showSwitch: false,
                     ),
-                  );
-                }
-
-                return _buildHealthCard(
-                  title: item["title"],
-                  subtitle: item["subtitle"],
-                  imagePath: item["image"],
-                  isActive: switches[item["title"]] ?? false,
-                  onChanged: (val) {
-                    setState(() {
-                      switches[item["title"]!] = val;
-                    });
-                  },
+                  )
+                      : _buildHealthCard(
+                    title: item["title"],
+                    subtitle: item["subtitle"],
+                    imagePath: item["image"],
+                    isActive: switches[item["title"]] ?? false,
+                    onChanged: (val) {
+                      setState(() {
+                        switches[item["title"]!] = val;
+                      });
+                    },
+                  ),
                 );
               }),
 
@@ -210,7 +263,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen> {
             ),
           ),
 
-          /// ===== Right: Switch =====
+          /// ===== Right: Animated Switch =====
           if (showSwitch)
             GestureDetector(
               onTap: () => onChanged(!isActive),

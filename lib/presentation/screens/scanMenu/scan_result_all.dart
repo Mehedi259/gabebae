@@ -21,6 +21,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   MealTab selectedTab = MealTab.all; // ✅ Default: show all
   final Set<int> favoriteCards = {}; // ✅ Track favorite cards
 
+  final Map<int, bool> tipsVisibility = {};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,7 +43,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             _buildFilterTabs(),
             const SizedBox(height: 8),
             _buildALaCarteButton(
-              onTap: () => context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
+              onTap: () =>
+                  context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
             ),
             const SizedBox(height: 12),
             _buildCardsView(),
@@ -66,7 +69,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
         children: [
           IconButton(
             icon: Assets.images.dibbaback.image(width: 40, height: 40),
-            onPressed: ()  => context.go(RoutePath.scanMenu.addBasePath),
+            onPressed: () => context.go(RoutePath.scanMenu.addBasePath),
           ),
           Text(
             "🍽️ Your Meal Results",
@@ -90,7 +93,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                 Text("Quick",
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700, fontSize: 12)),
-                Text("Pdf View",
+                Text("PDF View",
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w400, fontSize: 12)),
               ],
@@ -100,6 +103,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
       ),
     );
   }
+
   /// -------------------- FILTER TABS --------------------
   Widget _buildFilterTabs() {
     return SizedBox(
@@ -111,12 +115,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  onPressed: () {},
-                  icon: Assets.images.blueright.image(width: 14, height: 14),
-                ),
+                Assets.images.blueright.image(width: 14, height: 14),
                 const SizedBox(width: 4),
                 const Text("Safe"),
               ],
@@ -137,6 +136,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             Colors.red,
           ),
         ],
+
       ),
     );
   }
@@ -168,7 +168,6 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
     );
   }
 
-
   /// -------------------- A La Carte Button --------------------
   Widget _buildALaCarteButton({required VoidCallback onTap}) {
     return GestureDetector(
@@ -197,7 +196,6 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
       ),
     );
   }
-
 
   /// -------------------- CARD SECTION --------------------
   Widget _buildCardsView() {
@@ -236,7 +234,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
           statusIcon: Icons.warning_amber_rounded,
           statusColor: Colors.orange,
           tags: ["🌱 Vegan", "🌶️ Spicy"],
-          message: "⚠️ Almost safe, just tweak it a little ✨\n💡 Skip spicy → Safe 🌿",
+          message:
+          "⚠️ Almost safe, just tweak it a little ✨\n💡 Skip spicy → Safe 🌿",
           messageColor: const Color(0x33FFCA28),
         ),
         _buildCard(
@@ -246,7 +245,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
           statusIcon: Icons.warning_amber_rounded,
           statusColor: Colors.orange,
           tags: ["🥛 Dairy", "🌱 Vegetarian"],
-          message: "⚠️ Consider replacing paneer with tofu for a lighter option.",
+          message:
+          "⚠️ Consider replacing paneer with tofu for a lighter option.",
           messageColor: const Color(0x33FFCA28),
         ),
       ]);
@@ -290,6 +290,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
     required String message,
     required Color messageColor,
   }) {
+    final bool isTipsVisible = tipsVisibility[index] ?? false;
+
     return Container(
       width: 352,
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -305,7 +307,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// HEADER + FAVORITE
+          /// HEADER
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -322,11 +324,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                           color: Colors.grey)),
                 ],
               ),
-              Row(
-                children: [
-                  Icon(statusIcon, color: statusColor, size: 24),
-                ],
-              ),
+              Icon(statusIcon, color: statusColor, size: 24),
             ],
           ),
           const SizedBox(height: 8),
@@ -350,6 +348,55 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             child: Text(message,
                 style: GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
           ),
+
+          const SizedBox(height: 12),
+
+          /// ✅ Tips Section
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                tipsVisibility[index] = !isTipsVisible;
+              });
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.lightbulb, color: Colors.green, size: 20),
+                const SizedBox(width: 6),
+                Text(
+                  "Tips",
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Colors.green,
+                  ),
+                ),
+                const Spacer(),
+                Icon(
+                  isTipsVisible
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                  color: Colors.green,
+                )
+              ],
+            ),
+          ),
+          if (isTipsVisible) ...[
+            const SizedBox(height: 6),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: Text(
+                "💡 Use olive oil instead of palm oil",
+                style:
+                GoogleFonts.poppins(fontSize: 13, color: Colors.black87),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -409,7 +456,9 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             label: Text(
               "Ask AI Chat About This",
               style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600, fontSize: 16, color: Colors.white),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  color: Colors.white),
             ),
           ),
           const SizedBox(height: 12),

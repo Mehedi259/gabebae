@@ -21,14 +21,6 @@ class ScanMenuModeButton extends StatelessWidget {
     // Choose the correct icon based on title
     Widget icon;
     switch (title) {
-      case "Photo":
-        icon = Image.asset(
-          Assets.images.camcam.path,
-          width: 14,
-          height: 14,
-          fit: BoxFit.cover,
-        );
-        break;
       case "PDF":
         icon = Image.asset(
           Assets.images.campdf.path,
@@ -55,7 +47,7 @@ class ScanMenuModeButton extends StatelessWidget {
         width: 90,
         height: 40,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFFFFFF) : const Color(0x66000000),
+          color: isSelected ? const Color(0xFFFFFFFF) : const Color(0x33FFFFFF),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Row(

@@ -9,11 +9,8 @@ import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
 /// ===============================================================
-/// Profile Setup - Step 2
+/// Profile Setup - Step 2 (Animated)
 /// ===============================================================
-/// This screen allows users to select ingredients/foods they want
-/// to avoid (e.g., nuts, dairy, gluten, etc.). It helps the app
-/// personalize recommendations and ensure a worry-free experience.
 class ProfileSetup2Screen extends StatefulWidget {
   const ProfileSetup2Screen({super.key});
 
@@ -21,17 +18,62 @@ class ProfileSetup2Screen extends StatefulWidget {
   State<ProfileSetup2Screen> createState() => _ProfileSetup2ScreenState();
 }
 
-class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
-  /// Holds the list of selected food restrictions
+class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
+    with SingleTickerProviderStateMixin {
   final Set<String> selectedFoods = {};
 
-  /// Opens the bottom sheet to display additional food items
+  late AnimationController _controller;
+  late Animation<double> _progressAnim;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
+
+    _progressAnim = Tween<double>(begin: 0.2, end: 0.4).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  /// Custom animated bottom sheet
   void _openProfileSetup2BottomSheet() {
-    showModalBottomSheet(
+    showGeneralDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const ProfileSetup2BottomSheet(),
+      barrierDismissible: true,
+      barrierLabel: "BottomSheet",
+      barrierColor: Colors.black,
+      transitionDuration: const Duration(milliseconds: 500),
+      pageBuilder: (context, _, __) {
+        return const Align(
+          alignment: Alignment.bottomCenter,
+          child: ProfileSetup2BottomSheet(),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        );
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(curved),
+          child: FadeTransition(opacity: curved, child: child),
+        );
+      },
     );
   }
 
@@ -40,7 +82,6 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
-      /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
@@ -48,6 +89,7 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
           onTap: () => context.go(RoutePath.profileSetup3.addBasePath),
         ),
       ),
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -56,39 +98,51 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
             children: [
               const SizedBox(height: 24),
 
-              /// ---------- STEP INDICATOR & HEADER ----------
-              ProfileSetupHeading(
-                stepText: "Step 2 of 5",
-                progress: 0.4, // Shows progress bar filled 40%
-                title: "Anything we should avoid for you?",
-                subtitle: "We'll keep you safe & worry-free.",
-                onBack: () => context.go(RoutePath.profileSetup1.addBasePath),
+              /// ---------- STEP INDICATOR ----------
+              AnimatedBuilder(
+                animation: _progressAnim,
+                builder: (context, _) {
+                  return ProfileSetupHeading(
+                    stepText: "Step 2 of 5",
+                    progress: _progressAnim.value,
+                    title: "Anything we should avoid for you?",
+                    subtitle: "We'll keep you safe & worry-free.",
+                    onBack: () =>
+                        context.go(RoutePath.profileSetup1.addBasePath),
+                  );
+                },
               ),
 
               const SizedBox(height: 24),
 
-              /// ---------- FOOD SELECTION GRID ----------
-              /// Wrap widget automatically positions cards in rows & columns
+              /// ---------- Animated FOOD CARDS ----------
               Wrap(
                 spacing: 16,
                 runSpacing: 16,
-                children: [
-                  buildFoodCard("Nuts", Assets.images.nuts.path),
-                  buildFoodCard("Dairy", Assets.images.dairy.path),
-                  buildFoodCard("Gluten", Assets.images.gluten.path),
-                  buildFoodCard("Shellfish", Assets.images.shellfish.path),
-                  buildFoodCard("Egg", Assets.images.egg.path),
+                children: List.generate(_foods.length, (index) {
+                  final item = _foods[index];
+                  return AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      final intervalStart = (index * 0.1).clamp(0.0, 1.0);
+                      final anim = CurvedAnimation(
+                        parent: _controller,
+                        curve: Interval(intervalStart, 1.0,
+                            curve: Curves.easeOutBack),
+                      );
 
-                  /// "See More" opens the bottom sheet for extra options
-                  buildFoodCard(
-                    "See More",
-                    Assets.images.plus.path,
-                    backgroundColor: const Color(0xFFF9FAFB),
-                    textColor: const Color(0xFF4B5563),
-                    isSeeMore: true,
-                    onTap: _openProfileSetup2BottomSheet,
-                  ),
-                ],
+                      return FadeTransition(
+                        opacity: anim,
+                        child: ScaleTransition(scale: anim, child: child),
+                      );
+                    },
+                    child: buildFoodCard(
+                      title: item["title"]!,
+                      image: item["image"]!,
+                      isSeeMore: item["isSeeMore"] == "true",
+                    ),
+                  );
+                }),
               ),
             ],
           ),
@@ -97,31 +151,20 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
     );
   }
 
-  /// ===============================================================
-  /// Builds a selectable Food Card widget
-  /// ---------------------------------------------------------------
-  /// [title]   : Food name to display
-  /// [image]   : Image path for icon/illustration
-  /// [isSeeMore] : If true, tapping opens bottom sheet instead of toggling selection
-  /// [onTap]   : Callback when card is tapped (used for bottom sheet)
-  /// ===============================================================
-  Widget buildFoodCard(
-      String title,
-      String image, {
-        Color backgroundColor = Colors.white,
-        Color textColor = Colors.black,
-        bool isSeeMore = false,
-        VoidCallback? onTap,
-      }) {
+  /// Build Food Card
+  Widget buildFoodCard({
+    required String title,
+    required String image,
+    bool isSeeMore = false,
+  }) {
     final bool isSelected = selectedFoods.contains(title);
 
     return GestureDetector(
       onTap: () {
-        if (isSeeMore && onTap != null) {
-          onTap(); // Opens bottom sheet if it's the "See More" card
+        if (isSeeMore) {
+          _openProfileSetup2BottomSheet();
         } else {
           setState(() {
-            /// Toggle selection state
             isSelected
                 ? selectedFoods.remove(title)
                 : selectedFoods.add(title);
@@ -133,13 +176,12 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
         height: 128,
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: backgroundColor,
+          color: isSeeMore ? const Color(0xFFF9FAFB) : Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: isSelected
-              ? Border.all(color: const Color(0xFFE27B4F), width: 2) // Highlight border if selected
+              ? Border.all(color: const Color(0xFFE27B4F), width: 2)
               : Border.all(color: Colors.transparent, width: 0),
           boxShadow: const [
-            /// Soft shadow for a professional card look
             BoxShadow(
               color: Color(0x1A000000),
               blurRadius: 15,
@@ -155,7 +197,6 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            /// Food/plus icon
             Image.asset(
               image,
               width: 44,
@@ -163,15 +204,13 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
               color: isSeeMore ? const Color(0xFF4B5563) : null,
             ),
             const SizedBox(height: 12),
-
-            /// Food name text
             Text(
               title,
               style: TextStyle(
                 fontFamily: "Poppins",
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
-                color: isSeeMore ? const Color(0xFF4B5563) : textColor,
+                color: isSeeMore ? const Color(0xFF4B5563) : Colors.black,
               ),
               textAlign: TextAlign.center,
             ),
@@ -181,3 +220,17 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen> {
     );
   }
 }
+
+/// Dummy Foods List
+final List<Map<String, String>> _foods = [
+  {"title": "Nuts", "image": Assets.images.nuts.path},
+  {"title": "Dairy", "image": Assets.images.dairy.path},
+  {"title": "Gluten", "image": Assets.images.gluten.path},
+  {"title": "Shellfish", "image": Assets.images.shellfish.path},
+  {"title": "Egg", "image": Assets.images.egg.path},
+  {
+    "title": "See More",
+    "image": Assets.images.plus.path,
+    "isSeeMore": "true",
+  },
+];

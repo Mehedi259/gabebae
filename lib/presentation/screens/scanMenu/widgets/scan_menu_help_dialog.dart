@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../utils/app_colors/app_colors.dart';
+
 class ScanMenuHelpDialog extends StatelessWidget {
   const ScanMenuHelpDialog({super.key});
 
@@ -11,7 +13,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
       child: Container(
         width: double.infinity, // overflow এড়াতে
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5DC), // Cream background
+          color: AppColors.backgroundColor,
           borderRadius: BorderRadius.circular(20),
         ),
         padding: const EdgeInsets.all(24),
@@ -142,13 +144,13 @@ class ScanMenuHelpDialog extends StatelessWidget {
 
               /// ---- Scan Options ----
               _buildScanOption("📷", "Photo",
-                  "Place the menu flat, hold the phone steady.", const Color(0xFFE27B4F)),
+                  "Place the menu flat, hold the phone steady."),
               const SizedBox(height: 12),
               _buildScanOption("📄", "PDF",
-                  "Natural light is best. Avoid strong reflections.", const Color(0xFFF59E0B)),
+                  "Natural light is best. Avoid strong reflections."),
               const SizedBox(height: 12),
               _buildScanOption("🔗", "URL",
-                  "Capture the whole page edge to edge.", const Color(0xFF8B7355)),
+                  "Capture the whole page edge to edge."),
               const SizedBox(height: 24),
 
               /// ---- Close Button ----
@@ -204,14 +206,9 @@ class ScanMenuHelpDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildScanOption(String emoji, String title, String desc, Color color) {
+  Widget _buildScanOption(String emoji, String title, String desc) {
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color),
-      ),
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [

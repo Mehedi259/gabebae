@@ -94,7 +94,7 @@ class SignInPopup extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text.rich(
                 TextSpan(
-                  text: "By continuing, you agree to Cal Al's ",
+                  text: "By continuing, you agree to Menu Sidekick's ",
                   style: const TextStyle(
                     fontFamily: "Roboto",
                     fontSize: 12,

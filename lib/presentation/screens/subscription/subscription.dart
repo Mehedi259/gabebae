@@ -1,11 +1,8 @@
-import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/subscription/widget/sucess_popup.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
-import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -77,10 +74,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   Widget _buildHeader(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-        icon: Assets.icons.back.svg(width: 16, height: 18),
-        onPressed: () => context.go(RoutePath.myProfile.addBasePath),
-      ),
+      // leading: IconButton(
+      //   icon: Assets.icons.back.svg(width: 16, height: 18),
+      //   onPressed: () => context.go(RoutePath.myProfile.addBasePath),
+      // ),
       title: const Text(
         "Subscriptions",
         textAlign: TextAlign.center,
