@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
+// lib/presentation/screens/profileSetup/profile_setup2.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:MenuSideKick/core/routes/route_path.dart';
+import 'package:MenuSideKick/utils/app_colors/app_colors.dart';
+import 'package:MenuSideKick/l10n/app_localizations.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup2_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
-import 'package:go_router/go_router.dart';
-import '../../../core/custom_assets/assets.gen.dart';
-import '../../../core/routes/route_path.dart';
-import '../../../utils/app_colors/app_colors.dart';
-import '../../widgets/custom_bottons/custom_button/button.dart';
+import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 
-/// ===============================================================
-/// Profile Setup - Step 2 (Animated)
-/// ===============================================================
 class ProfileSetup2Screen extends StatefulWidget {
   const ProfileSetup2Screen({super.key});
 
@@ -21,23 +20,19 @@ class ProfileSetup2Screen extends StatefulWidget {
 class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     with SingleTickerProviderStateMixin {
   final Set<String> selectedFoods = {};
-
   late AnimationController _controller;
   late Animation<double> _progressAnim;
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
-
     _progressAnim = Tween<double>(begin: 0.2, end: 0.4).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
-
     _controller.forward();
   }
 
@@ -47,13 +42,12 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     super.dispose();
   }
 
-  /// Custom animated bottom sheet
   void _openProfileSetup2BottomSheet() {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
       barrierLabel: "BottomSheet",
-      barrierColor: Colors.black,
+      barrierColor: Colors.black.withOpacity(0.4),
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, _, __) {
         return const Align(
@@ -77,81 +71,6 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        child: CustomButton(
-          text: "Looks good 😊",
-          onTap: () => context.go(RoutePath.profileSetup3.addBasePath),
-        ),
-      ),
-
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 24),
-
-              /// ---------- STEP INDICATOR ----------
-              AnimatedBuilder(
-                animation: _progressAnim,
-                builder: (context, _) {
-                  return ProfileSetupHeading(
-                    stepText: "Step 2 of 5",
-                    progress: _progressAnim.value,
-                    title: "Anything we should avoid for you?",
-                    subtitle: "We'll keep you safe & worry-free.",
-                    onBack: () =>
-                        context.go(RoutePath.profileSetup1.addBasePath),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 24),
-
-              /// ---------- Animated FOOD CARDS ----------
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: List.generate(_foods.length, (index) {
-                  final item = _foods[index];
-                  return AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      final intervalStart = (index * 0.1).clamp(0.0, 1.0);
-                      final anim = CurvedAnimation(
-                        parent: _controller,
-                        curve: Interval(intervalStart, 1.0,
-                            curve: Curves.easeOutBack),
-                      );
-
-                      return FadeTransition(
-                        opacity: anim,
-                        child: ScaleTransition(scale: anim, child: child),
-                      );
-                    },
-                    child: buildFoodCard(
-                      title: item["title"]!,
-                      image: item["image"]!,
-                      isSeeMore: item["isSeeMore"] == "true",
-                    ),
-                  );
-                }),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Build Food Card
   Widget buildFoodCard({
     required String title,
     required String image,
@@ -180,7 +99,7 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
           borderRadius: BorderRadius.circular(16),
           border: isSelected
               ? Border.all(color: const Color(0xFFE27B4F), width: 2)
-              : Border.all(color: Colors.transparent, width: 0),
+              : Border.all(color: Colors.transparent),
           boxShadow: const [
             BoxShadow(
               color: Color(0x1A000000),
@@ -219,18 +138,88 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
       ),
     );
   }
-}
 
-/// Dummy Foods List
-final List<Map<String, String>> _foods = [
-  {"title": "Nuts", "image": Assets.images.nuts.path},
-  {"title": "Dairy", "image": Assets.images.dairy.path},
-  {"title": "Gluten", "image": Assets.images.gluten.path},
-  {"title": "Shellfish", "image": Assets.images.shellfish.path},
-  {"title": "Egg", "image": Assets.images.egg.path},
-  {
-    "title": "See More",
-    "image": Assets.images.plus.path,
-    "isSeeMore": "true",
-  },
-];
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final foods = [
+      {"title": l10n.nuts, "image": Assets.images.nuts.path},
+      {"title": l10n.dairy, "image": Assets.images.dairy.path},
+      {"title": l10n.gluten, "image": Assets.images.gluten.path},
+      {"title": l10n.shellfish, "image": Assets.images.shellfish.path},
+      {"title": l10n.egg, "image": Assets.images.egg.path},
+      {
+        "title": l10n.seeMore,
+        "image": Assets.images.plus.path,
+        "isSeeMore": "true",
+      },
+    ];
+
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        child: CustomButton(
+          text: l10n.looksGood,
+          onTap: () => context.go(RoutePath.profileSetup3.addBasePath),
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 24),
+              AnimatedBuilder(
+                animation: _progressAnim,
+                builder: (context, _) {
+                  return ProfileSetupHeading(
+                    stepText: l10n.step2Of5,
+                    progress: _progressAnim.value,
+                    title: l10n.anythingToAvoid,
+                    subtitle: l10n.keepYouSafe,
+                    onBack: () =>
+                        context.go(RoutePath.profileSetup1.addBasePath),
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              Wrap(
+                spacing: 16,
+                runSpacing: 16,
+                children: List.generate(foods.length, (index) {
+                  final item = foods[index];
+                  return AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      final intervalStart = (index * 0.1).clamp(0.0, 1.0);
+                      final anim = CurvedAnimation(
+                        parent: _controller,
+                        curve: Interval(
+                          intervalStart,
+                          1.0,
+                          curve: Curves.easeOutBack,
+                        ),
+                      );
+                      return FadeTransition(
+                        opacity: anim,
+                        child: ScaleTransition(scale: anim, child: child),
+                      );
+                    },
+                    child: buildFoodCard(
+                      title: item["title"]!,
+                      image: item["image"]!,
+                      isSeeMore: item["isSeeMore"] == "true",
+                    ),
+                  );
+                }),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

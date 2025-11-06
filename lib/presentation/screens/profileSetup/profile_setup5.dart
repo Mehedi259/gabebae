@@ -4,8 +4,8 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class ProfileSetup5Screen extends StatefulWidget {
@@ -82,11 +82,14 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
   @override
   void dispose() {
     _controller.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -100,11 +103,10 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                 animation: _progressAnim,
                 builder: (context, _) {
                   return ProfileSetupHeading(
-                    stepText: "Step 5 of 5",
+                    stepText: l10n.step5Of5,
                     progress: _progressAnim.value,
-                    title: "🌸 All set, lovely!",
-                    subtitle:
-                    "Your dining sidekick is ready to watch out for you. Just tell us your name and choose an avatar that makes you smile ✨",
+                    title: l10n.allSetLovely,
+                    subtitle: l10n.diningReadyMessage,
                     onBack: () => context.go(RoutePath.profileSetup4.addBasePath),
                   );
                 },
@@ -129,9 +131,9 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "🌸 What should we call you?",
-                      style: TextStyle(
+                    Text(
+                      l10n.whatToCallYou,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF374151),
@@ -161,9 +163,9 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                           Expanded(
                             child: TextField(
                               controller: nameController,
-                              decoration: const InputDecoration(
-                                hintText: "Enter your name",
-                                hintStyle: TextStyle(
+                              decoration: InputDecoration(
+                                hintText: l10n.enterYourName,
+                                hintStyle: const TextStyle(
                                   fontSize: 16,
                                   color: Color(0xFFADAEBC),
                                 ),
@@ -197,9 +199,9 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Choose Avatar",
-                      style: TextStyle(
+                    Text(
+                      l10n.chooseAvatar,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF374151),
@@ -305,10 +307,10 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                 },
                 child: Column(
                   children: [
-                    const Center(
+                    Center(
                       child: Text(
-                        "or",
-                        style: TextStyle(
+                        l10n.or,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF4B5563),
                         ),
@@ -330,10 +332,10 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                           ),
                         ],
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          "Upload a Photo",
-                          style: TextStyle(
+                          l10n.uploadPhoto,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF374151),
@@ -375,9 +377,9 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                         ),
                         onPressed: () =>
                             context.go(RoutePath.profileSetup1.addBasePath),
-                        child: const Text(
-                          "+ Add Another Profile",
-                          style: TextStyle(
+                        child: Text(
+                          l10n.addAnotherProfile,
+                          style: const TextStyle(
                             color: Color(0xFFE27B4F),
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
@@ -386,10 +388,10 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                       ),
                     ),
                     const SizedBox(height: 7),
-                    const Center(
+                    Center(
                       child: Text(
-                        "or",
-                        style: TextStyle(
+                        l10n.or,
+                        style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF4B5563),
                         ),
@@ -399,7 +401,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                     SizedBox(
                       width: double.infinity,
                       child: CustomButton(
-                        text: "Let's Eat 🌿",
+                        text: l10n.letsEat,
                         onTap: () =>
                             context.go(RoutePath.profileSetup6.addBasePath),
                       ),

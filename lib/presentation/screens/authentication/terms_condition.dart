@@ -2,9 +2,9 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class TermsOfServiceScreenAuth extends StatelessWidget {
@@ -12,6 +12,8 @@ class TermsOfServiceScreenAuth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
@@ -19,11 +21,14 @@ class TermsOfServiceScreenAuth extends StatelessWidget {
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
-        title: const Text(
-          "Terms of Conditions",
+        title: Text(
+          l10n.termsOfConditions,
           textAlign: TextAlign.center,
-          style: TextStyle(
-              color: Color(0xFF1F2937),fontSize: 18 ,fontWeight: FontWeight.w500),
+          style: const TextStyle(
+            color: Color(0xFF1F2937),
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,

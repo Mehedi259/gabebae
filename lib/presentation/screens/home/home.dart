@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/presentation/widgets/navigation.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import 'home_widgets/history_card.dart';
 
@@ -23,26 +24,28 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     switch (index) {
       case 0:
-        context.go(RoutePath.home.addBasePath); // ✅ Fixed
+        context.go(RoutePath.home.addBasePath);
         break;
       case 1:
-        context.go(RoutePath.scanMenu.addBasePath); // ✅ Fixed
+        context.go(RoutePath.scanMenu.addBasePath);
         break;
       case 2:
-        context.go(RoutePath.askChatBot.addBasePath); // ✅ Fixed
+        context.go(RoutePath.askChatBot.addBasePath);
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
       /// ===== Custom Bottom Navigation Bar =====
       bottomNavigationBar: CustomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: _onNavTap, // ✅ Added
+        onTap: _onNavTap,
       ),
 
       /// ===== Body =====
@@ -71,10 +74,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      "Hi, Switee",
-                      style: TextStyle(
+                      l10n.hiUser,
+                      style: const TextStyle(
                         fontFamily: "Montserrat",
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -104,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               /// ===== Favorites Section =====
               _buildSectionHeader(
-                title: "Your Favorites",
+                title: l10n.yourFavorites,
                 onSeeAllTap: () =>
                     context.go(RoutePath.activity.addBasePath),
               ),
@@ -115,10 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   scrollDirection: Axis.horizontal,
                   children: [
                     _buildFoodCard(
-                        "Avocado Toast", Assets.images.avocadoToast.path),
+                        l10n.avocadoToast, Assets.images.avocadoToast.path),
                     _buildFoodCard(
-                        "Quinoa Bowl", Assets.images.quinoaBowl.path),
-                    _buildFoodCard("Green Smoothie",
+                        l10n.quinoaBowl, Assets.images.quinoaBowl.path),
+                    _buildFoodCard(l10n.greenSmoothie,
                         Assets.images.greenSmoothie.path),
                   ],
                 ),
@@ -128,21 +131,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
               /// ===== Recent Scans Section =====
               _buildSectionHeader(
-                title: "Recent Scans",
+                title: l10n.recentScans,
                 onSeeAllTap: () =>
                     context.go(RoutePath.activity.addBasePath),
               ),
               const SizedBox(height: 16),
               HistoryCard(
-                title: "Bella Vistal Italian",
-                date: "Scanned On Aug 25, 10:32 AM",
+                title: l10n.bellaVistalItalian,
+                date: "${l10n.scannedOn} Aug 25, 10:32 AM",
                 safeItems: 3,
                 notSafeItems: 2,
                 imagePath: Assets.images.bellaVistalItalian.path,
               ),
               HistoryCard(
-                title: "Ocean Breeze Seafood",
-                date: "Scanned On Aug 24, 07:15 AM",
+                title: l10n.oceanBreezeSeafood,
+                date: "${l10n.scannedOn} Aug 24, 07:15 AM",
                 safeItems: 5,
                 notSafeItems: 0,
                 imagePath: Assets.images.oceanBreezeSeafood.path,
@@ -156,6 +159,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   /// ===== Dining Profile Card =====
   Widget _buildDiningProfileCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -175,9 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "✨ Your Dining Profile ✨",
-                style: TextStyle(
+              Text(
+                l10n.yourDiningProfile,
+                style: const TextStyle(
                   fontFamily: "Poppins",
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -193,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(height: 16),
 
-          const Text("Diet",
-              style: TextStyle(
+          Text(l10n.diet,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -204,17 +209,17 @@ class _HomeScreenState extends State<HomeScreen> {
           Wrap(
             spacing: 8,
             children: [
-              _buildChipWithIcon("Vegan", Assets.images.vegan.path,
+              _buildChipWithIcon(l10n.vegan, Assets.images.vegan.path,
                   const Color(0x1A6CA865), const Color(0xFF6CA865)),
-              _buildChipWithIcon("Dairy-Free", Assets.images.dairy.path,
+              _buildChipWithIcon(l10n.dairyFree, Assets.images.dairy.path,
                   const Color(0x1A3B8F9D), const Color(0xFF3B8F9D)),
             ],
           ),
 
           const SizedBox(height: 16),
 
-          const Text("Allergies",
-              style: TextStyle(
+          Text(l10n.allergies,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
@@ -223,32 +228,32 @@ class _HomeScreenState extends State<HomeScreen> {
           Wrap(
             spacing: 8,
             children: [
-              _buildChipWithIcon("Peanuts", Assets.images.nuts.path,
+              _buildChipWithIcon(l10n.peanuts, Assets.images.nuts.path,
                   const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
-              _buildChipWithIcon("Shellfish", Assets.images.shellfish.path,
+              _buildChipWithIcon(l10n.shellfish, Assets.images.shellfish.path,
                   const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
             ],
           ),
 
           const SizedBox(height: 16),
 
-          const Text("Health",
-              style: TextStyle(
+          Text(l10n.health,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               )),
           const SizedBox(height: 8),
-          _buildChipWithIcon("Diabetic", Assets.images.diabetes.path,
+          _buildChipWithIcon(l10n.diabetic, Assets.images.diabetes.path,
               const Color(0x1AE2B94C), const Color(0xFFE2B94C)),
 
           const SizedBox(height: 16),
 
           GestureDetector(
             onTap: () => context.go(RoutePath.myQrCode.addBasePath),
-            child: const Text(
-              "Share Your Diet via QR Code",
-              style: TextStyle(
+            child: Text(
+              l10n.shareQrCode,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
@@ -293,6 +298,8 @@ class _HomeScreenState extends State<HomeScreen> {
   /// ===== Section Header with See All Click =====
   Widget _buildSectionHeader(
       {required String title, required VoidCallback onSeeAllTap}) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -307,9 +314,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         GestureDetector(
           onTap: onSeeAllTap,
-          child: const Text(
-            "See All",
-            style: TextStyle(
+          child: Text(
+            l10n.seeAll,
+            style: const TextStyle(
               fontFamily: "Poppins",
               fontSize: 14,
               fontWeight: FontWeight.w500,

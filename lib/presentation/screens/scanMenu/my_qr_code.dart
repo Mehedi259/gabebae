@@ -7,6 +7,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 
+
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 /// =======================================
@@ -22,6 +24,8 @@ class AlaCarteQRScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -45,7 +49,7 @@ class AlaCarteQRScreen extends StatelessWidget {
                   const Icon(Icons.restaurant, color: Color(0xFF1F2937), size: 20),
                   const SizedBox(width: 6),
                   Text(
-                    "À la carte",
+                    l10n.alaCarte,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
@@ -94,7 +98,7 @@ class AlaCarteQRScreen extends StatelessWidget {
 
             /// DESCRIPTION TEXT
             Text(
-              "Scan this to view my dietary preferences & safe meals.",
+              l10n.scanQRDescription,
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 16,
@@ -120,7 +124,7 @@ class AlaCarteQRScreen extends StatelessWidget {
                   shadowColor: Colors.black26,
                 ),
                 child: Text(
-                  "Share QR Code",
+                  l10n.shareQRCode,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -137,15 +141,17 @@ class AlaCarteQRScreen extends StatelessWidget {
   }
 
   void _shareQRCode(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     Share.share(
-      'Check out my dietary preferences and safe meals: $qrData',
-      subject: 'My Menu Sidekick QR Code',
+      l10n.shareQRMessage(qrData),
+      subject: l10n.shareQRSubject,
     );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "QR Code shared successfully!",
+          l10n.qrCodeSharedSuccess,
           style: GoogleFonts.poppins(),
         ),
         backgroundColor: const Color(0xFF10B981),
@@ -171,6 +177,8 @@ class MyQRCodeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F0),
 
@@ -190,7 +198,7 @@ class MyQRCodeScreen extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                "My QR Code",
+                l10n.myQRCode,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
@@ -236,7 +244,7 @@ class MyQRCodeScreen extends StatelessWidget {
 
             /// DESCRIPTION TEXT
             Text(
-              "Scan this to view my dietary preferences & safe meals.",
+              l10n.scanQRDescription,
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontSize: 16,
@@ -262,7 +270,7 @@ class MyQRCodeScreen extends StatelessWidget {
                   shadowColor: Colors.black26,
                 ),
                 child: Text(
-                  "Share QR Code",
+                  l10n.shareQRCode,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -279,6 +287,8 @@ class MyQRCodeScreen extends StatelessWidget {
   }
 
   void _shareQRCode(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     // Copy to clipboard
     Clipboard.setData(ClipboardData(text: qrData)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -289,7 +299,7 @@ class MyQRCodeScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  "QR Code link copied to clipboard!",
+                  l10n.qrCodeLinkCopied,
                   style: GoogleFonts.poppins(fontSize: 14),
                 ),
               ),
@@ -307,8 +317,8 @@ class MyQRCodeScreen extends StatelessWidget {
     // Share via system
     Future.delayed(const Duration(milliseconds: 500), () {
       Share.share(
-        'Check out my dietary preferences and safe meals: $qrData',
-        subject: 'My Menu Sidekick QR Code',
+        l10n.shareQRMessage(qrData),
+        subject: l10n.shareQRSubject,
       );
     });
   }

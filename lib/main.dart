@@ -3,33 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:camera/camera.dart';
-// import 'package:device_preview/device_preview.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/routes/routes.dart';
+import 'l10n/app_localizations.dart';
 import 'utils/app_colors/app_colors.dart';
-
-/// =======================================
-/// Main Entry Point of the Application
-/// =======================================
 
 late final List<CameraDescription> cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-
-  // Uncomment only if you need camera support
   cameras = await availableCameras();
-
-  runApp(
-    // /// Wrap the whole app with DevicePreview for responsive testing
-    // DevicePreview(
-    //   enabled: true,
-    //   builder: (context) => const MyApp(),
-    // ),
-    const MyApp(),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -38,30 +23,36 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      /// 👇 Match your Figma/iPhone design reference size
-      designSize: const Size(390, 844), // iPhone 13/14 reference
-      minTextAdapt: true, // adapt text for small devices
-      splitScreenMode: true, // handle tablets & split-screen
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
       builder: (_, __) {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: "MenuSideKick",
 
-          /// ================= THEME =================
+          /// Localization setup
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'),
+            Locale('es'),
+            Locale('fr'),
+          ],
+          locale: const Locale('en'), // Default language
+
           theme: ThemeData(
             scaffoldBackgroundColor: AppColors.backgroundColor,
             useMaterial3: true,
           ),
 
-          /// ================= Device Preview =================
-          // locale: DevicePreview.locale(context),
-          // builder: DevicePreview.appBuilder,
-
-          /// ================= Routing =================
           routeInformationParser: AppRouter.route.routeInformationParser,
           routerDelegate: AppRouter.route.routerDelegate,
-          routeInformationProvider:
-          AppRouter.route.routeInformationProvider,
+          routeInformationProvider: AppRouter.route.routeInformationProvider,
         );
       },
     );

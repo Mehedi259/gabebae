@@ -1,9 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:get/get.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../core/controllers/language_controller.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -15,32 +17,31 @@ class OnBoarding1Screen extends StatefulWidget {
 }
 
 class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
-  String _selectedLang = "EN";
+  final LanguageController _langController = Get.put(LanguageController());
 
   final List<Map<String, String>> _languages = [
-    {"flag": "🇺🇸", "code": "EN", "title": "English"},
-    {"flag": "🇪🇸", "code": "ES", "title": "Español"},
-    {"flag": "🇫🇷", "code": "FR", "title": "Français"},
+    {"flag": "🇺🇸", "code": "en", "title": "English"},
+    {"flag": "🇪🇸", "code": "es", "title": "Español"},
+    {"flag": "🇫🇷", "code": "fr", "title": "Français"},
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Let’s Begin ✨",
+          text: l10n.letsBegin,
           onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
       ),
-
       body: SafeArea(
         child: Column(
           children: [
-            /// ========= Top Bar with Language Dropdown =========
+            /// Language Dropdown
             Align(
               alignment: Alignment.topRight,
               child: Container(
@@ -59,9 +60,9 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                     )
                   ],
                 ),
-                child: DropdownButtonHideUnderline(
+                child: Obx(() => DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value: _selectedLang,
+                    value: _langController.currentLanguageCode.toUpperCase(),
                     icon: const Icon(Icons.keyboard_arrow_down, size: 16),
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
@@ -70,39 +71,33 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                     ),
                     items: _languages.map((lang) {
                       return DropdownMenuItem<String>(
-                        value: lang["code"],
+                        value: lang["code"]!.toUpperCase(),
                         child: Row(
                           children: [
-                            Text(lang["flag"]!,
-                                style: const TextStyle(fontSize: 16)),
+                            Text(lang["flag"]!, style: const TextStyle(fontSize: 16)),
                             const SizedBox(width: 4),
-                            Text(lang["code"]!),
+                            Text(lang["code"]!.toUpperCase()),
                           ],
                         ),
                       );
                     }).toList(),
                     onChanged: (value) {
                       if (value != null) {
-                        final selected = _languages
-                            .firstWhere((lang) => lang["code"] == value);
-                        setState(() {
-                          _selectedLang = selected["code"]!;
-                        });
+                        _langController.changeLanguage(value.toLowerCase());
                       }
                     },
                   ),
-                ),
+                )),
               ),
             ),
 
-            /// ========= Body (Center Content) =========
+            /// Body Content
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      /// ============= Top Container (Image + Title) =============
                       SizedBox(
                         width: double.infinity,
                         height: 276,
@@ -112,13 +107,12 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                             SizedBox(
                               width: 214,
                               height: 180,
-                              child:
-                              Assets.images.splash.image(fit: BoxFit.cover),
+                              child: Assets.images.splash.image(fit: BoxFit.cover),
                             ),
-                            const Text(
-                              "Menu\nSidekick",
+                            Text(
+                              l10n.menuSidekick,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "EB Garamond",
                                 fontWeight: FontWeight.w700,
                                 fontSize: 48,
@@ -129,10 +123,7 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 24),
-
-                      /// ============= Middle Container (Subtitle + Description) =============
                       SizedBox(
                         width: double.infinity,
                         height: 150,
@@ -142,9 +133,9 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text(
-                                  "Hey there, beautiful soul",
-                                  style: TextStyle(
+                                Text(
+                                  l10n.heyThere,
+                                  style: const TextStyle(
                                     fontFamily: "EB Garamond",
                                     fontWeight: FontWeight.w500,
                                     fontSize: 24,
@@ -153,18 +144,14 @@ class _OnBoarding1ScreenState extends State<OnBoarding1Screen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                Assets.images.flower
-                                    .image(width: 24, height: 24),
+                                Assets.images.flower.image(width: 24, height: 24),
                               ],
                             ),
                             const SizedBox(height: 24),
-                            const Text(
-                              "Welcome to Menu Sidekick!\n"
-                                  "Your pocket-friendly foodie guide\n"
-                                  "that makes eating out simple,\n"
-                                  "safe, and joyful.",
+                            Text(
+                              l10n.welcomeMessage,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: "Poppins",
                                 fontWeight: FontWeight.w400,
                                 fontSize: 16,

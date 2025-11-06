@@ -5,6 +5,7 @@ import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -18,20 +19,7 @@ class ProfileSetup4Screen extends StatefulWidget {
 class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
     with SingleTickerProviderStateMixin {
   /// State of each toggle
-  final Map<String, bool> switches = {
-    "Diabetes": false,
-    "Hypertension": false,
-    "High Cholesterol": false,
-    "Celiac Disease": false,
-  };
-
-  final List<Map<String, dynamic>> options = [
-    {"title": "Diabetes", "image": Assets.images.dairy.path},
-    {"title": "Hypertension", "image": Assets.images.gluten.path},
-    {"title": "High Cholesterol", "image": Assets.images.nuts.path},
-    {"title": "Celiac Disease", "image": Assets.images.soy.path},
-    {"title": "See More", "image": Assets.images.plus.path},
-  ];
+  late Map<String, bool> switches;
 
   // Animation Controller
   late AnimationController _controller;
@@ -55,6 +43,20 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final l10n = AppLocalizations.of(context)!;
+
+    // Initialize switches with localized keys
+    switches = {
+      l10n.diabetes: false,
+      l10n.hypertension: false,
+      l10n.highCholesterol: false,
+      l10n.celiacDisease: false,
+    };
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -62,6 +64,36 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final List<Map<String, dynamic>> options = [
+      {
+        "title": l10n.diabetes,
+        "subtitle": l10n.type1OrType2,
+        "image": Assets.images.dairy.path
+      },
+      {
+        "title": l10n.hypertension,
+        "subtitle": l10n.highBloodPressure,
+        "image": Assets.images.gluten.path
+      },
+      {
+        "title": l10n.highCholesterol,
+        "subtitle": l10n.elevatedLipidLevels,
+        "image": Assets.images.nuts.path
+      },
+      {
+        "title": l10n.celiacDisease,
+        "subtitle": l10n.glutenIntolerance,
+        "image": Assets.images.soy.path
+      },
+      {
+        "title": l10n.seeMore,
+        "subtitle": "",
+        "image": Assets.images.plus.path
+      },
+    ];
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -69,7 +101,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Ready to Glow ✨",
+          text: l10n.readyToGlow,
           onTap: () => context.go(RoutePath.profileSetup5.addBasePath),
         ),
       ),
@@ -87,10 +119,10 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
                 animation: _progressAnim,
                 builder: (context, _) {
                   return ProfileSetupHeading(
-                    stepText: "Step 4 of 5",
+                    stepText: l10n.step4Of5,
                     progress: _progressAnim.value,
-                    title: "✨ Here's the magic list ✨",
-                    subtitle: "These are all the ingredients we're watching for you — switch on or off anytime 🌿",
+                    title: l10n.magicList,
+                    subtitle: l10n.magicListSubtitle,
                     onBack: () => context.go(RoutePath.profileSetup3.addBasePath),
                   );
                 },
@@ -126,7 +158,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
                       ),
                     );
                   },
-                  child: item["title"] == "See More"
+                  child: item["title"] == l10n.seeMore
                       ? GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
@@ -138,6 +170,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
                     },
                     child: _buildHealthCard(
                       title: item["title"],
+                      subtitle: item["subtitle"],
                       imagePath: item["image"],
                       isActive: false,
                       onChanged: (_) {},
@@ -146,6 +179,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
                   )
                       : _buildHealthCard(
                     title: item["title"],
+                    subtitle: item["subtitle"],
                     imagePath: item["image"],
                     isActive: switches[item["title"]] ?? false,
                     onChanged: (val) {
@@ -170,6 +204,7 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
   /// ===================================================
   Widget _buildHealthCard({
     required String title,
+    required String subtitle,
     required String imagePath,
     required bool isActive,
     required ValueChanged<bool> onChanged,
@@ -213,16 +248,34 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
 
           const SizedBox(width: 12),
 
-          /// ===== Middle Title =====
+          /// ===== Middle Title & Subtitle =====
           Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF111827),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF111827),
+                  ),
+                ),
+                if (subtitle.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF6B7280),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
 
@@ -256,13 +309,15 @@ class _ProfileSetup4ScreenState extends State<ProfileSetup4Screen>
                       color: isActive ? const Color(0xFF669A59) : Colors.white,
                       borderRadius: BorderRadius.circular(9999),
                       border: Border.all(color: const Color(0xFFE5E7EB)),
-                      boxShadow: isActive ? [
+                      boxShadow: isActive
+                          ? [
                         const BoxShadow(
                           color: Color(0x40669A59),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),
-                      ] : null,
+                      ]
+                          : null,
                     ),
                   ),
                 ),

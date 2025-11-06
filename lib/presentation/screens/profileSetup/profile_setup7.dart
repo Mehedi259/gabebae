@@ -1,12 +1,12 @@
+//lib/presentation/screens/profileSetup/profile_setup7.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class PrivacyPolicyScreenPs extends StatefulWidget {
@@ -28,6 +28,8 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -55,7 +57,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Continue",
+                  l10n.continue_,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -84,7 +86,6 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                 children: [
                   // Shield Icon
                   Container(
-
                     child: Assets.images.shild.image(width: 37, height: 37),
                   ),
                 ],
@@ -101,7 +102,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
 
                     // Title with sparkles
                     Text(
-                      "✨ Your Safety is Our Priority ✨",
+                      l10n.yourSafetyPriority,
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -111,33 +112,12 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Main Content
+                    // Main Content - safetyMessage
                     Text(
-                      "Menu Sidekick helps guide your food choices but it may not always be perfect. Ingredients and recipes can change anytime.",
+                      l10n.safetyMessage,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         color: const Color(0xFF1F2937),
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Warning section
-                    Text(
-                      "⚠️ Always double-check ⚠️",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: const Color(0xFF1F2937),
-                      ),
-                    ),
-                    const SizedBox(height: 17),
-
-                    Text(
-                      "Ask your server or restaurant before ordering, especially if you have allergies. This app is for information only 💛 -not medical advice or a guarantee of safety.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: const Color(0xFF4B5563),
                         height: 1.5,
                       ),
                     ),
@@ -145,7 +125,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
 
                     // Ready to get started section
                     Text(
-                      "Ready to get started?",
+                      l10n.readyToGetStarted,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
@@ -176,7 +156,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'I agree to Menu Sidekick\'s ',
+                                      text: l10n.agreeToTerms,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),
@@ -186,7 +166,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                                       child: GestureDetector(
                                         onTap: () => _launchURL('https://menusidekick.app/terms'),
                                         child: Text(
-                                          "Terms of Service",
+                                          l10n.termsOfService,
                                           style: GoogleFonts.poppins(
                                             fontSize: 16,
                                             color: const Color(0xFF1F2937),
@@ -197,7 +177,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' and ',
+                                      text: l10n.and,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),
@@ -207,7 +187,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                                       child: GestureDetector(
                                         onTap: () => _launchURL('https://menusidekick.app/privacy'),
                                         child: Text(
-                                          "Privacy Policy",
+                                          l10n.privacyPolicy,
                                           style: GoogleFonts.poppins(
                                             fontSize: 16,
                                             color: const Color(0xFF1F2937),
@@ -218,7 +198,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '. I understand that I should always verify ingredient and allergen information, especially if I have a serious food allergy. Any disputes shall be resolved through binding arbitration.',
+                                      text: l10n.verificationDisclaimer,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),
@@ -244,7 +224,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
   }
 }
 
-// Alternative version without external URLs (if you don't want to add url_launcher dependency)
+// Alternative version without external URLs
 class PrivacyPolicyScreenPsSimple extends StatefulWidget {
   const PrivacyPolicyScreenPsSimple({super.key});
 
@@ -255,31 +235,13 @@ class PrivacyPolicyScreenPsSimple extends StatefulWidget {
 class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimple> {
   bool agreeToTerms = false;
 
-  void _showTermsDialog() {
+  void _showTermsDialog(String title, String content) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Terms of Service"),
-        content: const SingleChildScrollView(
-          child: Text("Terms of Service content will be displayed here..."),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showPrivacyDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Privacy Policy"),
-        content: const SingleChildScrollView(
-          child: Text("Privacy Policy content will be displayed here..."),
+        title: Text(title),
+        content: SingleChildScrollView(
+          child: Text(content),
         ),
         actions: [
           TextButton(
@@ -293,6 +255,8 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
       bottomNavigationBar: Padding(
@@ -318,7 +282,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Continue",
+                  l10n.continue_,
                   style: GoogleFonts.poppins(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -367,7 +331,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                   children: [
                     const SizedBox(height: 8),
                     Text(
-                      "✨ Your Safety is Our Priority ✨",
+                      l10n.yourSafetyPriority,
                       style: GoogleFonts.poppins(
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
@@ -377,25 +341,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      "Menu Sidekick helps guide your food choices but it may not always be perfect. Ingredients and recipes can change anytime.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: const Color(0xFF4B5563),
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "⚠️ Always double-check ⚠️",
-                      style: GoogleFonts.poppins(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF1F2937),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Ask your server or restaurant before ordering, especially if you have allergies. This app is for information only 💛 -not medical advice or a guarantee of safety.",
+                      l10n.safetyMessage,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
                         color: const Color(0xFF4B5563),
@@ -404,7 +350,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                     ),
                     const SizedBox(height: 40),
                     Text(
-                      "Ready to get started?",
+                      l10n.readyToGetStarted,
                       style: GoogleFonts.poppins(
                         fontSize: 22,
                         fontWeight: FontWeight.w600,
@@ -433,7 +379,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                                 TextSpan(
                                   children: [
                                     TextSpan(
-                                      text: 'I agree to "Menu Sidekick\'s" ',
+                                      text: l10n.agreeToTerms,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),
@@ -441,9 +387,12 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                                     ),
                                     WidgetSpan(
                                       child: GestureDetector(
-                                        onTap: _showTermsDialog,
+                                        onTap: () => _showTermsDialog(
+                                          l10n.termsOfService,
+                                          "Terms of Service content will be displayed here...",
+                                        ),
                                         child: Text(
-                                          "Terms of Service",
+                                          l10n.termsOfService,
                                           style: GoogleFonts.poppins(
                                             fontSize: 16,
                                             color: const Color(0xFF1F2937),
@@ -454,7 +403,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                                       ),
                                     ),
                                     TextSpan(
-                                      text: ' and ',
+                                      text: l10n.and,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),
@@ -462,9 +411,12 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                                     ),
                                     WidgetSpan(
                                       child: GestureDetector(
-                                        onTap: _showPrivacyDialog,
+                                        onTap: () => _showTermsDialog(
+                                          l10n.privacyPolicy,
+                                          "Privacy Policy content will be displayed here...",
+                                        ),
                                         child: Text(
-                                          "Privacy Policy",
+                                          l10n.privacyPolicy,
                                           style: GoogleFonts.poppins(
                                             fontSize: 16,
                                             color: const Color(0xFF1F2937),
@@ -475,7 +427,7 @@ class _PrivacyPolicyScreenPsSimpleState extends State<PrivacyPolicyScreenPsSimpl
                                       ),
                                     ),
                                     TextSpan(
-                                      text: '. I understand that I should always verify ingredient and allergen information, especially if I have a serious food allergy. Any disputes shall be resolved through binding arbitration.',
+                                      text: l10n.verificationDisclaimer,
                                       style: GoogleFonts.poppins(
                                         fontSize: 16,
                                         color: const Color(0xFF1F2937),

@@ -1,3 +1,4 @@
+//lib/presentation/screens/profileSetup/profile_setup3.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
@@ -5,6 +6,7 @@ import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -18,40 +20,39 @@ class ProfileSetup3Screen extends StatefulWidget {
 class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
     with SingleTickerProviderStateMixin {
   /// State of each toggle
-  final Map<String, bool> switches = {
-    "Diabetes": false,
-    "Hypertension": false,
-    "High Cholesterol": false,
-    "Celiac Disease": false,
-  };
+  final Map<String, bool> switches = {};
 
-  final List<Map<String, dynamic>> options = [
-    {
-      "title": "Diabetes",
-      "subtitle": "Type 1 or Type 2",
-      "image": Assets.images.diabetes.path,
-    },
-    {
-      "title": "Hypertension",
-      "subtitle": "High blood pressure",
-      "image": Assets.images.hypertension.path,
-    },
-    {
-      "title": "High Cholesterol",
-      "subtitle": "Elevated lipid levels",
-      "image": Assets.images.highCholesterol.path,
-    },
-    {
-      "title": "Celiac Disease",
-      "subtitle": "Gluten intolerance",
-      "image": Assets.images.celiacDisease.path,
-    },
-    {
-      "title": "See More",
-      "subtitle": "",
-      "image": Assets.images.plus.path,
-    },
-  ];
+  List<Map<String, dynamic>> _getLocalizedOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return [
+      {
+        "title": l10n.diabetes,
+        "subtitle": l10n.type1OrType2,
+        "image": Assets.images.diabetes.path,
+      },
+      {
+        "title": l10n.hypertension,
+        "subtitle": l10n.highBloodPressure,
+        "image": Assets.images.hypertension.path,
+      },
+      {
+        "title": l10n.highCholesterol,
+        "subtitle": l10n.elevatedLipidLevels,
+        "image": Assets.images.highCholesterol.path,
+      },
+      {
+        "title": l10n.celiacDisease,
+        "subtitle": l10n.glutenIntolerance,
+        "image": Assets.images.celiacDisease.path,
+      },
+      {
+        "title": l10n.seeMore,
+        "subtitle": "",
+        "image": Assets.images.plus.path,
+      },
+    ];
+  }
 
   // Animation Controller
   late AnimationController _controller;
@@ -82,6 +83,16 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final options = _getLocalizedOptions(context);
+
+    // Initialize switches map with localized keys
+    for (var option in options) {
+      if (option["title"] != l10n.seeMore) {
+        switches.putIfAbsent(option["title"] as String, () => false);
+      }
+    }
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -89,7 +100,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "All set here 💛",
+          text: l10n.allSetHere,
           onTap: () => context.go(RoutePath.profileSetup4.addBasePath),
         ),
       ),
@@ -107,10 +118,10 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
                 animation: _progressAnim,
                 builder: (context, _) {
                   return ProfileSetupHeading(
-                    stepText: "Step 3 of 5",
+                    stepText: l10n.step3Of5,
                     progress: _progressAnim.value,
-                    title: "Should we watch out for any health needs?",
-                    subtitle: "We've got your back, always ✨",
+                    title: l10n.watchOutHealthNeeds,
+                    subtitle: l10n.gotYourBack,
                     onBack: () => context.go(RoutePath.profileSetup2.addBasePath),
                   );
                 },
@@ -143,7 +154,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
                       ),
                     );
                   },
-                  child: item["title"] == "See More"
+                  child: item["title"] == l10n.seeMore
                       ? GestureDetector(
                     onTap: () {
                       showModalBottomSheet(

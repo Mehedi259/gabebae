@@ -1,10 +1,11 @@
+//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../core/routes/route_path.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ProfileSetup3BottomSheet extends StatefulWidget {
   const ProfileSetup3BottomSheet({super.key});
@@ -15,16 +16,50 @@ class ProfileSetup3BottomSheet extends StatefulWidget {
 }
 
 class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
-  /// Track switch states for health conditions
+  /// Track switch states for health conditions - using language-independent keys
   final Map<String, bool> _switchStates = {
-    "Asthma": false,
-    "Kidney Disease": false,
-    "Thyroid Issues": false,
-    "Heart Disease": false,
+    "asthma": false,
+    "kidneyDisease": false,
+    "thyroidIssues": false,
+    "heartDisease": false,
   };
+
+  List<Map<String, dynamic>> _getLocalizedHealthConditions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return [
+      {
+        "key": "asthma",
+        "title": l10n.asthma,
+        "subtitle": l10n.chronicLungCondition,
+        "image": Assets.images.celiacDisease.path,
+      },
+      {
+        "key": "kidneyDisease",
+        "title": l10n.kidneyDisease,
+        "subtitle": l10n.renalHealthSupport,
+        "image": Assets.images.hypertension.path,
+      },
+      {
+        "key": "thyroidIssues",
+        "title": l10n.thyroidIssues,
+        "subtitle": l10n.hyperHypoThyroidism,
+        "image": Assets.images.highCholesterol.path,
+      },
+      {
+        "key": "heartDisease",
+        "title": l10n.heartDisease,
+        "subtitle": l10n.cardiacHealth,
+        "image": Assets.images.diabetes.path,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final healthConditions = _getLocalizedHealthConditions(context);
+
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
@@ -53,10 +88,10 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
                       color: const Color(0xFFFFFFFF),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "Health-Driven",
-                        style: TextStyle(
+                        l10n.healthDriven,
+                        style: const TextStyle(
                           fontFamily: "Poppins",
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -71,26 +106,14 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
                   const SizedBox(height: 24),
 
                   /// ===== Cards =====
-                  _buildHealthCard(
-                    title: "Asthma",
-                    subtitle: "Chronic lung condition",
-                    imagePath: Assets.images.celiacDisease.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Kidney Disease",
-                    subtitle: "Renal health support",
-                    imagePath: Assets.images.hypertension.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Thyroid Issues",
-                    subtitle: "Hyper / Hypo thyroidism",
-                    imagePath: Assets.images.highCholesterol.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Heart Disease",
-                    subtitle: "Cardiac health",
-                    imagePath: Assets.images.diabetes.path,
-                  ),
+                  ...healthConditions.map((condition) {
+                    return _buildHealthCard(
+                      conditionKey: condition["key"] as String,
+                      title: condition["title"] as String,
+                      subtitle: condition["subtitle"] as String,
+                      imagePath: condition["image"] as String,
+                    );
+                  }).toList(),
                 ],
               ),
             ),
@@ -101,7 +124,7 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
               right: 24,
               bottom: 24,
               child: CustomButton(
-                text: "All set here 💛",
+                text: l10n.allSetHere,
                 onTap: () => context.go(RoutePath.profileSetup4.addBasePath),
               ),
             ),
@@ -115,11 +138,12 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
   /// Reusable Card With Custom Switch
   /// ===============================
   Widget _buildHealthCard({
+    required String conditionKey,
     required String title,
     required String subtitle,
     required String imagePath,
   }) {
-    final bool isActive = _switchStates[title] ?? false;
+    final bool isActive = _switchStates[conditionKey] ?? false;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -189,7 +213,7 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _switchStates[title] = !isActive;
+                _switchStates[conditionKey] = !isActive;
               });
             },
             child: AnimatedContainer(

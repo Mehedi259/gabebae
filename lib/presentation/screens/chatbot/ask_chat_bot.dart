@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../presentation/widgets/navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
@@ -66,33 +67,40 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   final ImagePicker _picker = ImagePicker();
   final stt.SpeechToText _speech = stt.SpeechToText();
 
-  final List<ChatMessage> _messages = [
-    ChatMessage(
-      id: '1',
-      message:
-      "Hey sunshine 👋, I'm your Menu Sidekick — your foodie bestie who speaks fluent menu 🍽️...",
-      isUser: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
-    ),
-    ChatMessage(
-      id: '2',
-      message: "Is Tom Yum soup safe for me to eat?",
-      isUser: true,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
-    ),
-    ChatMessage(
-      id: '3',
-      message:
-      "✨ Great choice! Tom Yum is naturally gluten-free 🌿\n\nIt's made with lemongrass, lime leaves, and chili. Perfect for your diet! 🌸",
-      isUser: false,
-      timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
-      quickReplies: [
-        "🌿 Is it cooked in butter or oil?",
-        "🌱 Can I make this vegan?",
-        "❓ What should I avoid here?"
-      ],
-    ),
-  ];
+  List<ChatMessage> _messages = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final l10n = AppLocalizations.of(context)!;
+
+    // Initialize messages with localized content
+    _messages = [
+      ChatMessage(
+        id: '1',
+        message: l10n.chatWelcomeMessage,
+        isUser: false,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
+      ),
+      ChatMessage(
+        id: '2',
+        message: l10n.chatExampleQuestion,
+        isUser: true,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
+      ),
+      ChatMessage(
+        id: '3',
+        message: l10n.chatExampleResponse,
+        isUser: false,
+        timestamp: DateTime.now().subtract(const Duration(minutes: 4)),
+        quickReplies: [
+          l10n.quickReplyButter,
+          l10n.quickReplyVegan,
+          l10n.quickReplyAvoid,
+        ],
+      ),
+    ];
+  }
 
   void _onNavTap(int index) {
     setState(() {
@@ -151,6 +159,8 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -168,7 +178,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
             const Text("✨", style: TextStyle(fontSize: 16)),
             const SizedBox(width: 6),
             Text(
-              "Menu Sidekick AI",
+              l10n.menuSidekickAI,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -306,9 +316,9 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
 
   Widget _buildQuickReplyChip(String text) {
     Color bgColor = const Color(0xFF88A096);
-    if (text.contains("vegan")) {
+    if (text.contains("vegan") || text.contains("vegano") || text.contains("végétalien")) {
       bgColor = const Color(0xFFD4A574);
-    } else if (text.contains("avoid")) {
+    } else if (text.contains("avoid") || text.contains("evitar") || text.contains("éviter")) {
       bgColor = const Color(0xFFC67C4E);
     }
 
@@ -333,6 +343,8 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   }
 
   Widget _buildMessageInput() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -351,7 +363,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
                 controller: _messageController,
                 style: GoogleFonts.poppins(fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: "Ask me anything about your meal...",
+                  hintText: l10n.askAnything,
                   hintStyle: GoogleFonts.poppins(
                     color: const Color(0xFF9CA3AF),
                     fontSize: 14,
@@ -401,6 +413,8 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   }
 
   void _sendMessage(String text) {
+    final l10n = AppLocalizations.of(context)!;
+
     if (text.trim().isEmpty) return;
 
     setState(() {
@@ -419,8 +433,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
       setState(() {
         _messages.add(ChatMessage(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
-          message:
-          "That's a great question! Let me help you with that. Based on your dietary preferences, I'd recommend...",
+          message: l10n.chatResponseExample,
           isUser: false,
           timestamp: DateTime.now(),
         ));
@@ -453,6 +466,8 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   }
 
   void _showMoreOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -462,7 +477,7 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
           children: [
             ListTile(
               leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: Text("Delete This Chat", style: GoogleFonts.poppins()),
+              title: Text(l10n.deleteThisChat, style: GoogleFonts.poppins()),
               onTap: () {
                 Navigator.pop(context);
                 _showDeleteConfirmation(context);
@@ -475,26 +490,28 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Delete This Chat",
+        title: Text(l10n.deleteThisChat,
             style: GoogleFonts.poppins(fontWeight: FontWeight.w600)),
-        content: Text("Are you sure you want to delete this conversation?",
+        content: Text(l10n.deleteChatConfirm,
             style: GoogleFonts.poppins()),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: GoogleFonts.poppins()),
+            child: Text(l10n.cancel, style: GoogleFonts.poppins()),
           ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Chat deleted", style: GoogleFonts.poppins())),
+                SnackBar(content: Text(l10n.chatDeleted, style: GoogleFonts.poppins())),
               );
             },
-            child: Text("Delete",
+            child: Text(l10n.delete,
                 style: GoogleFonts.poppins(color: Colors.red)),
           ),
         ],
@@ -525,24 +542,34 @@ class ChatHistoryScreen extends StatefulWidget {
 class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  final List<ChatHistory> _chatHistory = [
-    ChatHistory(
-      id: '1',
-      title: 'Italian Dinner Planning',
-      subtitle: 'Need help with pasta recipes and wine pairing...',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      isHighlighted: true,
-    ),
-    ChatHistory(
-      id: '2',
-      title: 'Italian Dinner Planning',
-      subtitle: 'Looking for alternatives to wheat-based...',
-      date: DateTime.now().subtract(const Duration(days: 2)),
-    ),
-  ];
+  List<ChatHistory> _chatHistory = [];
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final l10n = AppLocalizations.of(context)!;
+
+    _chatHistory = [
+      ChatHistory(
+        id: '1',
+        title: l10n.italianDinnerPlanning,
+        subtitle: l10n.pastaRecipesSubtitle,
+        date: DateTime.now().subtract(const Duration(days: 1)),
+        isHighlighted: true,
+      ),
+      ChatHistory(
+        id: '2',
+        title: l10n.italianDinnerPlanning,
+        subtitle: l10n.wheatAlternativesSubtitle,
+        date: DateTime.now().subtract(const Duration(days: 2)),
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5DC),
       appBar: AppBar(
@@ -564,7 +591,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
         ),
         centerTitle: true,
         title: Text(
-          "Menu Sidekick",
+          l10n.menuSidekick,
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -589,7 +616,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.add, color: Colors.white),
                 label: Text(
-                  "New Chat",
+                  l10n.newChat,
                   style: GoogleFonts.poppins(
                       fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
@@ -608,7 +635,7 @@ class _ChatHistoryScreenState extends State<ChatHistoryScreen> {
                 controller: _searchController,
                 style: GoogleFonts.poppins(fontSize: 14),
                 decoration: InputDecoration(
-                  hintText: "Search chats...",
+                  hintText: l10n.searchChats,
                   hintStyle: GoogleFonts.poppins(color: const Color(0xFF9CA3AF)),
                   prefixIcon: const Icon(Icons.search, color: Color(0xFF9CA3AF)),
                   filled: true,

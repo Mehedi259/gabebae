@@ -1,9 +1,14 @@
+//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/custom_assets/assets.gen.dart';
 import '../../../../core/routes/route_path.dart';
 
+/// ===============================================
+/// Reusable Profile Setup Heading Component
+/// Displays step progress, title, subtitle, and navigation buttons
+/// ===============================================
 class ProfileSetupHeading extends StatelessWidget {
   final String stepText;
   final double progress;
@@ -26,16 +31,18 @@ class ProfileSetupHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        /// ===== Top Navigation Bar =====
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-
+            /// Back Button
             IconButton(
               onPressed: onBack ?? () => Navigator.of(context).maybePop(),
               icon: Assets.images.backround.image(width: 40, height: 40),
               splashRadius: 24,
             ),
 
+            /// Step Text (e.g., "Step 2 of 5")
             Expanded(
               child: Align(
                 alignment: Alignment.center,
@@ -50,6 +57,7 @@ class ProfileSetupHeading extends StatelessWidget {
               ),
             ),
 
+            /// Close Button
             IconButton(
               onPressed: onClose ??
                       () => context.go(RoutePath.home.addBasePath),
@@ -61,6 +69,7 @@ class ProfileSetupHeading extends StatelessWidget {
 
         const SizedBox(height: 8),
 
+        /// ===== Progress Bar =====
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: LinearProgressIndicator(
@@ -74,6 +83,7 @@ class ProfileSetupHeading extends StatelessWidget {
 
         const SizedBox(height: 20),
 
+        /// ===== Title =====
         Text(
           title,
           textAlign: TextAlign.center,
@@ -85,6 +95,7 @@ class ProfileSetupHeading extends StatelessWidget {
         ),
         const SizedBox(height: 6),
 
+        /// ===== Subtitle =====
         Text(
           subtitle,
           textAlign: TextAlign.center,

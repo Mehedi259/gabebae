@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../home/home_widgets/history_card.dart';
 
@@ -31,6 +32,8 @@ class _YourActivityScreenState extends State<YourActivityScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -45,11 +48,11 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                     icon: Assets.images.dibbaback.image(width: 40, height: 40),
                     onPressed: () => context.go(RoutePath.home.addBasePath),
                   ),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      "Your Activity",
+                      l10n.yourActivity,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF23333C),
@@ -67,14 +70,14 @@ class _YourActivityScreenState extends State<YourActivityScreen>
               labelColor: const Color(0xFFE56A2E),
               unselectedLabelColor: Colors.grey,
               indicatorColor: const Color(0xFFE56A2E),
-              tabs: const [
+              tabs: [
                 Tab(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.bookmark, size: 20),
-                      SizedBox(width: 6),
-                      Text("Favorites"),
+                      const Icon(Icons.bookmark, size: 20),
+                      const SizedBox(width: 6),
+                      Text(l10n.favorites),
                     ],
                   ),
                 ),
@@ -82,9 +85,9 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.history, size: 20),
-                      SizedBox(width: 6),
-                      Text("History"),
+                      const Icon(Icons.history, size: 20),
+                      const SizedBox(width: 6),
+                      Text(l10n.history),
                     ],
                   ),
                 ),
@@ -126,32 +129,32 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                     child: Column(
                       children: [
                         HistoryCard(
-                          title: "Bella Vistal Italian",
-                          date: "Scanned On Aug 25, 10:32 AM",
+                          title: l10n.bellaVistalItalian,
+                          date: "${l10n.scannedOn} Aug 25, 10:32 AM",
                           safeItems: 3,
                           notSafeItems: 2,
                           imagePath: Assets.images.bellaVistalItalian.path,
                         ),
                         const SizedBox(height: 12),
                         HistoryCard(
-                          title: "Ocean Breeze Seafood",
-                          date: "Scanned On Aug 24, 07:15 AM",
+                          title: l10n.oceanBreezeSeafood,
+                          date: "${l10n.scannedOn} Aug 24, 07:15 AM",
                           safeItems: 5,
                           notSafeItems: 0,
                           imagePath: Assets.images.oceanBreezeSeafood.path,
                         ),
                         const SizedBox(height: 12),
                         HistoryCard(
-                          title: "Burger Place",
-                          date: "Scanned On Aug 23, 1:45 AM",
+                          title: l10n.burgerPlace,
+                          date: "${l10n.scannedOn} Aug 23, 1:45 AM",
                           safeItems: 3,
                           notSafeItems: 4,
                           imagePath: Assets.images.bellaVistalItalian.path,
                         ),
                         const SizedBox(height: 12),
                         HistoryCard(
-                          title: "Golden Dragon Asian",
-                          date: "Scanned On Aug 22, 10:32 AM",
+                          title: l10n.goldenDragonAsian,
+                          date: "${l10n.scannedOn} Aug 22, 10:32 AM",
                           safeItems: 3,
                           notSafeItems: 0,
                           imagePath: Assets.images.oceanBreezeSeafood.path,
@@ -170,6 +173,8 @@ class _YourActivityScreenState extends State<YourActivityScreen>
 
   /// ===== Favorite Card Widget =====
   Widget _buildFavoriteCard() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -219,9 +224,9 @@ class _YourActivityScreenState extends State<YourActivityScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Grilled Salmon",
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                Text(
+                  l10n.grilledSalmon,
+                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 const SizedBox(height: 6),
                 Container(
@@ -232,9 +237,9 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                     color: const Color(0x1A6CA865),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
-                    "Healthy",
-                    style: TextStyle(
+                  child: Text(
+                    l10n.healthy,
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF6CA865),
                       fontWeight: FontWeight.w400,

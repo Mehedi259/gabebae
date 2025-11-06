@@ -4,17 +4,17 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
-import '../../widgets/custom_bottons/custom_button/sign_in_button.dart'; // ✅ import
+import '../../widgets/custom_bottons/custom_button/sign_in_button.dart';
 
-/// =======================================================
-/// SignIn Popup (Bottom Sheet) with Scroll
-/// =======================================================
 class SignInPopup extends StatelessWidget {
   const SignInPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       width: double.infinity,
       height: 400,
@@ -26,7 +26,7 @@ class SignInPopup extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            /// ---------------- HEADER ----------------
+            /// Header
             Container(
               width: double.infinity,
               height: 56,
@@ -40,9 +40,9 @@ class SignInPopup extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(width: 24),
-                  const Text(
-                    "Sign In",
-                    style: TextStyle(
+                  Text(
+                    l10n.signIn,
+                    style: const TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -51,22 +51,18 @@ class SignInPopup extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: Assets.icons.cross.svg(
-                      width: 35,
-                      height: 35,
-                    ),
+                    child: Assets.icons.cross.svg(width: 35, height: 35),
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 24),
 
-            /// ---------------- SIGN IN BUTTONS ----------------
+            /// Sign In Buttons
             SignInButton(
               bgColor: const Color(0xFF154452),
               textColor: Colors.white,
-              text: "Sign In with Apple",
+              text: l10n.signInWithApple,
               icon: Assets.icons.apple.svg(width: 22, height: 22),
               onTap: () => context.go(RoutePath.profileSetup1.addBasePath),
             ),
@@ -74,7 +70,7 @@ class SignInPopup extends StatelessWidget {
             SignInButton(
               bgColor: Colors.white,
               textColor: const Color(0xFF6B7280),
-              text: "Sign In with Google",
+              text: l10n.signInWithGoogle,
               icon: Assets.icons.google.svg(width: 22, height: 22),
               onTap: () => context.go(RoutePath.profileSetup1.addBasePath),
             ),
@@ -82,19 +78,18 @@ class SignInPopup extends StatelessWidget {
             SignInButton(
               bgColor: Colors.white,
               textColor: const Color(0xFF6B7280),
-              text: "Sign In with Email",
+              text: l10n.signInWithEmail,
               icon: Assets.icons.mail.svg(width: 22, height: 22),
               onTap: () => context.go(RoutePath.enterEmail.addBasePath),
             ),
-
             const SizedBox(height: 24),
 
-            /// ---------------- TERMS & CONDITIONS ----------------
+            /// Terms & Conditions
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text.rich(
                 TextSpan(
-                  text: "By continuing, you agree to Menu Sidekick's ",
+                  text: l10n.byContinuing,
                   style: const TextStyle(
                     fontFamily: "Roboto",
                     fontSize: 12,
@@ -102,23 +97,23 @@ class SignInPopup extends StatelessWidget {
                   ),
                   children: [
                     TextSpan(
-                      text: "Terms and Conditions",
+                      text: l10n.termsAndConditions,
                       style: const TextStyle(
                         decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                       // ..onTap = () => context.go(RoutePath.termsAndConditionAuth.addBasePath),
+                        ..onTap = () {},
                     ),
-                    const TextSpan(text: " and "),
+                    TextSpan(text: l10n.and),
                     TextSpan(
-                      text: "Privacy Policy",
+                      text: l10n.privacyPolicy,
                       style: const TextStyle(
                         decoration: TextDecoration.underline,
                         fontWeight: FontWeight.w500,
                       ),
                       recognizer: TapGestureRecognizer()
-                       // ..onTap = () => context.go(RoutePath.privacyPolicyAuth.addBasePath),
+                        ..onTap = () {},
                     ),
                   ],
                 ),

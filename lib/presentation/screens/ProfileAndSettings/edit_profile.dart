@@ -2,8 +2,11 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../core/controllers/language_controller.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -19,10 +22,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _emailController = TextEditingController(text: "minnie@gmail.com");
   final _dobController = TextEditingController(text: "28/11/2005");
   String _country = "Mexico";
-  String _language = "English";
+
+  // Language Controller
+  final LanguageController _langController = Get.find<LanguageController>();
+
+  // Language code mapping
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -30,7 +39,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Save",
+          text: l10n.save,
           onTap: () => context.go(RoutePath.myProfile.addBasePath),
         ),
       ),
@@ -40,10 +49,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.myProfile.addBasePath),
         ),
-        title: const Text(
-          "Edit Profile",
+        title: Text(
+          l10n.editProfile,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
               color: Color(0xFF1F2937), fontSize: 18, fontWeight: FontWeight.w500),
         ),
         centerTitle: true,
@@ -98,21 +107,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             const SizedBox(height: 24),
 
-            _buildTextField(label: "Name", controller: _nameController),
+            _buildTextField(label: l10n.name, controller: _nameController),
             const SizedBox(height: 16),
 
-            _buildTextField(label: "Email", controller: _emailController),
+            _buildTextField(label: l10n.email, controller: _emailController),
             const SizedBox(height: 16),
 
             _buildTextField(
-              label: "Date of Birth",
+              label: l10n.dateOfBirth,
               controller: _dobController,
               suffixIcon: const Icon(Icons.calendar_today),
             ),
             const SizedBox(height: 16),
 
             _buildDropdownField(
-              label: "Country",
+              label: l10n.country,
               value: _country,
               items: ["Mexico", "USA", "Canada"],
               onChanged: (value) => setState(() => _country = value!),
@@ -172,7 +181,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: value,
+          initialValue: value,
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,
@@ -194,50 +203,61 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Widget _buildLanguageSelection() {
+    final l10n = AppLocalizations.of(context)!;
+
     final languages = [
-      {"name": "English", "icon": Assets.images.english},
-      {"name": "Français", "icon": Assets.images.french},
-      {"name": "Español", "icon": Assets.images.epsol},
+      {"name": l10n.english, "icon": Assets.images.english, "code": "en"},
+      {"name": l10n.french, "icon": Assets.images.french, "code": "fr"},
+      {"name": l10n.spanish, "icon": Assets.images.epsol, "code": "es"},
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Preferred Language",
+          l10n.preferredLanguage,
           style: GoogleFonts.poppins(fontSize: 14, color: Colors.black54),
         ),
         const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: languages.map((lang) {
-              final isSelected = _language == lang["name"];
-              return Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: ElevatedButton(
-                  onPressed: () =>
-                      setState(() => _language = lang["name"] as String),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    isSelected ? const Color(0xFFF4A261) : Colors.white,
-                    side: const BorderSide(color: Color(0xFFF4A261)),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+        Obx(() {
+          final currentLang = _langController.currentLanguageCode;
+
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: languages.map((lang) {
+                final isSelected = currentLang == lang["code"];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Change language using controller
+                      _langController.changeLanguage(lang["code"] as String);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      isSelected ? const Color(0xFFF4A261) : Colors.white,
+                      foregroundColor:
+                      isSelected ? Colors.white : const Color(0xFF1F2937),
+                      side: const BorderSide(color: Color(0xFFF4A261)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        (lang["icon"] as AssetGenImage)
+                            .image(width: 20, height: 20),
+                        const SizedBox(width: 10),
+                        Text(lang["name"] as String),
+                      ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      (lang["icon"] as AssetGenImage).image(width: 20, height: 20),
-                      const SizedBox(width: 10),
-                      Text(lang["name"] as String),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
+                );
+              }).toList(),
+            ),
+          );
+        }),
       ],
     );
   }

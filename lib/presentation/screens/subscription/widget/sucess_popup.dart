@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/custom_assets/assets.gen.dart';
 import '../../../../core/routes/route_path.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class SuccessPopup extends StatelessWidget {
   final VoidCallback onContinue;
@@ -17,6 +18,8 @@ class SuccessPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(0),
@@ -36,7 +39,7 @@ class SuccessPopup extends StatelessWidget {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 60),
-            child: SingleChildScrollView( // ✅ scrollable করে দিলাম
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -51,7 +54,7 @@ class SuccessPopup extends StatelessWidget {
 
                   // Title
                   Text(
-                    "Congrats,\nBeautiful Soul!",
+                    l10n.congratsBeautifulSoul,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 36,
@@ -66,7 +69,7 @@ class SuccessPopup extends StatelessWidget {
 
                   // Subtitle
                   Text(
-                    "Welcome to the Menu Sidekick family—\nyour dining glow-up starts now! ✨",
+                    l10n.welcomeFamily,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
@@ -82,11 +85,7 @@ class SuccessPopup extends StatelessWidget {
                   // Share Button
                   GestureDetector(
                     onTap: () async {
-                      await Share.share(
-                        '🎉 I just joined Menu Sidekick! 🚀\n'
-                            'Your dining glow-up starts here – check it out now:\n'
-                            'https://menusidekick.app',
-                      );
+                      await Share.share(l10n.shareMessage);
                     },
                     child: Container(
                       width: double.infinity,
@@ -98,7 +97,7 @@ class SuccessPopup extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "Share Menu Sidekick with\nFamily and Friends!",
+                          l10n.shareWithFamily,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.poppins(
                             fontSize: 16,
@@ -131,7 +130,7 @@ class SuccessPopup extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Continue",
+                              l10n.continue_,
                               style: GoogleFonts.poppins(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,

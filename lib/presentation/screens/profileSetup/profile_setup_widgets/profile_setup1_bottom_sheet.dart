@@ -3,6 +3,7 @@ import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/routes/route_path.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'profile_setup1_balance_controller_popup.dart';
 import '../../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -17,48 +18,52 @@ class ProfileSetup1BottomSheet extends StatefulWidget {
 class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
   String? selectedOption;
 
-  final List<Map<String, String>> options = [
-    {
-      "title": "Flexitarian",
-      "subtitle": "Plant-based, occasional meat/fish",
-      "image": Assets.images.vegan.path,
-    },
-    {
-      "title": "Whole30",
-      "subtitle": "30-day clean eating",
-      "image": Assets.images.whole30.path,
-    },
-    {
-      "title": "DASH",
-      "subtitle": "Low salt, heart-friendly",
-      "image": Assets.images.dash.path,
-    },
-    {
-      "title": "Mediterranean",
-      "subtitle": "Olive oil, fish, grains",
-      "image": Assets.images.mediterranean.path,
-    },
-    {
-      "title": "Low-FODMAP",
-      "subtitle": "Gut-friendly carb limits",
-      "image": Assets.images.dash.path,
-    },
-    {
-      "title": "Raw Food",
-      "subtitle": "Uncooked plant-based meals",
-      "image": Assets.images.whole30.path,
-    },
-    {
-      "title": "Paleo",
-      "subtitle": "Whole foods only",
-      "image": Assets.images.paleo.path,
-    },
-    {
-      "title": "Keto",
-      "subtitle": "Low carb, high fat",
-      "image": Assets.images.keto.path,
-    },
-  ];
+  List<Map<String, String>> _getLocalizedOptions(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return [
+      {
+        "title": "Flexitarian",
+        "subtitle": l10n.varietyHealthy,
+        "image": Assets.images.vegan.path,
+      },
+      {
+        "title": "Whole30",
+        "subtitle": "30-day clean eating",
+        "image": Assets.images.whole30.path,
+      },
+      {
+        "title": "DASH",
+        "subtitle": "Low salt, heart-friendly",
+        "image": Assets.images.dash.path,
+      },
+      {
+        "title": "Mediterranean",
+        "subtitle": "Olive oil, fish, grains",
+        "image": Assets.images.mediterranean.path,
+      },
+      {
+        "title": "Low-FODMAP",
+        "subtitle": "Gut-friendly carb limits",
+        "image": Assets.images.dash.path,
+      },
+      {
+        "title": "Raw Food",
+        "subtitle": "Uncooked plant-based meals",
+        "image": Assets.images.whole30.path,
+      },
+      {
+        "title": l10n.paleo,
+        "subtitle": l10n.wholeFoodsOnly,
+        "image": Assets.images.paleo.path,
+      },
+      {
+        "title": l10n.keto,
+        "subtitle": l10n.lowCarbHighFat,
+        "image": Assets.images.keto.path,
+      },
+    ];
+  }
 
   void _openBalanceControllerPopup() {
     showDialog(
@@ -80,6 +85,9 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final options = _getLocalizedOptions(context);
+
     return Container(
       height: 680,
       width: double.infinity,
@@ -97,9 +105,9 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
             height: 32,
             padding: const EdgeInsets.symmetric(horizontal: 15),
             alignment: Alignment.center,
-            child: const Text(
-              "Health-Driven",
-              style: TextStyle(
+            child: Text(
+              l10n.healthDriven,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -196,7 +204,7 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
           SizedBox(
             width: double.infinity,
             child: CustomButton(
-              text: "Next Up ✨",
+              text: l10n.nextUp,
               onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
             ),
           ),

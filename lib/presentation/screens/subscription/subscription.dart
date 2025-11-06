@@ -1,8 +1,8 @@
 import 'package:MenuSideKick/presentation/screens/subscription/widget/sucess_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -18,6 +18,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -25,7 +27,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Start My 3-Day Free Trial ✨",
+            text: l10n.startTrialButton,
             onTap: () {
               showDialog(
                 context: context,
@@ -37,7 +39,6 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                 ),
               );
             }
-
         ),
       ),
 
@@ -51,10 +52,10 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 16),
-            const Text(
-              "🌿 Start your 3-day FREE trial to continue ✨",
+            Text(
+              l10n.startFreeTrial,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
                 color: Color(0xFF374151),
@@ -73,15 +74,17 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return AppBar(
       // leading: IconButton(
       //   icon: Assets.icons.back.svg(width: 16, height: 18),
       //   onPressed: () => context.go(RoutePath.myProfile.addBasePath),
       // ),
-      title: const Text(
-        "Subscriptions",
+      title: Text(
+        l10n.subscriptions,
         textAlign: TextAlign.center,
-        style: TextStyle(
+        style: const TextStyle(
           color: Color(0xFF1F2937),
           fontSize: 18,
           fontWeight: FontWeight.w500,
@@ -94,27 +97,29 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   }
 
   Widget _buildSubscriptionOptions() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         _buildSubscriptionOption(
-          title: 'Monthly',
-          price: '\$4.99/mo',
+          title: l10n.monthly,
+          price: l10n.monthlyPrice,
           isSelected: selectedPlan == "Monthly",
-          showFreeTag: selectedPlan == "Monthly", // ✅ Only show when selected
+          showFreeTag: selectedPlan == "Monthly",
           onTap: () => setState(() => selectedPlan = "Monthly"),
         ),
         const SizedBox(height: 12),
         _buildSubscriptionOption(
-          title: 'Yearly',
-          price: '\$24.99/mo \n(\$29.99/year)',
+          title: l10n.yearly,
+          price: l10n.yearlyPrice,
           isSelected: selectedPlan == "Yearly",
-          showFreeTag: selectedPlan == "Yearly", // ✅ Only show when selected
+          showFreeTag: selectedPlan == "Yearly",
           onTap: () => setState(() => selectedPlan = "Yearly"),
         ),
         const SizedBox(height: 8),
         Center(
           child: Text(
-            '💛 No payment due today.',
+            l10n.noPaymentToday,
             style: GoogleFonts.quicksand(
               fontWeight: FontWeight.w400,
               fontSize: 14,
@@ -133,6 +138,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     required bool showFreeTag,
     required VoidCallback onTap,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -230,7 +237,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                   border: Border.all(color: const Color(0xFFE5E7EB)),
                 ),
                 child: Text(
-                  "3 Days Free",
+                  l10n.threeDaysFree,
                   style: GoogleFonts.quicksand(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -245,10 +252,12 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   }
 
   Widget _buildStartTrialButton() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         Text(
-          "3 days free, then \$29.99 per year. Cancel anytime during trial.",
+          l10n.trialTerms,
           style: GoogleFonts.quicksand(
             fontWeight: FontWeight.w400,
             fontSize: 12,

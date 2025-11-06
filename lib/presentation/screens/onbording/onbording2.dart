@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/custom_assets/assets.gen.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 import '../authentication/signin.dart';
 
-/// =======================================================
-/// OnBoarding2Screen (with heading & centered body)
-/// =======================================================
 class OnBoarding2Screen extends StatelessWidget {
   const OnBoarding2Screen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -20,7 +20,7 @@ class OnBoarding2Screen extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "I’m Ready 💛",
+          text: l10n.imReady,
           onTap: () {
             showModalBottomSheet(
               context: context,
@@ -39,8 +39,7 @@ class OnBoarding2Screen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-
-            /// ================= Progress Indicator =================
+            /// Progress Indicator
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -73,30 +72,29 @@ class OnBoarding2Screen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            /// ================= Title Text =================
-            const Text(
-              "How It Works ✨",
+            /// Title Text
+            Text(
+              l10n.howItWorks,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontWeight: FontWeight.w700,
                 fontSize: 24,
                 height: 32 / 24,
-                color: Color(0xFF0F5132), // #0F5132
+                color: Color(0xFF0F5132),
               ),
             ),
 
             const SizedBox(height: 40),
 
-            /// ================= Body (Scrollable) =================
+            /// Body (Scrollable)
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-
-                      /// ================= Illustration Image =================
+                      /// Illustration Image
                       SizedBox(
                         width: double.infinity,
                         height: 140,
@@ -110,14 +108,14 @@ class OnBoarding2Screen extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      /// ============= Middle Container (Subtitle + Description) =============
-                      const Column(
+                      /// Middle Container (Subtitle + Description)
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Simply scan any menu and see\nwhat’s right for you",
+                            l10n.scanMenuMessage,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: "EB Garamond",
                               fontWeight: FontWeight.w500,
                               fontSize: 24,
@@ -125,11 +123,11 @@ class OnBoarding2Screen extends StatelessWidget {
                               color: Color(0xFFE27B4F),
                             ),
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           Text(
-                            "Personalized for your diet, allergies, and\nhealth 🌿 — even across languages 🌎",
+                            l10n.personalizedMessage,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: "Poppins",
                               fontWeight: FontWeight.w400,
                               fontSize: 16,

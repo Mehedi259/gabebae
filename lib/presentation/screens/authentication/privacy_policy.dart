@@ -2,9 +2,9 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
@@ -21,27 +21,26 @@ class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Continue",
+          text: l10n.continue_,
           onTap: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
       ),
-
       appBar: AppBar(
         leading: IconButton(
           icon: Assets.images.dibbaback.image(width: 32, height: 44),
           onPressed: () => context.go(RoutePath.onBoarding2.addBasePath),
         ),
-        title: const Text(
-          "Privacy Policy",
+        title: Text(
+          l10n.privacyPolicy,
           textAlign: TextAlign.center,
-          style: TextStyle(
+          style: const TextStyle(
             color: Color(0xFF1F2937),
             fontSize: 18,
             fontWeight: FontWeight.w500,
@@ -51,7 +50,6 @@ class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-
       body: Column(
         children: [
           Expanded(
@@ -60,9 +58,8 @@ class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Text(
-                    "✨ Your Safety is Our Priority ✨",
+                    l10n.yourSafetyPriority,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
@@ -71,36 +68,40 @@ class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Main Content
                   Text(
-                    "Menu Sidekick helps guide your food choices 🌿 but it may not always be perfect. "
-                        "Ingredients and recipes can change anytime.\n\n"
-                        "⚠️ Always double-check ⚠️\n\n"
-                        "Ask your server or restaurant before ordering, especially if you have allergies. "
-                        "This app is for information only 💛 — not medical advice or a guarantee of safety.",
+                    l10n.safetyMessage,
                     textAlign: TextAlign.start,
-                    style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87, height: 1.5),
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.black87,
+                      height: 1.5,
+                    ),
                   ),
                   const SizedBox(height: 24),
-
-                  // ✅ Checkbox 1
                   Row(
                     children: [
                       Checkbox(
                         value: agreeTerms,
                         onChanged: (val) => setState(() => agreeTerms = val ?? false),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         activeColor: AppColors.black000000,
                       ),
                       Expanded(
                         child: Text.rich(
                           TextSpan(
-                            text: "I agree to Menu Sidekick’s ",
-                            style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
-                            children: const [
+                            text: l10n.agreeToTerms,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                            children: [
                               TextSpan(
-                                text: "Terms of Service",
+                                text: l10n.termsOfService,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
@@ -108,24 +109,30 @@ class _PrivacyPolicyScreenAuthState extends State<PrivacyPolicyScreenAuth> {
                       ),
                     ],
                   ),
-
-                  // ✅ Checkbox 2
                   Row(
                     children: [
                       Checkbox(
                         value: agreePrivacy,
                         onChanged: (val) => setState(() => agreePrivacy = val ?? false),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
                         activeColor: AppColors.black000000,
                       ),
                       Expanded(
                         child: Text.rich(
                           TextSpan(
-                            text: "I agree to Menu Sidekick’s ",
-                            style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87),
-                            children: const [
+                            text: l10n.agreeToPrivacy,
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Colors.black87,
+                            ),
+                            children: [
                               TextSpan(
-                                text: "Privacy Policy",
+                                text: l10n.privacyPolicy,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),

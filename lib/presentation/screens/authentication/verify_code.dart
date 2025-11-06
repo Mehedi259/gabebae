@@ -5,12 +5,10 @@ import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
-/// ==========================
-/// OTP Verification Screen
-/// ==========================
 class OtpScreen extends StatefulWidget {
   const OtpScreen({super.key});
 
@@ -24,53 +22,42 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
-          text: "Verify",
+          text: l10n.verify,
           onTap: () {
             if (isOtpComplete) {
               context.go(RoutePath.profileSetup1.addBasePath);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text("Please enter 4 digit code"),
-                ),
+                SnackBar(content: Text(l10n.pleaseEnterCode)),
               );
             }
           },
         ),
       ),
-
-      /// ---------------- APP BAR ----------------
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         elevation: 0,
         leading: IconButton(
           onPressed: () => context.go(RoutePath.enterEmail.addBasePath),
-          icon: Assets.icons.back.svg(
-            width: 24,
-            height: 24,
-          ),
+          icon: Assets.icons.back.svg(width: 24, height: 24),
         ),
       ),
-
-      /// ---------------- BODY ----------------
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 80),
-
-            /// ---------------- TITLE ----------------
-            const Text(
-              "Enter Verification Code",
-              style: TextStyle(
+            Text(
+              l10n.enterVerificationCode,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontWeight: FontWeight.w700,
                 fontSize: 20,
@@ -78,13 +65,10 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               textAlign: TextAlign.left,
             ),
-
             const SizedBox(height: 12),
-
-            /// ---------------- SUBTITLE ----------------
-            const Text(
-              "Enter the code that was sent to your email.",
-              style: TextStyle(
+            Text(
+              l10n.codeSentToEmail,
+              style: const TextStyle(
                 fontFamily: "Poppins",
                 fontWeight: FontWeight.w400,
                 fontSize: 12,
@@ -92,10 +76,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               textAlign: TextAlign.left,
             ),
-
             const SizedBox(height: 40),
-
-            /// ---------------- OTP INPUT ----------------
             PinCodeTextField(
               appContext: context,
               length: 4,
@@ -131,33 +112,25 @@ class _OtpScreenState extends State<OtpScreen> {
                 });
               },
             ),
-
             const SizedBox(height: 28),
-
-            /// ---------------- RESEND LINK ----------------
             RichText(
-              textAlign: TextAlign.left, // left align
+              textAlign: TextAlign.left,
               text: TextSpan(
                 style: const TextStyle(
                   fontFamily: "Poppins",
                   fontWeight: FontWeight.w400,
                   fontSize: 14,
-                  color: Colors.black, // normal text color
+                  color: Colors.black,
                 ),
                 children: [
-                  const TextSpan(
-                    text: "Didn’t receive the code? ",
-                  ),
+                  TextSpan(text: l10n.didntReceiveCode),
                   TextSpan(
-                    text: "Resend",
+                    text: l10n.resend,
                     style: const TextStyle(
-                      color: Color(0xFF6DAEDB), // clickable color
+                      color: Color(0xFF6DAEDB),
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-
-                      },
+                    recognizer: TapGestureRecognizer()..onTap = () {},
                   ),
                 ],
               ),

@@ -1,10 +1,10 @@
+// lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart
+// Updated with localization
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/custom_assets/assets.gen.dart';
+import '../../../../l10n/app_localizations.dart';
 
-/// =============================================================
-/// Profile Setup 1 - Diet Balance Controller Popup (Smooth Drag)
-/// =============================================================
 class ProfileSetup1BalanceControllerPopup extends StatefulWidget {
   const ProfileSetup1BalanceControllerPopup({super.key});
 
@@ -15,17 +15,8 @@ class ProfileSetup1BalanceControllerPopup extends StatefulWidget {
 
 class _ProfileSetup1BalanceControllerPopupState
     extends State<ProfileSetup1BalanceControllerPopup> {
-  /// Current drag position (0.0 = Flexible, 0.5 = Balanced, 1.0 = Strict)
   double dragValue = 0.5;
 
-  /// Options (title + image)
-  final List<Map<String, String>> dietOptions = [
-    {"title": "Flexible", "image": Assets.images.flexible.path},
-    {"title": "Balanced", "image": Assets.images.balanced.path},
-    {"title": "Strict", "image": Assets.images.strict.path},
-  ];
-
-  /// Snap to nearest option after drag release
   void _onDragEnd(DragEndDetails details) {
     setState(() {
       if (dragValue < 0.25) {
@@ -46,6 +37,14 @@ class _ProfileSetup1BalanceControllerPopupState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final dietOptions = [
+      {"title": l10n.flexible, "image": Assets.images.flexible.path},
+      {"title": l10n.balanced, "image": Assets.images.balanced.path},
+      {"title": l10n.strict, "image": Assets.images.strict.path},
+    ];
+
     return SingleChildScrollView(
       child: Center(
         child: Container(
@@ -62,28 +61,18 @@ class _ProfileSetup1BalanceControllerPopupState
                 blurRadius: 15,
                 offset: Offset(0, 10),
               ),
-              BoxShadow(
-                color: Color(0x19000000),
-                blurRadius: 6,
-                offset: Offset(0, 4),
-              ),
             ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              /// ================== Top Options ==================
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(dietOptions.length, (index) {
                   final option = dietOptions[index];
                   return Column(
                     children: [
-                      Image.asset(
-                        option["image"]!,
-                        width: 32,
-                        height: 32,
-                      ),
+                      Image.asset(option["image"]!, width: 32, height: 32),
                       const SizedBox(height: 8),
                       Text(
                         option["title"]!,
@@ -98,21 +87,16 @@ class _ProfileSetup1BalanceControllerPopupState
                   );
                 }),
               ),
-
               const SizedBox(height: 24),
-
-              /// ================== Gradient Bar + Movable Controller ==================
               SizedBox(
                 width: double.infinity,
                 height: 48,
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     double maxWidth = constraints.maxWidth - 48;
-
                     return Stack(
                       alignment: Alignment.centerLeft,
                       children: [
-                        /// Gradient bar
                         Container(
                           width: double.infinity,
                           height: 12,
@@ -120,8 +104,6 @@ class _ProfileSetup1BalanceControllerPopupState
                             borderRadius: BorderRadius.circular(9999.r),
                             border: Border.all(color: const Color(0xFFE5E7EB)),
                             gradient: const LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
                               colors: [
                                 Color(0xFFFEF3C7),
                                 Color(0xFFD1FAE5),
@@ -130,15 +112,12 @@ class _ProfileSetup1BalanceControllerPopupState
                             ),
                           ),
                         ),
-
-                        /// Dragable controller
                         Positioned(
                           left: dragValue * maxWidth,
                           child: GestureDetector(
                             onHorizontalDragUpdate: (details) {
                               setState(() {
-                                dragValue +=
-                                    details.delta.dx / maxWidth;
+                                dragValue += details.delta.dx / maxWidth;
                                 dragValue = dragValue.clamp(0.0, 1.0);
                               });
                             },
@@ -159,11 +138,6 @@ class _ProfileSetup1BalanceControllerPopupState
                                     blurRadius: 15,
                                     offset: Offset(0, 10),
                                   ),
-                                  BoxShadow(
-                                    color: Color(0x19000000),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 4),
-                                  ),
                                 ],
                               ),
                               child: Center(
@@ -181,10 +155,7 @@ class _ProfileSetup1BalanceControllerPopupState
                   },
                 ),
               ),
-
               const SizedBox(height: 24),
-
-              /// ================== Button + Description ==================
               Column(
                 children: [
                   Container(
@@ -207,10 +178,10 @@ class _ProfileSetup1BalanceControllerPopupState
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    "You enjoy variety while maintaining healthy choices",
+                  Text(
+                    l10n.varietyHealthy,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 
+import '../../../../l10n/app_localizations.dart';
+
 class HistoryCard extends StatelessWidget {
   final String title;
   final String date;
@@ -19,10 +21,12 @@ class HistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // List of PDF scanned titles
+    final l10n = AppLocalizations.of(context)!;
+
+    // List of PDF scanned titles (checking localized titles)
     final List<String> pdfScannedTitles = [
-      "Ocean Breeze Seafood",
-      "Golden Dragon Asian",
+      l10n.oceanBreezeSeafood,
+      l10n.goldenDragonAsian,
     ];
 
     // Check if current item is PDF scanned
@@ -98,7 +102,7 @@ class HistoryCard extends StatelessWidget {
                           color: const Color(0x1A6CA865),
                           borderRadius: BorderRadius.circular(9999),
                         ),
-                        child: Text("✅ $safeItems Safe Items",
+                        child: Text("✅ $safeItems ${l10n.safeItems}",
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
@@ -113,7 +117,7 @@ class HistoryCard extends StatelessWidget {
                           color: const Color(0x1AF87171),
                           borderRadius: BorderRadius.circular(9999),
                         ),
-                        child: Text("⚠️ $notSafeItems Not Safe",
+                        child: Text("⚠️ $notSafeItems ${l10n.notSafe}",
                             style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,

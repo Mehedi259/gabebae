@@ -1,10 +1,11 @@
+//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
-
 import '../../../../core/routes/route_path.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class ProfileSetup4BottomSheet extends StatefulWidget {
   const ProfileSetup4BottomSheet({super.key});
@@ -15,16 +16,46 @@ class ProfileSetup4BottomSheet extends StatefulWidget {
 }
 
 class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
-  /// Track switch states
+  /// Track switch states - using language-independent keys
   final Map<String, bool> _switchStates = {
-    "Asthma": false,
-    "Kidney Disease": false,
-    "Thyroid Issues": false,
-    "Heart Disease": false,
+    "asthma": false,
+    "kidneyDisease": false,
+    "thyroidIssues": false,
+    "heartDisease": false,
   };
+
+  List<Map<String, dynamic>> _getLocalizedIngredients(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return [
+      {
+        "key": "asthma",
+        "title": l10n.asthma,
+        "image": Assets.images.dairy.path,
+      },
+      {
+        "key": "kidneyDisease",
+        "title": l10n.kidneyDisease,
+        "image": Assets.images.gluten.path,
+      },
+      {
+        "key": "thyroidIssues",
+        "title": l10n.thyroidIssues,
+        "image": Assets.images.nuts.path,
+      },
+      {
+        "key": "heartDisease",
+        "title": l10n.heartDisease,
+        "image": Assets.images.soy.path,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final ingredients = _getLocalizedIngredients(context);
+
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
@@ -43,9 +74,9 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
                 controller: controller,
                 children: [
                   /// ===== Header =====
-                  const Text(
-                    "Health-Driven",
-                    style: TextStyle(
+                  Text(
+                    l10n.healthDriven,
+                    style: const TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -56,22 +87,13 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
                   const SizedBox(height: 24),
 
                   /// ===== Cards (No subtitle) =====
-                  _buildHealthCard(
-                    title: "Asthma",
-                    imagePath: Assets.images.dairy.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Kidney Disease",
-                    imagePath: Assets.images.gluten.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Thyroid Issues",
-                    imagePath: Assets.images.nuts.path,
-                  ),
-                  _buildHealthCard(
-                    title: "Heart Disease",
-                    imagePath: Assets.images.soy.path,
-                  ),
+                  ...ingredients.map((ingredient) {
+                    return _buildHealthCard(
+                      ingredientKey: ingredient["key"] as String,
+                      title: ingredient["title"] as String,
+                      imagePath: ingredient["image"] as String,
+                    );
+                  }).toList(),
                 ],
               ),
             ),
@@ -82,8 +104,8 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
               right: 24,
               bottom: 24,
               child: CustomButton(
-                text: "Ready to Glow ✨",
-                  onTap: () => context.go(RoutePath.profileSetup5.addBasePath),
+                text: l10n.readyToGlow,
+                onTap: () => context.go(RoutePath.profileSetup5.addBasePath),
               ),
             ),
           ],
@@ -96,10 +118,11 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
   /// Reusable Card With Custom Switch (No subtitle)
   /// ===============================
   Widget _buildHealthCard({
+    required String ingredientKey,
     required String title,
     required String imagePath,
   }) {
-    final bool isActive = _switchStates[title] ?? false;
+    final bool isActive = _switchStates[ingredientKey] ?? false;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -154,7 +177,7 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
           GestureDetector(
             onTap: () {
               setState(() {
-                _switchStates[title] = !isActive;
+                _switchStates[ingredientKey] = !isActive;
               });
             },
             child: AnimatedContainer(

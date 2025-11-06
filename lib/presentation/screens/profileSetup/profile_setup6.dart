@@ -1,3 +1,4 @@
+//lib/presentation/screens/profileSetup/profile_setup6.dart
 import 'dart:async';
 import 'dart:math';
 import 'package:MenuSideKick/core/routes/routes.dart';
@@ -6,6 +7,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class ProfileSetup6Screen extends StatefulWidget {
@@ -47,6 +49,8 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -81,10 +85,10 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
               AnimatedOpacity(
                 opacity: _visible[0] ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 500),
-                child: const Text(
-                  "✨ Unlocking your Sidekick’s Superpowers... ✨",
+                child: Text(
+                  l10n.unlockingSidekick,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     color: Color(0xFF374151),
@@ -98,46 +102,36 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
                   AnimatedOpacity(
                     opacity: _visible[0] ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: const _FeatureItem(
-                      emoji: "🦸‍♀️",
-                      text:
-                      "Personal Shield → Protects you from foods that don’t fit your diet, allergies, or health 🌿",
+                    child: _FeatureItem(
+                      text: l10n.personalShield,
                     ),
                   ),
                   AnimatedOpacity(
                     opacity: _visible[1] ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: const _FeatureItem(
-                      emoji: "🥦",
-                      text:
-                      "Ingredient X-Ray Vision → Spots 5,000+ hidden ingredients at a glance",
+                    child: _FeatureItem(
+                      text: l10n.ingredientXray,
                     ),
                   ),
                   AnimatedOpacity(
                     opacity: _visible[2] ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: const _FeatureItem(
-                      emoji: "📸",
-                      text:
-                      "Menu Scan Vision → Activating camera, PDF & URL scanning",
+                    child: _FeatureItem(
+                      text: l10n.menuScanVision,
                     ),
                   ),
                   AnimatedOpacity(
                     opacity: _visible[3] ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: const _FeatureItem(
-                      emoji: "🌎",
-                      text:
-                      "Global Translator → Reads menus in 20+ languages, no passport required.",
+                    child: _FeatureItem(
+                      text: l10n.globalTranslator,
                     ),
                   ),
                   AnimatedOpacity(
                     opacity: _visible[4] ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 500),
-                    child: const _FeatureItem(
-                      emoji: "🤖",
-                      text:
-                      "AI Wisdom → Powering up tips, swaps & safe suggestions",
+                    child: _FeatureItem(
+                      text: l10n.aiWisdom,
                     ),
                   ),
                 ],
@@ -151,30 +145,20 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
 }
 
 class _FeatureItem extends StatelessWidget {
-  final String emoji;
   final String text;
-  const _FeatureItem({required this.emoji, required this.text});
+  const _FeatureItem({required this.text});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 18)),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF374151),
-                height: 1.4,
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          color: Color(0xFF374151),
+          height: 1.4,
+        ),
       ),
     );
   }
