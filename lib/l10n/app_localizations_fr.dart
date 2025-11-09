@@ -635,4 +635,343 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get qrCodeLinkCopied =>
       'Lien du code QR copié dans le presse-papiers !';
+
+  @override
+  String get yourMealResults => '🍽️ Résultats de Votre Repas';
+
+  @override
+  String get quickPdfView => 'Vue PDF\nRapide';
+
+  @override
+  String get safe => 'Sûr';
+
+  @override
+  String get modify => '⚠️ Modifier';
+
+  @override
+  String get avoid => '❌ Éviter';
+
+  @override
+  String get alaCarteMode => '✨ Mode À La Carte';
+
+  @override
+  String get tips => 'Conseils';
+
+  @override
+  String get askAiChatAboutThis => 'Demander au Chat IA à ce Sujet';
+
+  @override
+  String get grilledChickenSalad => 'Salade de Poulet Grillé';
+
+  @override
+  String get grilledChickenSaladSubtitle => 'Salade de Poulet Grillé';
+
+  @override
+  String get alignedAndGlowing =>
+      'Aligné et rayonnant — ce repas est parfait ! 🌿';
+
+  @override
+  String get tipOliveOil =>
+      '💡 Utilisez de l\'huile d\'olive au lieu de l\'huile de palme';
+
+  @override
+  String get vegetableStirFry => 'Légumes Sautés';
+
+  @override
+  String get vegetableStirFrySubtitle => 'Légumes Sautés';
+
+  @override
+  String get almostSafeTweak =>
+      '⚠️ Presque sûr, ajustez-le un peu ✨\n💡 Évitez le piquant → Sûr 🌿';
+
+  @override
+  String get quinoaBuddha => 'Bol de Bouddha au Quinoa';
+
+  @override
+  String get quinoaBuddhaSubtitle => 'Bol de Bouddha au Quinoa';
+
+  @override
+  String get perfectPowerBowl =>
+      'Bol de puissance parfait — idéal pour la récupération musculaire 💪';
+
+  @override
+  String get paneerTikka => 'Paneer Tikka';
+
+  @override
+  String get paneerTikkaSubtitle => 'Tikka de Paneer';
+
+  @override
+  String get considerReplacing =>
+      '⚠️ Envisagez de remplacer le paneer par du tofu pour une option plus légère.';
+
+  @override
+  String get cheesyPasta => 'Pâtes au Fromage';
+
+  @override
+  String get cheesyPastaSubtitle => 'Pâtes au Fromage';
+
+  @override
+  String get notAMatch => 'Pas adapté pour vous, chéri 💛';
+
+  @override
+  String get deepFriedSnacks => 'Snacks Frits';
+
+  @override
+  String get deepFriedSnacksSubtitle => 'Snacks Frits';
+
+  @override
+  String get avoidThisMeal =>
+      '❌ Évitez ce repas pour une journée plus légère et plus saine.';
+
+  @override
+  String get tagGlutenFree => '🌱 Sans Gluten';
+
+  @override
+  String get tagDairyFree => '🥛 Sans Produits Laitiers';
+
+  @override
+  String get tagVegan => '🌱 Végétalien';
+
+  @override
+  String get tagHighProtein => '💪 Riche en Protéines';
+
+  @override
+  String get tagSpicy => '🌶️ Épicé';
+
+  @override
+  String get tagDairy => '🥛 Produits Laitiers';
+
+  @override
+  String get tagVegetarian => '🌱 Végétarien';
+
+  @override
+  String get tagGluten => '🌾 Gluten';
+
+  @override
+  String get tagDeepFried => '🍟 Frit';
+
+  @override
+  String get tagHighOil => '🍳 Riche en Huile';
+
+  @override
+  String get scanMenu => 'Scanner le Menu';
+
+  @override
+  String get runScan => 'Lancer le Scan';
+
+  @override
+  String get photo => 'Photo';
+
+  @override
+  String get video => 'Vidéo';
+
+  @override
+  String get document => 'Document';
+
+  @override
+  String get helpTitle => 'Comment Scanner';
+
+  @override
+  String get helpStep1 => 'Positionnez le menu dans le cadre';
+
+  @override
+  String get helpStep2 => 'Assurez-vous que le texte est clair et lisible';
+
+  @override
+  String get helpStep3 =>
+      'Appuyez sur le bouton de l\'obturateur pour capturer';
+
+  @override
+  String get helpStep4 => 'Vérifiez et ajoutez plus de photos si nécessaire';
+
+  @override
+  String get helpStep5 => 'Appuyez sur \'Lancer le Scan\' quand vous êtes prêt';
+
+  @override
+  String get buildMyPlate => '🍽️ Composer Mon Assiette';
+
+  @override
+  String get pickSafeIngredients =>
+      'Choisissez des ingrédients sûrs 🌿 ou essayez une \n combinaison suggérée 💛';
+
+  @override
+  String get myPlate => 'Mon Assiette';
+
+  @override
+  String get addIngredientsPrompt =>
+      '✨ Ajoutez des ingrédients pour composer votre assiette';
+
+  @override
+  String get suggestCombo => 'Suggérer Combo';
+
+  @override
+  String get safeForYou => 'Sûr pour Vous';
+
+  @override
+  String get buildMyPlateInfo =>
+      '✨ Ce sont les articles que Menu Sidekick a repérés comme sûrs pour vous. Certains restaurants peuvent ne pas permettre de mélanger et assortir, alors vérifiez avec votre serveur ce qui est disponible.';
+
+  @override
+  String get extraSauce => '🍅 Sauce Supplémentaire';
+
+  @override
+  String get extraVeggies => '🥬 Légumes Supplémentaires';
+
+  @override
+  String get olives => '🫒 Olives';
+
+  @override
+  String get spicy => '🌶️ Épicé';
+
+  @override
+  String get garlic => '🧄 Ail';
+
+  @override
+  String get orderingTipsTitle => 'Conseils pour Commander Votre Assiette';
+
+  @override
+  String get orderingTipsSubtitle =>
+      'Rappels rapides pour garder votre repas sûr et éclatant✨';
+
+  @override
+  String get yourPlateCombo => 'VOTRE COMBINAISON D\'ASSIETTE';
+
+  @override
+  String get tipsSelection => 'Sélection de Conseils';
+
+  @override
+  String get saveMeal => 'Sauvegarder le Repas';
+
+  @override
+  String get qrShare => 'Partager QR';
+
+  @override
+  String get tipAskAboutOilsTitle => 'Demandez sur les Huiles';
+
+  @override
+  String get tipAskAboutOilsDesc =>
+      'Confirmez que le poulet est grillé à l\'huile d\'olive, pas au beurre.';
+
+  @override
+  String get tipSimplifySaucesTitle => 'Simplifier les Sauces';
+
+  @override
+  String get tipSimplifySaucesDesc =>
+      'Demandez les sauces à part pour garder le contrôle.';
+
+  @override
+  String get tipStayHydratedTitle => 'Restez Hydraté';
+
+  @override
+  String get tipStayHydratedDesc =>
+      'Demandez les sauces à part pour garder le contrôle.';
+
+  @override
+  String get tipAskYourServerTitle => 'Demandez à Votre Serveur';
+
+  @override
+  String get tipAskYourServerDesc =>
+      'Pourriez-vous confirmer si le riz est cuit au beurre ou à l\'huile?\n\nY a-t-il de la sauce soja dans cette marinade?';
+
+  @override
+  String get saveYourMeal => 'Sauvegardez Votre Repas';
+
+  @override
+  String get tapToAddPhoto => 'Appuyez pour ajouter une photo de votre repas';
+
+  @override
+  String get changePhoto => 'Changer de Photo';
+
+  @override
+  String get giveYourMealName => 'Donnez un nom à votre repas';
+
+  @override
+  String get mealNamePlaceholder => 'ex., Mon Pad Thai Sans Produits Laitiers';
+
+  @override
+  String get thisWillAppear => 'Cela apparaîtra dans vos Favoris';
+
+  @override
+  String mealSavedSuccess(Object mealName) {
+    return 'Repas \'$mealName\' sauvegardé avec succès! 🎉';
+  }
+
+  @override
+  String get takePhoto => 'Prendre une Photo';
+
+  @override
+  String get chooseFromGallery => 'Choisir dans la Galerie';
+
+  @override
+  String get positionMenuInFrame => 'Positionnez le menu dans le cadre';
+
+  @override
+  String get pdf => 'PDF';
+
+  @override
+  String get url => 'URL';
+
+  @override
+  String get tipsForClearScan => 'Conseils pour un Scan Clair';
+
+  @override
+  String get tipsForClearScanSubtitle =>
+      'Votre compagnon culinaire fonctionne mieux lorsque le menu est facile à voir. Voici comment l\'améliorer:';
+
+  @override
+  String get tipFlatSteadyTitle => 'Plat et Stable';
+
+  @override
+  String get tipFlatSteadyDesc =>
+      'Placez le menu à plat, tenez le téléphone stable.';
+
+  @override
+  String get tipGoodLightingTitle => 'Bon Éclairage';
+
+  @override
+  String get tipGoodLightingDesc =>
+      'La lumière naturelle est la meilleure. Évitez les reflets forts.';
+
+  @override
+  String get tipNoCroppingTitle => 'Pas de Recadrage';
+
+  @override
+  String get tipNoCroppingDesc => 'Capturez toute la page de bout en bout.';
+
+  @override
+  String get tipSharpClearTitle => 'Net et Clair';
+
+  @override
+  String get tipSharpClearDesc =>
+      'Assurez-vous que le texte est lisible pour de meilleurs résultats.';
+
+  @override
+  String get tipSpecialMessage =>
+      'Pensez-y comme prendre une photo pour un ami - claire, lumineuse et chaleureuse. Plus la photo est claire, mieux nous pouvons vous guider!';
+
+  @override
+  String get chooseHowToScan => 'Choisissez Comment Scanner';
+
+  @override
+  String get scanOptionPhoto => 'Photo';
+
+  @override
+  String get scanOptionPhotoDesc =>
+      'Placez le menu à plat, tenez le téléphone stable.';
+
+  @override
+  String get scanOptionPDF => 'PDF';
+
+  @override
+  String get scanOptionPDFDesc =>
+      'La lumière naturelle est la meilleure. Évitez les reflets forts.';
+
+  @override
+  String get scanOptionURL => 'URL';
+
+  @override
+  String get scanOptionURLDesc => 'Capturez toute la page de bout en bout.';
+
+  @override
+  String get gotIt => 'Compris !';
 }

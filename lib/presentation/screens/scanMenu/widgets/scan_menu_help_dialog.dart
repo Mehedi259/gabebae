@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/app_colors/app_colors.dart';
 
 class ScanMenuHelpDialog extends StatelessWidget {
@@ -8,10 +9,12 @@ class ScanMenuHelpDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
-        width: double.infinity, // overflow এড়াতে
+        width: double.infinity,
         decoration: BoxDecoration(
           color: AppColors.backgroundColor,
           borderRadius: BorderRadius.circular(20),
@@ -32,7 +35,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        "Tips for a Clear Scan",
+                        l10n.tipsForClearScan,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 18,
@@ -53,7 +56,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: Text(
-                    "Your dining sidekick works best when the menu is easy to see. Here's how to glow it up:",
+                    l10n.tipsForClearScanSubtitle,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                       fontSize: 14,
@@ -66,17 +69,17 @@ class ScanMenuHelpDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               /// ---- Tips ----
-              _buildTipItem("✨", "Flat & Steady",
-                  "Place the menu flat, hold the phone steady.", const Color(0xFFFFCA28)),
+              _buildTipItem("✨", l10n.tipFlatSteadyTitle,
+                  l10n.tipFlatSteadyDesc, const Color(0xFFFFCA28)),
               const SizedBox(height: 16),
-              _buildTipItem("✨", "Good Lighting",
-                  "Natural light is best. Avoid strong reflections.", const Color(0xFFFFCA28)),
+              _buildTipItem("✨", l10n.tipGoodLightingTitle,
+                  l10n.tipGoodLightingDesc, const Color(0xFFFFCA28)),
               const SizedBox(height: 16),
-              _buildTipItem("✨", "No Cropping",
-                  "Capture the whole page edge to edge.", const Color(0xFF10B981)),
+              _buildTipItem("✨", l10n.tipNoCroppingTitle,
+                  l10n.tipNoCroppingDesc, const Color(0xFF10B981)),
               const SizedBox(height: 16),
-              _buildTipItem("✨", "Sharp & Clear",
-                  "Make sure the text is legible for best results.", const Color(0xFFFFCA28)),
+              _buildTipItem("✨", l10n.tipSharpClearTitle,
+                  l10n.tipSharpClearDesc, const Color(0xFFFFCA28)),
               const SizedBox(height: 20),
 
               /// ---- Special Message ----
@@ -93,22 +96,12 @@ class ScanMenuHelpDialog extends StatelessWidget {
                     const Text("🌸", style: TextStyle(fontSize: 18)),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            color: const Color(0xFF831843),
-                            height: 1.4,
-                          ),
-                          children: const [
-                            TextSpan(
-                              text: "Think of it as taking a photo for friend- ",
-                            ),
-                            TextSpan(
-                              text:
-                              "clear, bright, and cozy. The clearer the shot, the better we can guide you!",
-                            ),
-                          ],
+                      child: Text(
+                        l10n.tipSpecialMessage,
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          color: const Color(0xFF831843),
+                          height: 1.4,
                         ),
                       ),
                     ),
@@ -126,7 +119,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        "Choose How to Scan",
+                        l10n.chooseHowToScan,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontSize: 18,
@@ -143,14 +136,14 @@ class ScanMenuHelpDialog extends StatelessWidget {
               const SizedBox(height: 20),
 
               /// ---- Scan Options ----
-              _buildScanOption("📷", "Photo",
-                  "Place the menu flat, hold the phone steady."),
+              _buildScanOption("📷", l10n.scanOptionPhoto,
+                  l10n.scanOptionPhotoDesc),
               const SizedBox(height: 12),
-              _buildScanOption("📄", "PDF",
-                  "Natural light is best. Avoid strong reflections."),
+              _buildScanOption("📄", l10n.scanOptionPDF,
+                  l10n.scanOptionPDFDesc),
               const SizedBox(height: 12),
-              _buildScanOption("🔗", "URL",
-                  "Capture the whole page edge to edge."),
+              _buildScanOption("🔗", l10n.scanOptionURL,
+                  l10n.scanOptionURLDesc),
               const SizedBox(height: 24),
 
               /// ---- Close Button ----
@@ -165,7 +158,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    "Got it!",
+                    l10n.gotIt,
                     style: GoogleFonts.poppins(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

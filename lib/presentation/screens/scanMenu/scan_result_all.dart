@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 /// Enum for tab states
@@ -25,13 +26,15 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
       /// ---------- FIXED HEADER ----------
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(64),
-        child: _buildHeader(),
+        child: _buildHeader(l10n),
       ),
 
       /// ---------- SCROLLABLE BODY ----------
@@ -40,25 +43,26 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
         child: Column(
           children: [
             const SizedBox(height: 8),
-            _buildFilterTabs(),
+            _buildFilterTabs(l10n),
             const SizedBox(height: 8),
             _buildALaCarteButton(
+              l10n,
               onTap: () =>
                   context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
             ),
             const SizedBox(height: 12),
-            _buildCardsView(),
+            _buildCardsView(l10n),
           ],
         ),
       ),
 
       /// ---------- FIXED BOTTOM BUTTONS ----------
-      bottomNavigationBar: _buildBottomButtons(),
+      bottomNavigationBar: _buildBottomButtons(l10n),
     );
   }
 
   /// -------------------- HEADER --------------------
-  Widget _buildHeader() {
+  Widget _buildHeader(AppLocalizations l10n) {
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Colors.white,
@@ -72,7 +76,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             onPressed: () => context.go(RoutePath.scanMenu.addBasePath),
           ),
           Text(
-            "🍽️ Your Meal Results",
+            l10n.yourMealResults,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 16,
@@ -90,10 +94,10 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Quick",
+                Text(l10n.quickPdfView.split('\n')[0],
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700, fontSize: 12)),
-                Text("PDF View",
+                Text(l10n.quickPdfView.split('\n')[1],
                     style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w400, fontSize: 12)),
               ],
@@ -105,7 +109,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- FILTER TABS --------------------
-  Widget _buildFilterTabs() {
+  Widget _buildFilterTabs(AppLocalizations l10n) {
     return SizedBox(
       height: 40,
       child: Row(
@@ -117,7 +121,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
               children: [
                 Assets.images.blueright.image(width: 14, height: 14),
                 const SizedBox(width: 4),
-                const Text("Safe"),
+                Text(l10n.safe),
               ],
             ),
             MealTab.safe,
@@ -125,18 +129,17 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
           ),
           const SizedBox(width: 8),
           _tabButton(
-            const Text("⚠️ Modify"),
+            Text(l10n.modify),
             MealTab.modify,
             Colors.orange,
           ),
           const SizedBox(width: 8),
           _tabButton(
-            const Text("❌ Avoid"),
+            Text(l10n.avoid),
             MealTab.avoid,
             Colors.red,
           ),
         ],
-
       ),
     );
   }
@@ -169,7 +172,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- A La Carte Button --------------------
-  Widget _buildALaCarteButton({required VoidCallback onTap}) {
+  Widget _buildALaCarteButton(AppLocalizations l10n, {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -185,7 +188,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
         ),
         child: Center(
           child: Text(
-            "✨ À La Carte Mode",
+            l10n.alaCarteMode,
             style: GoogleFonts.quicksand(
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -198,80 +201,90 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- CARD SECTION --------------------
-  Widget _buildCardsView() {
+  Widget _buildCardsView(AppLocalizations l10n) {
     List<Widget> cards = [];
 
     if (selectedTab == MealTab.all || selectedTab == MealTab.safe) {
       cards.addAll([
         _buildCard(
+          l10n,
           index: 0,
-          title: "Grilled Chicken Salad",
-          subtitle: "Salade de Poulet Grillé",
+          title: l10n.grilledChickenSalad,
+          subtitle: l10n.grilledChickenSaladSubtitle,
           statusIcon: Icons.check_circle,
           statusColor: Colors.green,
-          tags: ["🌱 Gluten-Free", "🥛 Dairy-Free"],
-          message: "Aligned and glowing — this meal’s an exact match! 🌿",
+          tags: [l10n.tagGlutenFree, l10n.tagDairyFree],
+          message: l10n.alignedAndGlowing,
           messageColor: const Color(0xFFF0FDF4),
+          tipMessage: l10n.tipOliveOil,
         ),
         _buildCard(
+          l10n,
           index: 2,
-          title: "Quinoa Buddha Bowl",
-          subtitle: "Bol de Bouddha au Quinoa",
+          title: l10n.quinoaBuddha,
+          subtitle: l10n.quinoaBuddhaSubtitle,
           statusIcon: Icons.check_circle,
           statusColor: Colors.green,
-          tags: ["🌱 Vegan", "💪 High-Protein"],
-          message: "Perfect power bowl — great for muscle recovery 💪",
+          tags: [l10n.tagVegan, l10n.tagHighProtein],
+          message: l10n.perfectPowerBowl,
           messageColor: const Color(0xFFF0FDF4),
+          tipMessage: l10n.tipOliveOil,
         ),
       ]);
     }
     if (selectedTab == MealTab.all || selectedTab == MealTab.modify) {
       cards.addAll([
         _buildCard(
+          l10n,
           index: 1,
-          title: "Vegetable Stir Fry",
-          subtitle: "Légumes Sautés",
+          title: l10n.vegetableStirFry,
+          subtitle: l10n.vegetableStirFrySubtitle,
           statusIcon: Icons.warning_amber_rounded,
           statusColor: Colors.orange,
-          tags: ["🌱 Vegan", "🌶️ Spicy"],
-          message:
-          "⚠️ Almost safe, just tweak it a little ✨\n💡 Skip spicy → Safe 🌿",
+          tags: [l10n.tagVegan, l10n.tagSpicy],
+          message: l10n.almostSafeTweak,
           messageColor: const Color(0x33FFCA28),
+          tipMessage: l10n.tipOliveOil,
         ),
         _buildCard(
+          l10n,
           index: 3,
-          title: "Paneer Tikka",
-          subtitle: "Tikka de Paneer",
+          title: l10n.paneerTikka,
+          subtitle: l10n.paneerTikkaSubtitle,
           statusIcon: Icons.warning_amber_rounded,
           statusColor: Colors.orange,
-          tags: ["🥛 Dairy", "🌱 Vegetarian"],
-          message:
-          "⚠️ Consider replacing paneer with tofu for a lighter option.",
+          tags: [l10n.tagDairy, l10n.tagVegetarian],
+          message: l10n.considerReplacing,
           messageColor: const Color(0x33FFCA28),
+          tipMessage: l10n.tipOliveOil,
         ),
       ]);
     }
     if (selectedTab == MealTab.all || selectedTab == MealTab.avoid) {
       cards.addAll([
         _buildCard(
+          l10n,
           index: 4,
-          title: "Cheesy Pasta",
-          subtitle: "Pâtes au Fromage",
+          title: l10n.cheesyPasta,
+          subtitle: l10n.cheesyPastaSubtitle,
           statusIcon: Icons.close,
           statusColor: Colors.red,
-          tags: ["🌾 Gluten", "🥛 Dairy"],
-          message: "Not a match for you, lovely 💛",
+          tags: [l10n.tagGluten, l10n.tagDairy],
+          message: l10n.notAMatch,
           messageColor: const Color(0x33FF4C00),
+          tipMessage: l10n.tipOliveOil,
         ),
         _buildCard(
+          l10n,
           index: 5,
-          title: "Deep Fried Snacks",
-          subtitle: "Snacks Frits",
+          title: l10n.deepFriedSnacks,
+          subtitle: l10n.deepFriedSnacksSubtitle,
           statusIcon: Icons.close,
           statusColor: Colors.red,
-          tags: ["🍟 Deep-Fried", "🍳 High-Oil"],
-          message: "❌ Avoid this meal for a lighter, healthier day.",
+          tags: [l10n.tagDeepFried, l10n.tagHighOil],
+          message: l10n.avoidThisMeal,
           messageColor: const Color(0x33FF4C00),
+          tipMessage: l10n.tipOliveOil,
         ),
       ]);
     }
@@ -280,16 +293,18 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- CARD WIDGET --------------------
-  Widget _buildCard({
-    required int index,
-    required String title,
-    required String subtitle,
-    required IconData statusIcon,
-    required Color statusColor,
-    required List<String> tags,
-    required String message,
-    required Color messageColor,
-  }) {
+  Widget _buildCard(
+      AppLocalizations l10n, {
+        required int index,
+        required String title,
+        required String subtitle,
+        required IconData statusIcon,
+        required Color statusColor,
+        required List<String> tags,
+        required String message,
+        required Color messageColor,
+        required String tipMessage,
+      }) {
     final bool isTipsVisible = tipsVisibility[index] ?? false;
 
     return Container(
@@ -363,7 +378,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                 const Icon(Icons.lightbulb, color: Colors.green, size: 20),
                 const SizedBox(width: 6),
                 Text(
-                  "Tips",
+                  l10n.tips,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
@@ -391,7 +406,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                 border: Border.all(color: const Color(0xFFE5E7EB)),
               ),
               child: Text(
-                "💡 Use olive oil instead of palm oil",
+                tipMessage,
                 style:
                 GoogleFonts.poppins(fontSize: 13, color: Colors.black87),
               ),
@@ -406,15 +421,26 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
     Color bg;
     Color textColor = Colors.black;
 
-    if (text.contains("Gluten-Free") || text.contains("Vegan")) {
+    if (text.contains("Gluten-Free") ||
+        text.contains("Sin Gluten") ||
+        text.contains("Sans Gluten") ||
+        text.contains("Vegan") ||
+        text.contains("Vegano") ||
+        text.contains("Végétalien")) {
       bg = const Color(0xFFDCFCE7);
-    } else if (text.contains("Dairy")) {
+    } else if (text.contains("Dairy") ||
+        text.contains("Lácteos") ||
+        text.contains("Laitiers")) {
       bg = const Color(0xFFDBEAFE);
       textColor = const Color(0xFF1D4ED8);
-    } else if (text.contains("Spicy")) {
+    } else if (text.contains("Spicy") ||
+        text.contains("Picante") ||
+        text.contains("Épicé")) {
       bg = const Color(0xFFFFE4E0);
       textColor = const Color(0xFFC2410C);
-    } else if (text.contains("High-Protein")) {
+    } else if (text.contains("Protein") ||
+        text.contains("Proteínas") ||
+        text.contains("Protéines")) {
       bg = const Color(0xFFE0F2FE);
       textColor = Colors.blue.shade900;
     } else {
@@ -434,7 +460,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- BOTTOM BUTTONS --------------------
-  Widget _buildBottomButtons() {
+  Widget _buildBottomButtons(AppLocalizations l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       color: Colors.white,
@@ -454,7 +480,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
             icon: const Icon(Icons.chat, color: Colors.white),
             label: Text(
-              "Ask AI Chat About This",
+              l10n.askAiChatAboutThis,
               style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -475,7 +501,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
             ),
             onPressed: () => context.go(RoutePath.myQrCode.addBasePath),
             label: Text(
-              "Share Your Diet via QR Code",
+              l10n.shareQrCode,
               style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,

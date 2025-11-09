@@ -85,16 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(9999),
-                      border: Border.all(color: const Color(0xFFE5E7EB)),
-                    ),
-                    child: const Text("✨ 1"),
-                  ),
                 ],
               ),
 

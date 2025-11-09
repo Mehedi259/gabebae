@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class SaveMealScreen extends StatefulWidget {
@@ -20,14 +21,16 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
   File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
 
-  final List<String> plateCombo = [
-    "🥬 Extra Veggies",
-    "🌶️ Spicy",
-    "🌶️ Spicy", // Duplicate as shown in image
-  ];
+  List<String> getPlateCombo(AppLocalizations l10n) {
+    return [
+      l10n.extraVeggies,
+      l10n.spicy,
+      l10n.spicy, // Duplicate as shown in image
+    ];
+  }
 
   // Function to pick image from camera or gallery
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(AppLocalizations l10n) async {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -36,7 +39,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             children: [
               ListTile(
                 leading: const Icon(Icons.photo_camera),
-                title: const Text('Take Photo'),
+                title: Text(l10n.takePhoto),
                 onTap: () async {
                   Navigator.pop(context);
                   final XFile? image = await _picker.pickImage(
@@ -52,7 +55,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library),
-                title: const Text('Choose from Gallery'),
+                title: Text(l10n.chooseFromGallery),
                 onTap: () async {
                   Navigator.pop(context);
                   final XFile? image = await _picker.pickImage(
@@ -81,6 +84,9 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final plateCombo = getPlateCombo(l10n);
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -101,7 +107,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  "Save Your Meal",
+                  l10n.saveYourMeal,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
@@ -135,7 +141,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "YOUR PLATE COMBO",
+                      l10n.yourPlateCombo,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -153,7 +159,8 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                         Color bgColor = const Color(0xFFDCFCE7);
                         Color textColor = const Color(0xFF059669);
 
-                        if (ingredient.contains("Spicy")) {
+                        // Check for spicy emoji
+                        if (ingredient.contains("🌶️")) {
                           bgColor = const Color(0xFFFEF3C7);
                           textColor = const Color(0xFFD97706);
                         }
@@ -213,7 +220,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                   ),
                 )
                     : GestureDetector(
-                  onTap: _pickImage,
+                  onTap: () => _pickImage(l10n),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -232,7 +239,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Tap to add a photo of your meal",
+                        l10n.tapToAddPhoto,
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: const Color(0xFF6B7280),
@@ -249,10 +256,10 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                 const SizedBox(height: 12),
                 Center(
                   child: TextButton.icon(
-                    onPressed: _pickImage,
+                    onPressed: () => _pickImage(l10n),
                     icon: const Icon(Icons.edit, size: 18),
                     label: Text(
-                      "Change Photo",
+                      l10n.changePhoto,
                       style: GoogleFonts.poppins(fontSize: 14),
                     ),
                     style: TextButton.styleFrom(
@@ -266,7 +273,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
 
               /// MEAL NAME SECTION
               Text(
-                "Give your meal a name",
+                l10n.giveYourMealName,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
@@ -290,7 +297,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                     color: const Color(0xFF1F2937),
                   ),
                   decoration: InputDecoration(
-                    hintText: "e.g., My Dairy-Free Pad Thai",
+                    hintText: l10n.mealNamePlaceholder,
                     hintStyle: GoogleFonts.poppins(
                       fontSize: 16,
                       color: const Color(0xFFD1D5DB),
@@ -308,7 +315,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
 
               /// HELPER TEXT
               Text(
-                "This will appear in your Favorites",
+                l10n.thisWillAppear,
                 style: GoogleFonts.poppins(
                   fontSize: 14,
                   color: const Color(0xFF9CA3AF),
@@ -333,7 +340,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  "Meal '${_mealNameController.text}' saved successfully! 🎉",
+                  l10n.mealSavedSuccess(_mealNameController.text),
                   style: GoogleFonts.poppins(),
                 ),
                 backgroundColor: const Color(0xFF10B981),
@@ -359,7 +366,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             shadowColor: Colors.black26,
           ),
           child: Text(
-            "Save",
+            l10n.save,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 18,

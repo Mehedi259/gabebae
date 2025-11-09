@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class BuildMyPlateScreen extends StatefulWidget {
@@ -15,16 +16,23 @@ class BuildMyPlateScreen extends StatefulWidget {
 
 class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
   final List<String> selectedIngredients = [];
-  final List<Map<String, dynamic>> safeIngredients = [
-    {"name": "🍅 Extra Sauce", "color": const Color(0xFFDCFCE7)},
-    {"name": "🥬 Extra Veggies", "color": const Color(0xFFDCFCE7)},
-    {"name": "🫒 Olives", "color": const Color(0xFFDCFCE7)},
-    {"name": "🌶️ Spicy", "color": const Color(0x33FFCC44)},
-    {"name": "🧄 Garlic", "color": const Color(0x33FECACA)},
-  ];
+
+  // Ingredient names will be fetched from l10n
+  List<Map<String, dynamic>> getSafeIngredients(AppLocalizations l10n) {
+    return [
+      {"name": l10n.extraSauce, "color": const Color(0xFFDCFCE7)},
+      {"name": l10n.extraVeggies, "color": const Color(0xFFDCFCE7)},
+      {"name": l10n.olives, "color": const Color(0xFFDCFCE7)},
+      {"name": l10n.spicy, "color": const Color(0x33FFCC44)},
+      {"name": l10n.garlic, "color": const Color(0x33FECACA)},
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final safeIngredients = getSafeIngredients(l10n);
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -44,7 +52,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               ),
               const SizedBox(width: 15),
               Text(
-                "🍽️ Your Meal Results",
+                l10n.yourMealResults,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -66,7 +74,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
 
               /// TITLE SECTION
               Text(
-                "🍽️ Build My Plate",
+                l10n.buildMyPlate,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
                   fontSize: 24,
@@ -77,7 +85,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               const SizedBox(height: 12),
 
               Text(
-                "Pick safe ingredients 🌿 or try a \n suggested combo 💛",
+                l10n.pickSafeIngredients,
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w700,
@@ -101,7 +109,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "My Plate",
+                      l10n.myPlate,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 16,
@@ -113,7 +121,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
 
                     if (selectedIngredients.isEmpty)
                       Text(
-                        "✨ Add ingredients to build your plate",
+                        l10n.addIngredientsPrompt,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -178,15 +186,15 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                         setState(() {
                           selectedIngredients.clear();
                           selectedIngredients.addAll([
-                            "🥬 Extra Veggies",
-                            "🧄 Garlic",
-                            "🫒 Olives"
+                            l10n.extraVeggies,
+                            l10n.garlic,
+                            l10n.olives
                           ]);
                         });
                       },
                       icon: const Icon(Icons.auto_awesome, color: Colors.yellow),
                       label: Text(
-                        "Suggest Combo",
+                        l10n.suggestCombo,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -210,7 +218,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                       onPressed: () => context.go(RoutePath.scanResultOrderingTips.addBasePath),
                       icon: const Icon(Icons.thumb_up, color: Colors.yellow),
                       label: Text(
-                        "Looks Good",
+                        l10n.looksGood,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -235,7 +243,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Safe for You",
+                  l10n.safeForYou,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
@@ -300,7 +308,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        "✨ These are the items Menu Sidekick spotted as safe for you. Some restaurants may not allow mixing & matching, so double-check with your server about what's available.",
+                        l10n.buildMyPlateInfo,
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: const Color(0xFF6B7280),
@@ -338,7 +346,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               onPressed: () {},
               icon: const Icon(Icons.chat, color: Colors.white),
               label: Text(
-                "Ask AI Chat About This",
+                l10n.askAiChatAboutThis,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -360,7 +368,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               ),
               onPressed: () {},
               label: Text(
-                "Share Your Diet via QR Code",
+                l10n.shareQrCode,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,

@@ -1281,6 +1281,636 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'QR Code link copied to clipboard!'**
   String get qrCodeLinkCopied;
+
+  /// No description provided for @yourMealResults.
+  ///
+  /// In en, this message translates to:
+  /// **'🍽️ Your Meal Results'**
+  String get yourMealResults;
+
+  /// No description provided for @quickPdfView.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick\nPDF View'**
+  String get quickPdfView;
+
+  /// No description provided for @safe.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe'**
+  String get safe;
+
+  /// No description provided for @modify.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Modify'**
+  String get modify;
+
+  /// No description provided for @avoid.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Avoid'**
+  String get avoid;
+
+  /// No description provided for @alaCarteMode.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ À La Carte Mode'**
+  String get alaCarteMode;
+
+  /// No description provided for @tips.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips'**
+  String get tips;
+
+  /// No description provided for @askAiChatAboutThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask AI Chat About This'**
+  String get askAiChatAboutThis;
+
+  /// No description provided for @grilledChickenSalad.
+  ///
+  /// In en, this message translates to:
+  /// **'Grilled Chicken Salad'**
+  String get grilledChickenSalad;
+
+  /// No description provided for @grilledChickenSaladSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salade de Poulet Grillé'**
+  String get grilledChickenSaladSubtitle;
+
+  /// No description provided for @alignedAndGlowing.
+  ///
+  /// In en, this message translates to:
+  /// **'Aligned and glowing — this meal\'s an exact match! 🌿'**
+  String get alignedAndGlowing;
+
+  /// No description provided for @tipOliveOil.
+  ///
+  /// In en, this message translates to:
+  /// **'💡 Use olive oil instead of palm oil'**
+  String get tipOliveOil;
+
+  /// No description provided for @vegetableStirFry.
+  ///
+  /// In en, this message translates to:
+  /// **'Vegetable Stir Fry'**
+  String get vegetableStirFry;
+
+  /// No description provided for @vegetableStirFrySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Légumes Sautés'**
+  String get vegetableStirFrySubtitle;
+
+  /// No description provided for @almostSafeTweak.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Almost safe, just tweak it a little ✨\n💡 Skip spicy → Safe 🌿'**
+  String get almostSafeTweak;
+
+  /// No description provided for @quinoaBuddha.
+  ///
+  /// In en, this message translates to:
+  /// **'Quinoa Buddha Bowl'**
+  String get quinoaBuddha;
+
+  /// No description provided for @quinoaBuddhaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bol de Bouddha au Quinoa'**
+  String get quinoaBuddhaSubtitle;
+
+  /// No description provided for @perfectPowerBowl.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect power bowl — great for muscle recovery 💪'**
+  String get perfectPowerBowl;
+
+  /// No description provided for @paneerTikka.
+  ///
+  /// In en, this message translates to:
+  /// **'Paneer Tikka'**
+  String get paneerTikka;
+
+  /// No description provided for @paneerTikkaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tikka de Paneer'**
+  String get paneerTikkaSubtitle;
+
+  /// No description provided for @considerReplacing.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Consider replacing paneer with tofu for a lighter option.'**
+  String get considerReplacing;
+
+  /// No description provided for @cheesyPasta.
+  ///
+  /// In en, this message translates to:
+  /// **'Cheesy Pasta'**
+  String get cheesyPasta;
+
+  /// No description provided for @cheesyPastaSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pâtes au Fromage'**
+  String get cheesyPastaSubtitle;
+
+  /// No description provided for @notAMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a match for you, lovely 💛'**
+  String get notAMatch;
+
+  /// No description provided for @deepFriedSnacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep Fried Snacks'**
+  String get deepFriedSnacks;
+
+  /// No description provided for @deepFriedSnacksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks Frits'**
+  String get deepFriedSnacksSubtitle;
+
+  /// No description provided for @avoidThisMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Avoid this meal for a lighter, healthier day.'**
+  String get avoidThisMeal;
+
+  /// No description provided for @tagGlutenFree.
+  ///
+  /// In en, this message translates to:
+  /// **'🌱 Gluten-Free'**
+  String get tagGlutenFree;
+
+  /// No description provided for @tagDairyFree.
+  ///
+  /// In en, this message translates to:
+  /// **'🥛 Dairy-Free'**
+  String get tagDairyFree;
+
+  /// No description provided for @tagVegan.
+  ///
+  /// In en, this message translates to:
+  /// **'🌱 Vegan'**
+  String get tagVegan;
+
+  /// No description provided for @tagHighProtein.
+  ///
+  /// In en, this message translates to:
+  /// **'💪 High-Protein'**
+  String get tagHighProtein;
+
+  /// No description provided for @tagSpicy.
+  ///
+  /// In en, this message translates to:
+  /// **'🌶️ Spicy'**
+  String get tagSpicy;
+
+  /// No description provided for @tagDairy.
+  ///
+  /// In en, this message translates to:
+  /// **'🥛 Dairy'**
+  String get tagDairy;
+
+  /// No description provided for @tagVegetarian.
+  ///
+  /// In en, this message translates to:
+  /// **'🌱 Vegetarian'**
+  String get tagVegetarian;
+
+  /// No description provided for @tagGluten.
+  ///
+  /// In en, this message translates to:
+  /// **'🌾 Gluten'**
+  String get tagGluten;
+
+  /// No description provided for @tagDeepFried.
+  ///
+  /// In en, this message translates to:
+  /// **'🍟 Deep-Fried'**
+  String get tagDeepFried;
+
+  /// No description provided for @tagHighOil.
+  ///
+  /// In en, this message translates to:
+  /// **'🍳 High-Oil'**
+  String get tagHighOil;
+
+  /// No description provided for @scanMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Menu'**
+  String get scanMenu;
+
+  /// No description provided for @runScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Run Scan'**
+  String get runScan;
+
+  /// No description provided for @photo.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get photo;
+
+  /// No description provided for @video.
+  ///
+  /// In en, this message translates to:
+  /// **'Video'**
+  String get video;
+
+  /// No description provided for @document.
+  ///
+  /// In en, this message translates to:
+  /// **'Document'**
+  String get document;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Scan'**
+  String get helpTitle;
+
+  /// No description provided for @helpStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Position the menu in the frame'**
+  String get helpStep1;
+
+  /// No description provided for @helpStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure the text is clear and readable'**
+  String get helpStep2;
+
+  /// No description provided for @helpStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the shutter button to capture'**
+  String get helpStep3;
+
+  /// No description provided for @helpStep4.
+  ///
+  /// In en, this message translates to:
+  /// **'Review and add more photos if needed'**
+  String get helpStep4;
+
+  /// No description provided for @helpStep5.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \'Run Scan\' when ready'**
+  String get helpStep5;
+
+  /// No description provided for @buildMyPlate.
+  ///
+  /// In en, this message translates to:
+  /// **'🍽️ Build My Plate'**
+  String get buildMyPlate;
+
+  /// No description provided for @pickSafeIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick safe ingredients 🌿 or try a \n suggested combo 💛'**
+  String get pickSafeIngredients;
+
+  /// No description provided for @myPlate.
+  ///
+  /// In en, this message translates to:
+  /// **'My Plate'**
+  String get myPlate;
+
+  /// No description provided for @addIngredientsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ Add ingredients to build your plate'**
+  String get addIngredientsPrompt;
+
+  /// No description provided for @suggestCombo.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggest Combo'**
+  String get suggestCombo;
+
+  /// No description provided for @safeForYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Safe for You'**
+  String get safeForYou;
+
+  /// No description provided for @buildMyPlateInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'✨ These are the items Menu Sidekick spotted as safe for you. Some restaurants may not allow mixing & matching, so double-check with your server about what\'s available.'**
+  String get buildMyPlateInfo;
+
+  /// No description provided for @extraSauce.
+  ///
+  /// In en, this message translates to:
+  /// **'🍅 Extra Sauce'**
+  String get extraSauce;
+
+  /// No description provided for @extraVeggies.
+  ///
+  /// In en, this message translates to:
+  /// **'🥬 Extra Veggies'**
+  String get extraVeggies;
+
+  /// No description provided for @olives.
+  ///
+  /// In en, this message translates to:
+  /// **'🫒 Olives'**
+  String get olives;
+
+  /// No description provided for @spicy.
+  ///
+  /// In en, this message translates to:
+  /// **'🌶️ Spicy'**
+  String get spicy;
+
+  /// No description provided for @garlic.
+  ///
+  /// In en, this message translates to:
+  /// **'🧄 Garlic'**
+  String get garlic;
+
+  /// No description provided for @orderingTipsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ordering Tips for Your Plate'**
+  String get orderingTipsTitle;
+
+  /// No description provided for @orderingTipsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick reminders to keep your meal safe & glowing✨'**
+  String get orderingTipsSubtitle;
+
+  /// No description provided for @yourPlateCombo.
+  ///
+  /// In en, this message translates to:
+  /// **'YOUR PLATE COMBO'**
+  String get yourPlateCombo;
+
+  /// No description provided for @tipsSelection.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips Selection'**
+  String get tipsSelection;
+
+  /// No description provided for @saveMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Meal'**
+  String get saveMeal;
+
+  /// No description provided for @qrShare.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Share'**
+  String get qrShare;
+
+  /// No description provided for @tipAskAboutOilsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask About Oils'**
+  String get tipAskAboutOilsTitle;
+
+  /// No description provided for @tipAskAboutOilsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm chicken is grilled in olive oil, not butter.'**
+  String get tipAskAboutOilsDesc;
+
+  /// No description provided for @tipSimplifySaucesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Simplify Sauces'**
+  String get tipSimplifySaucesTitle;
+
+  /// No description provided for @tipSimplifySaucesDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sauces on the side so you stay in control.'**
+  String get tipSimplifySaucesDesc;
+
+  /// No description provided for @tipStayHydratedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay Hydrated'**
+  String get tipStayHydratedTitle;
+
+  /// No description provided for @tipStayHydratedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sauces on the side so you stay in control.'**
+  String get tipStayHydratedDesc;
+
+  /// No description provided for @tipAskYourServerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Your Server'**
+  String get tipAskYourServerTitle;
+
+  /// No description provided for @tipAskYourServerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Could you confirm if the rice is cooked in butter or oil?\n\nAny soy sauce in this marinade?'**
+  String get tipAskYourServerDesc;
+
+  /// No description provided for @saveYourMeal.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Your Meal'**
+  String get saveYourMeal;
+
+  /// No description provided for @tapToAddPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to add a photo of your meal'**
+  String get tapToAddPhoto;
+
+  /// No description provided for @changePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Photo'**
+  String get changePhoto;
+
+  /// No description provided for @giveYourMealName.
+  ///
+  /// In en, this message translates to:
+  /// **'Give your meal a name'**
+  String get giveYourMealName;
+
+  /// No description provided for @mealNamePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g., My Dairy-Free Pad Thai'**
+  String get mealNamePlaceholder;
+
+  /// No description provided for @thisWillAppear.
+  ///
+  /// In en, this message translates to:
+  /// **'This will appear in your Favorites'**
+  String get thisWillAppear;
+
+  /// No description provided for @mealSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Meal \'{mealName}\' saved successfully! 🎉'**
+  String mealSavedSuccess(Object mealName);
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @positionMenuInFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Position the menu within the frame'**
+  String get positionMenuInFrame;
+
+  /// No description provided for @pdf.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get pdf;
+
+  /// No description provided for @url.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get url;
+
+  /// No description provided for @tipsForClearScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips for a Clear Scan'**
+  String get tipsForClearScan;
+
+  /// No description provided for @tipsForClearScanSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your dining sidekick works best when the menu is easy to see. Here\'s how to glow it up:'**
+  String get tipsForClearScanSubtitle;
+
+  /// No description provided for @tipFlatSteadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Flat & Steady'**
+  String get tipFlatSteadyTitle;
+
+  /// No description provided for @tipFlatSteadyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the menu flat, hold the phone steady.'**
+  String get tipFlatSteadyDesc;
+
+  /// No description provided for @tipGoodLightingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Good Lighting'**
+  String get tipGoodLightingTitle;
+
+  /// No description provided for @tipGoodLightingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural light is best. Avoid strong reflections.'**
+  String get tipGoodLightingDesc;
+
+  /// No description provided for @tipNoCroppingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No Cropping'**
+  String get tipNoCroppingTitle;
+
+  /// No description provided for @tipNoCroppingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture the whole page edge to edge.'**
+  String get tipNoCroppingDesc;
+
+  /// No description provided for @tipSharpClearTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sharp & Clear'**
+  String get tipSharpClearTitle;
+
+  /// No description provided for @tipSharpClearDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure the text is legible for best results.'**
+  String get tipSharpClearDesc;
+
+  /// No description provided for @tipSpecialMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Think of it as taking a photo for friend- clear, bright, and cozy. The clearer the shot, the better we can guide you!'**
+  String get tipSpecialMessage;
+
+  /// No description provided for @chooseHowToScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose How to Scan'**
+  String get chooseHowToScan;
+
+  /// No description provided for @scanOptionPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo'**
+  String get scanOptionPhoto;
+
+  /// No description provided for @scanOptionPhotoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Place the menu flat, hold the phone steady.'**
+  String get scanOptionPhotoDesc;
+
+  /// No description provided for @scanOptionPDF.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF'**
+  String get scanOptionPDF;
+
+  /// No description provided for @scanOptionPDFDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Natural light is best. Avoid strong reflections.'**
+  String get scanOptionPDFDesc;
+
+  /// No description provided for @scanOptionURL.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get scanOptionURL;
+
+  /// No description provided for @scanOptionURLDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture the whole page edge to edge.'**
+  String get scanOptionURLDesc;
+
+  /// No description provided for @gotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it!'**
+  String get gotIt;
 }
 
 class _AppLocalizationsDelegate

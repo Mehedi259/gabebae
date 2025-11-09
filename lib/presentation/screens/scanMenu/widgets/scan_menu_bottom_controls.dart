@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'scan_menu_round_image_button.dart';
 import 'scan_menu_capture_button.dart';
 import 'scan_menu_mode_button.dart';
@@ -31,6 +32,8 @@ class ScanMenuBottomControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Positioned(
       bottom: 96,
       left: 0,
@@ -42,9 +45,9 @@ class ScanMenuBottomControls extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Position the menu within the frame",
-                style: TextStyle(color: Colors.white, fontSize: 14),
+              Text(
+                l10n.positionMenuInFrame,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
               ),
               const SizedBox(height: 16),
 
@@ -53,7 +56,7 @@ class ScanMenuBottomControls extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ScanMenuModeButton(
-                      title: "PDF",
+                      title: l10n.pdf,
                       isSelected: selectedMode == "PDF",
                       onTap: () => onModeChange("PDF"),
                     ),
@@ -61,7 +64,7 @@ class ScanMenuBottomControls extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: ScanMenuModeButton(
-                      title: "URL",
+                      title: l10n.url,
                       isSelected: selectedMode == "URL",
                       onTap: () => onModeChange("URL"),
                     ),

@@ -626,4 +626,338 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get qrCodeLinkCopied => 'QR Code link copied to clipboard!';
+
+  @override
+  String get yourMealResults => '🍽️ Your Meal Results';
+
+  @override
+  String get quickPdfView => 'Quick\nPDF View';
+
+  @override
+  String get safe => 'Safe';
+
+  @override
+  String get modify => '⚠️ Modify';
+
+  @override
+  String get avoid => '❌ Avoid';
+
+  @override
+  String get alaCarteMode => '✨ À La Carte Mode';
+
+  @override
+  String get tips => 'Tips';
+
+  @override
+  String get askAiChatAboutThis => 'Ask AI Chat About This';
+
+  @override
+  String get grilledChickenSalad => 'Grilled Chicken Salad';
+
+  @override
+  String get grilledChickenSaladSubtitle => 'Salade de Poulet Grillé';
+
+  @override
+  String get alignedAndGlowing =>
+      'Aligned and glowing — this meal\'s an exact match! 🌿';
+
+  @override
+  String get tipOliveOil => '💡 Use olive oil instead of palm oil';
+
+  @override
+  String get vegetableStirFry => 'Vegetable Stir Fry';
+
+  @override
+  String get vegetableStirFrySubtitle => 'Légumes Sautés';
+
+  @override
+  String get almostSafeTweak =>
+      '⚠️ Almost safe, just tweak it a little ✨\n💡 Skip spicy → Safe 🌿';
+
+  @override
+  String get quinoaBuddha => 'Quinoa Buddha Bowl';
+
+  @override
+  String get quinoaBuddhaSubtitle => 'Bol de Bouddha au Quinoa';
+
+  @override
+  String get perfectPowerBowl =>
+      'Perfect power bowl — great for muscle recovery 💪';
+
+  @override
+  String get paneerTikka => 'Paneer Tikka';
+
+  @override
+  String get paneerTikkaSubtitle => 'Tikka de Paneer';
+
+  @override
+  String get considerReplacing =>
+      '⚠️ Consider replacing paneer with tofu for a lighter option.';
+
+  @override
+  String get cheesyPasta => 'Cheesy Pasta';
+
+  @override
+  String get cheesyPastaSubtitle => 'Pâtes au Fromage';
+
+  @override
+  String get notAMatch => 'Not a match for you, lovely 💛';
+
+  @override
+  String get deepFriedSnacks => 'Deep Fried Snacks';
+
+  @override
+  String get deepFriedSnacksSubtitle => 'Snacks Frits';
+
+  @override
+  String get avoidThisMeal => '❌ Avoid this meal for a lighter, healthier day.';
+
+  @override
+  String get tagGlutenFree => '🌱 Gluten-Free';
+
+  @override
+  String get tagDairyFree => '🥛 Dairy-Free';
+
+  @override
+  String get tagVegan => '🌱 Vegan';
+
+  @override
+  String get tagHighProtein => '💪 High-Protein';
+
+  @override
+  String get tagSpicy => '🌶️ Spicy';
+
+  @override
+  String get tagDairy => '🥛 Dairy';
+
+  @override
+  String get tagVegetarian => '🌱 Vegetarian';
+
+  @override
+  String get tagGluten => '🌾 Gluten';
+
+  @override
+  String get tagDeepFried => '🍟 Deep-Fried';
+
+  @override
+  String get tagHighOil => '🍳 High-Oil';
+
+  @override
+  String get scanMenu => 'Scan Menu';
+
+  @override
+  String get runScan => 'Run Scan';
+
+  @override
+  String get photo => 'Photo';
+
+  @override
+  String get video => 'Video';
+
+  @override
+  String get document => 'Document';
+
+  @override
+  String get helpTitle => 'How to Scan';
+
+  @override
+  String get helpStep1 => 'Position the menu in the frame';
+
+  @override
+  String get helpStep2 => 'Make sure the text is clear and readable';
+
+  @override
+  String get helpStep3 => 'Tap the shutter button to capture';
+
+  @override
+  String get helpStep4 => 'Review and add more photos if needed';
+
+  @override
+  String get helpStep5 => 'Tap \'Run Scan\' when ready';
+
+  @override
+  String get buildMyPlate => '🍽️ Build My Plate';
+
+  @override
+  String get pickSafeIngredients =>
+      'Pick safe ingredients 🌿 or try a \n suggested combo 💛';
+
+  @override
+  String get myPlate => 'My Plate';
+
+  @override
+  String get addIngredientsPrompt => '✨ Add ingredients to build your plate';
+
+  @override
+  String get suggestCombo => 'Suggest Combo';
+
+  @override
+  String get safeForYou => 'Safe for You';
+
+  @override
+  String get buildMyPlateInfo =>
+      '✨ These are the items Menu Sidekick spotted as safe for you. Some restaurants may not allow mixing & matching, so double-check with your server about what\'s available.';
+
+  @override
+  String get extraSauce => '🍅 Extra Sauce';
+
+  @override
+  String get extraVeggies => '🥬 Extra Veggies';
+
+  @override
+  String get olives => '🫒 Olives';
+
+  @override
+  String get spicy => '🌶️ Spicy';
+
+  @override
+  String get garlic => '🧄 Garlic';
+
+  @override
+  String get orderingTipsTitle => 'Ordering Tips for Your Plate';
+
+  @override
+  String get orderingTipsSubtitle =>
+      'Quick reminders to keep your meal safe & glowing✨';
+
+  @override
+  String get yourPlateCombo => 'YOUR PLATE COMBO';
+
+  @override
+  String get tipsSelection => 'Tips Selection';
+
+  @override
+  String get saveMeal => 'Save Meal';
+
+  @override
+  String get qrShare => 'QR Share';
+
+  @override
+  String get tipAskAboutOilsTitle => 'Ask About Oils';
+
+  @override
+  String get tipAskAboutOilsDesc =>
+      'Confirm chicken is grilled in olive oil, not butter.';
+
+  @override
+  String get tipSimplifySaucesTitle => 'Simplify Sauces';
+
+  @override
+  String get tipSimplifySaucesDesc =>
+      'Request sauces on the side so you stay in control.';
+
+  @override
+  String get tipStayHydratedTitle => 'Stay Hydrated';
+
+  @override
+  String get tipStayHydratedDesc =>
+      'Request sauces on the side so you stay in control.';
+
+  @override
+  String get tipAskYourServerTitle => 'Ask Your Server';
+
+  @override
+  String get tipAskYourServerDesc =>
+      'Could you confirm if the rice is cooked in butter or oil?\n\nAny soy sauce in this marinade?';
+
+  @override
+  String get saveYourMeal => 'Save Your Meal';
+
+  @override
+  String get tapToAddPhoto => 'Tap to add a photo of your meal';
+
+  @override
+  String get changePhoto => 'Change Photo';
+
+  @override
+  String get giveYourMealName => 'Give your meal a name';
+
+  @override
+  String get mealNamePlaceholder => 'e.g., My Dairy-Free Pad Thai';
+
+  @override
+  String get thisWillAppear => 'This will appear in your Favorites';
+
+  @override
+  String mealSavedSuccess(Object mealName) {
+    return 'Meal \'$mealName\' saved successfully! 🎉';
+  }
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get positionMenuInFrame => 'Position the menu within the frame';
+
+  @override
+  String get pdf => 'PDF';
+
+  @override
+  String get url => 'URL';
+
+  @override
+  String get tipsForClearScan => 'Tips for a Clear Scan';
+
+  @override
+  String get tipsForClearScanSubtitle =>
+      'Your dining sidekick works best when the menu is easy to see. Here\'s how to glow it up:';
+
+  @override
+  String get tipFlatSteadyTitle => 'Flat & Steady';
+
+  @override
+  String get tipFlatSteadyDesc => 'Place the menu flat, hold the phone steady.';
+
+  @override
+  String get tipGoodLightingTitle => 'Good Lighting';
+
+  @override
+  String get tipGoodLightingDesc =>
+      'Natural light is best. Avoid strong reflections.';
+
+  @override
+  String get tipNoCroppingTitle => 'No Cropping';
+
+  @override
+  String get tipNoCroppingDesc => 'Capture the whole page edge to edge.';
+
+  @override
+  String get tipSharpClearTitle => 'Sharp & Clear';
+
+  @override
+  String get tipSharpClearDesc =>
+      'Make sure the text is legible for best results.';
+
+  @override
+  String get tipSpecialMessage =>
+      'Think of it as taking a photo for friend- clear, bright, and cozy. The clearer the shot, the better we can guide you!';
+
+  @override
+  String get chooseHowToScan => 'Choose How to Scan';
+
+  @override
+  String get scanOptionPhoto => 'Photo';
+
+  @override
+  String get scanOptionPhotoDesc =>
+      'Place the menu flat, hold the phone steady.';
+
+  @override
+  String get scanOptionPDF => 'PDF';
+
+  @override
+  String get scanOptionPDFDesc =>
+      'Natural light is best. Avoid strong reflections.';
+
+  @override
+  String get scanOptionURL => 'URL';
+
+  @override
+  String get scanOptionURLDesc => 'Capture the whole page edge to edge.';
+
+  @override
+  String get gotIt => 'Got it!';
 }

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import 'widgets/scan_menu_help_dialog.dart';
 import 'widgets/scan_menu_top_bar.dart';
 import 'widgets/scan_menu_bottom_controls.dart';
@@ -80,17 +81,16 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   }
 
   Future<void> _initCamera() async {
-
     _cameras = widget.cameras ?? await availableCameras();
-
     _camera = CameraController(_cameras[_camIndex], ResolutionPreset.high, enableAudio: false);
-
     await _camera!.initialize();
     if (mounted) setState(() => _isReady = true);
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
@@ -182,9 +182,9 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
-                        "Run Scan",
-                        style: TextStyle(
+                      child: Text(
+                        l10n.runScan,
+                        style: const TextStyle(
                           fontFamily: "Poppins",
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
@@ -243,8 +243,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     try {
       await _camera!.setFlashMode(_flashOn ? FlashMode.off : FlashMode.torch);
       setState(() => _flashOn = !_flashOn);
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   /// ✅ Open Gallery
@@ -256,5 +255,4 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       });
     }
   }
-
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/routes/route_path.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 
 class OrderingTipsScreen extends StatefulWidget {
@@ -14,37 +15,45 @@ class OrderingTipsScreen extends StatefulWidget {
 }
 
 class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
-  final List<String> plateCombo = [
-    "🥬 Extra Veggies",
-    "🌶️ Spicy",
-    "🌶️ Spicy",
-  ];
+  List<String> getPlateCombo(AppLocalizations l10n) {
+    return [
+      l10n.extraVeggies,
+      l10n.spicy,
+      l10n.spicy,
+    ];
+  }
 
-  final List<Map<String, dynamic>> tips = [
-    {
-      "icon": "🌿",
-      "title": "Ask About Oils",
-      "description": "Confirm chicken is grilled in olive oil, not butter.",
-    },
-    {
-      "icon": "✨",
-      "title": "Simplify Sauces",
-      "description": "Request sauces on the side so you stay in control.",
-    },
-    {
-      "icon": "💧",
-      "title": "Stay Hydrated",
-      "description": "Request sauces on the side so you stay in control.",
-    },
-    {
-      "icon": "❓",
-      "title": "Ask Your Server",
-      "description": "Could you confirm if the rice is cooked in butter or oil?\n\nAny soy sauce in this marinade?",
-    },
-  ];
+  List<Map<String, dynamic>> getTips(AppLocalizations l10n) {
+    return [
+      {
+        "icon": "🌿",
+        "title": l10n.tipAskAboutOilsTitle,
+        "description": l10n.tipAskAboutOilsDesc,
+      },
+      {
+        "icon": "✨",
+        "title": l10n.tipSimplifySaucesTitle,
+        "description": l10n.tipSimplifySaucesDesc,
+      },
+      {
+        "icon": "💧",
+        "title": l10n.tipStayHydratedTitle,
+        "description": l10n.tipStayHydratedDesc,
+      },
+      {
+        "icon": "❓",
+        "title": l10n.tipAskYourServerTitle,
+        "description": l10n.tipAskYourServerDesc,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final plateCombo = getPlateCombo(l10n);
+    final tips = getTips(l10n);
+
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
@@ -63,7 +72,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        "Ordering Tips for Your Plate",
+                        l10n.orderingTipsTitle,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
                           fontSize: 20,
@@ -78,7 +87,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        "Quick reminders to keep your meal safe & glowing✨",
+                        l10n.orderingTipsSubtitle,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w400,
@@ -104,7 +113,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "YOUR PLATE COMBO",
+                        l10n.yourPlateCombo,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w700,
                           fontSize: 14,
@@ -120,7 +129,8 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                           Color bgColor = const Color(0xFFDCFCE7);
                           Color textColor = const Color(0xFF059669);
 
-                          if (ingredient.contains("Spicy")) {
+                          // Check for "Spicy" in multiple languages
+                          if (ingredient.contains("🌶️")) {
                             bgColor = const Color(0xFFFEF3C7);
                             textColor = const Color(0xFFD97706);
                           }
@@ -161,7 +171,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
 
                 /// TIPS SELECTION TITLE
                 Text(
-                  "Tips Selection",
+                  l10n.tipsSelection,
                   style: GoogleFonts.poppins(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,
@@ -199,7 +209,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     onPressed: () => context.go(RoutePath.scanResultSaveYourMeals.addBasePath),
                     icon: const Icon(Icons.bookmark, color: Colors.white),
                     label: Text(
-                      "Save Meal",
+                      l10n.saveMeal,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -221,7 +231,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                     onPressed: () => context.go(RoutePath.myQrCode.addBasePath),
                     icon: const Icon(Icons.qr_code, color: Colors.white),
                     label: Text(
-                      "QR Share",
+                      l10n.qrShare,
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
@@ -255,7 +265,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
               onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
               icon: const Icon(Icons.chat, color: Colors.white),
               label: Text(
-                "Ask AI Chat About This",
+                l10n.askAiChatAboutThis,
                 style: GoogleFonts.poppins(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
