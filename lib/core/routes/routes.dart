@@ -70,7 +70,11 @@ class AppRouter {
       GoRoute(
         name: RoutePath.verifyCode,
         path: RoutePath.verifyCode.addBasePath,
-        builder: (context, state) => const OtpScreen(),
+        builder: (context, state) {
+          // Get email from extra parameter
+          final email = state.extra as String?;
+          return OtpScreen(email: email);
+        },
       ),
       GoRoute(
         name: RoutePath.privacyPolicyAuth,

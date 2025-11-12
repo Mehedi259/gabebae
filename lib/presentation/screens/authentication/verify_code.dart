@@ -1,8 +1,11 @@
+//lib/presentation/screens/authentication/verify_code.dart
+import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/controllers/varification_otp_controller.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
@@ -10,15 +13,28 @@ import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key});
+  final String? email;
+
+  const OtpScreen({super.key, this.email});
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-  final TextEditingController otpController = TextEditingController();
-  bool isOtpComplete = false;
+  final VerificationOtpController controller = Get.put(VerificationOtpController());
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.email != null) {
+      controller.setEmail(widget.email!);
+    }
+    // Get language from locale
+    final locale = Get.locale?.languageCode ?? 'en';
+    final languageMap = {'en': 'English', 'es': 'Spanish', 'fr': 'French'};
+    controller.setLanguage(languageMap[locale] ?? 'English');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +44,23 @@ class _OtpScreenState extends State<OtpScreen> {
       backgroundColor: AppColors.backgroundColor,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        child: CustomButton(
+        child: Obx(() => controller.isLoading.value
+            ? const Center(child: CircularProgressIndicator())
+            : CustomButton(
           text: l10n.verify,
-          onTap: () {
-            if (isOtpComplete) {
-              context.go(RoutePath.profileSetup1.addBasePath);
+          onTap: () async {
+            if (controller.isOtpComplete.value) {
+              final success = await controller.verifyOtp(context);
+              if (success) {
+                context.go(RoutePath.profileSetup1.addBasePath);
+              }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(l10n.pleaseEnterCode)),
               );
             }
           },
-        ),
+        )),
       ),
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
@@ -80,7 +101,7 @@ class _OtpScreenState extends State<OtpScreen> {
             PinCodeTextField(
               appContext: context,
               length: 4,
-              controller: otpController,
+              controller: controller.otpController,
               keyboardType: TextInputType.number,
               animationType: AnimationType.fade,
               autoDisposeControllers: false,
@@ -106,11 +127,7 @@ class _OtpScreenState extends State<OtpScreen> {
               ),
               animationDuration: const Duration(milliseconds: 300),
               enableActiveFill: false,
-              onChanged: (value) {
-                setState(() {
-                  isOtpComplete = value.length == 4;
-                });
-              },
+              onChanged: controller.onOtpChanged,
             ),
             const SizedBox(height: 28),
             RichText(
@@ -130,7 +147,10 @@ class _OtpScreenState extends State<OtpScreen> {
                       color: Color(0xFF6DAEDB),
                       decoration: TextDecoration.underline,
                     ),
-                    recognizer: TapGestureRecognizer()..onTap = () {},
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // Resend OTP logic here
+                      },
                   ),
                 ],
               ),
