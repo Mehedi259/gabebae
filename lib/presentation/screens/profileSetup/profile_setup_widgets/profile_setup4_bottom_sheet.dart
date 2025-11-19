@@ -1,79 +1,37 @@
-//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart
+// lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup4_bottom_sheet.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:get/get.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/controllers/profile_setup_controller.dart';
 import '../../../../core/routes/route_path.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class ProfileSetup4BottomSheet extends StatefulWidget {
+class ProfileSetup4BottomSheet extends StatelessWidget {
   const ProfileSetup4BottomSheet({super.key});
-
-  @override
-  State<ProfileSetup4BottomSheet> createState() =>
-      _ProfileSetup4BottomSheetState();
-}
-
-class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
-  /// Track switch states - using language-independent keys
-  final Map<String, bool> _switchStates = {
-    "asthma": false,
-    "kidneyDisease": false,
-    "thyroidIssues": false,
-    "heartDisease": false,
-  };
-
-  List<Map<String, dynamic>> _getLocalizedIngredients(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return [
-      {
-        "key": "asthma",
-        "title": l10n.asthma,
-        "image": Assets.images.dairy.path,
-      },
-      {
-        "key": "kidneyDisease",
-        "title": l10n.kidneyDisease,
-        "image": Assets.images.gluten.path,
-      },
-      {
-        "key": "thyroidIssues",
-        "title": l10n.thyroidIssues,
-        "image": Assets.images.nuts.path,
-      },
-      {
-        "key": "heartDisease",
-        "title": l10n.heartDisease,
-        "image": Assets.images.soy.path,
-      },
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final ingredients = _getLocalizedIngredients(context);
+    final ProfileSetupController controller = Get.find<ProfileSetupController>();
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
       minChildSize: 0.4,
-      builder: (_, controller) => Container(
+      builder: (_, scrollController) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Stack(
           children: [
-            /// ===== Scrollable Content =====
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 90),
               child: ListView(
-                controller: controller,
+                controller: scrollController,
                 children: [
-                  /// ===== Header =====
                   Text(
                     l10n.healthDriven,
                     style: const TextStyle(
@@ -86,19 +44,39 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
                   ),
                   const SizedBox(height: 24),
 
-                  /// ===== Cards (No subtitle) =====
-                  ...ingredients.map((ingredient) {
-                    return _buildHealthCard(
-                      ingredientKey: ingredient["key"] as String,
-                      title: ingredient["title"] as String,
-                      imagePath: ingredient["image"] as String,
+                  Obx(() {
+                    // Get remaining items (skip first 4)
+                    final remainingItems = controller.magicList.length > 4
+                        ? controller.magicList.sublist(4)
+                        : <String>[];
+
+                    if (remainingItems.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: Text('No additional items'),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: remainingItems.map((item) {
+                        return Obx(() {
+                          final bool isActive = controller.selectedMagicListItems.contains(item);
+
+                          return _buildMagicListCard(
+                            controller: controller,
+                            item: item,
+                            isActive: isActive,
+                          );
+                        });
+                      }).toList(),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
 
-            /// ===== Fixed Bottom Button =====
             Positioned(
               left: 24,
               right: 24,
@@ -114,16 +92,11 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
     );
   }
 
-  /// ===============================
-  /// Reusable Card With Custom Switch (No subtitle)
-  /// ===============================
-  Widget _buildHealthCard({
-    required String ingredientKey,
-    required String title,
-    required String imagePath,
+  Widget _buildMagicListCard({
+    required ProfileSetupController controller,
+    required String item,
+    required bool isActive,
   }) {
-    final bool isActive = _switchStates[ingredientKey] ?? false;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(17),
@@ -141,7 +114,6 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
       ),
       child: Row(
         children: [
-          /// Icon
           Container(
             width: 48,
             height: 48,
@@ -150,20 +122,19 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
               border: Border.all(color: const Color(0xFFE5E7EB)),
               borderRadius: BorderRadius.circular(9999),
             ),
-            child: Center(
-              child: Image.asset(
-                imagePath,
-                width: 24,
-                height: 24,
+            child: const Center(
+              child: Icon(
+                Icons.no_food,
+                size: 24,
+                color: Color(0xFF669A59),
               ),
             ),
           ),
           const SizedBox(width: 12),
 
-          /// Title Only
           Expanded(
             child: Text(
-              title,
+              item,
               style: const TextStyle(
                 fontFamily: "Poppins",
                 fontSize: 16,
@@ -173,12 +144,9 @@ class _ProfileSetup4BottomSheetState extends State<ProfileSetup4BottomSheet> {
             ),
           ),
 
-          /// Custom Switch
           GestureDetector(
             onTap: () {
-              setState(() {
-                _switchStates[ingredientKey] = !isActive;
-              });
+              controller.toggleMagicListItem(item);
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),

@@ -1,9 +1,11 @@
+// lib/presentation/screens/profileSetup/profile_setup5.dart
 import 'package:flutter/material.dart';
-import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:get/get.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
+import '../../../core/controllers/profile_setup_controller.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
@@ -17,23 +19,8 @@ class ProfileSetup5Screen extends StatefulWidget {
 
 class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
     with SingleTickerProviderStateMixin {
-  final TextEditingController nameController = TextEditingController();
+  final ProfileSetupController profileController = Get.find<ProfileSetupController>();
 
-  /// Avatars - mix of SVG & PNG supported
-  final List<dynamic> avatars = [
-    Assets.images.avt1, // SVG
-    Assets.images.avt2,
-    Assets.images.avt3,
-    Assets.images.avt4,
-    Assets.images.avt5,
-    Assets.images.avt6,
-    Assets.images.avt7,
-    Assets.images.avt8,
-  ];
-
-  int? selectedIndex; // Which avatar is selected
-
-  // Animation Controller
   late AnimationController _controller;
   late Animation<double> _progressAnim;
   late List<Animation<double>> _sectionAnimations;
@@ -47,29 +34,23 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
       duration: const Duration(milliseconds: 2500),
     );
 
-    // Progress animation: 0.8 to 1.0 (Step 5 - Final)
     _progressAnim = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
 
-    // Create animations for different sections
     _sectionAnimations = [
-      // Name section (0.1s - 0.6s)
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.1, 0.6, curve: Curves.easeOutBack),
       ),
-      // Avatar section (0.3s - 0.8s)
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.3, 0.8, curve: Curves.easeOutBack),
       ),
-      // Upload button (0.5s - 0.9s)
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.5, 0.9, curve: Curves.easeOutBack),
       ),
-      // Bottom buttons (0.7s - 1.0s)
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.7, 1.0, curve: Curves.easeOutBack),
@@ -82,8 +63,43 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
   @override
   void dispose() {
     _controller.dispose();
-    nameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleCreateProfile() async {
+    // Validate before creating
+    if (profileController.nameController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please enter your name',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    if (profileController.selectedAvatar.value == null ||
+        profileController.selectedAvatar.value!.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please select an avatar',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    // Set default date of birth if not set
+    if (profileController.dateOfBirth.value == null) {
+      profileController.dateOfBirth.value = DateTime(2000, 1, 1);
+    }
+
+    final success = await profileController.createProfile();
+    if (success && mounted) {
+      context.go(RoutePath.profileSetup6.addBasePath);
+    }
   }
 
   @override
@@ -98,7 +114,6 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Animated Step Heading
               AnimatedBuilder(
                 animation: _progressAnim,
                 builder: (context, _) {
@@ -113,7 +128,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
               ),
               const SizedBox(height: 14),
 
-              /// Animated Name Input Section
+              /// Name Input Section
               AnimatedBuilder(
                 animation: _sectionAnimations[0],
                 builder: (context, child) {
@@ -162,7 +177,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                           const SizedBox(width: 12),
                           Expanded(
                             child: TextField(
-                              controller: nameController,
+                              controller: profileController.nameController,
                               decoration: InputDecoration(
                                 hintText: l10n.enterYourName,
                                 hintStyle: const TextStyle(
@@ -181,7 +196,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
               ),
               const SizedBox(height: 16),
 
-              /// Animated Avatar Selection Section
+              /// Avatar Selection Section - Load from API
               AnimatedBuilder(
                 animation: _sectionAnimations[1],
                 builder: (context, child) {
@@ -196,101 +211,137 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                     ),
                   );
                 },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.chooseAvatar,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF374151),
+                child: Obx(() {
+                  if (profileController.isLoadingAvatars.value) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: CircularProgressIndicator(),
                       ),
-                    ),
-                    const SizedBox(height: 10),
+                    );
+                  }
 
-                    /// Animated Avatar Grid
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      alignment: WrapAlignment.spaceBetween,
-                      children: List.generate(avatars.length, (index) {
-                        final isSelected = selectedIndex == index;
-                        final avatar = avatars[index];
+                  if (profileController.avatars.isEmpty) {
+                    return Column(
+                      children: [
+                        const Text('No avatars available'),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: () => profileController.fetchAvatars(),
+                          child: const Text('Retry'),
+                        ),
+                      ],
+                    );
+                  }
 
-                        return AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, child) {
-                            final avatarDelay = 0.4 + (index * 0.05);
-                            final avatarAnim = CurvedAnimation(
-                              parent: _controller,
-                              curve: Interval(
-                                avatarDelay.clamp(0.0, 0.9),
-                                1.0,
-                                curve: Curves.easeOutBack,
-                              ),
-                            );
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.chooseAvatar,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF374151),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
+                        alignment: WrapAlignment.spaceBetween,
+                        children: List.generate(
+                          profileController.avatars.length,
+                              (index) {
+                            final avatar = profileController.avatars[index];
+                            return Obx(() {
+                              final isSelected = profileController.selectedAvatar.value == avatar.avatarIcon;
 
-                            return FadeTransition(
-                              opacity: avatarAnim,
-                              child: ScaleTransition(
-                                scale: Tween<double>(begin: 0.6, end: 1.0)
-                                    .animate(avatarAnim),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: GestureDetector(
-                            onTap: () => setState(() => selectedIndex = index),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              width: 64,
-                              height: 64,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? const Color(0xFFE27B4F)
-                                      : Colors.transparent,
-                                  width: isSelected ? 2 : 1,
-                                ),
-                                boxShadow: isSelected
-                                    ? [
-                                  const BoxShadow(
-                                    color: Color(0x40E27B4F),
-                                    blurRadius: 12,
-                                    offset: Offset(0, 4),
+                              return AnimatedBuilder(
+                                animation: _controller,
+                                builder: (context, child) {
+                                  final avatarDelay = 0.4 + (index * 0.05);
+                                  final avatarAnim = CurvedAnimation(
+                                    parent: _controller,
+                                    curve: Interval(
+                                      avatarDelay.clamp(0.0, 0.9),
+                                      1.0,
+                                      curve: Curves.easeOutBack,
+                                    ),
+                                  );
+
+                                  return FadeTransition(
+                                    opacity: avatarAnim,
+                                    child: ScaleTransition(
+                                      scale: Tween<double>(begin: 0.6, end: 1.0)
+                                          .animate(avatarAnim),
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                child: GestureDetector(
+                                  onTap: () => profileController.selectAvatar(avatar.avatarIcon),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    width: 64,
+                                    height: 64,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? const Color(0xFFE27B4F)
+                                            : Colors.transparent,
+                                        width: isSelected ? 2 : 1,
+                                      ),
+                                      boxShadow: isSelected
+                                          ? [
+                                        const BoxShadow(
+                                          color: Color(0x40E27B4F),
+                                          blurRadius: 12,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ]
+                                          : null,
+                                    ),
+                                    child: ClipOval(
+                                      child: Image.network(
+                                        avatar.avatarIcon,
+                                        width: 64,
+                                        height: 64,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: Colors.grey[200],
+                                            child: const Icon(Icons.person, size: 40),
+                                          );
+                                        },
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) return child;
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              value: loadingProgress.expectedTotalBytes != null
+                                                  ? loadingProgress.cumulativeBytesLoaded /
+                                                  loadingProgress.expectedTotalBytes!
+                                                  : null,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                ]
-                                    : null,
-                              ),
-                              child: ClipOval(
-                                child: avatar is SvgGenImage
-                                    ? avatar.svg(
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.cover,
-                                )
-                                    : (avatar is AssetGenImage
-                                    ? Image.asset(
-                                  avatar.path,
-                                  width: 64,
-                                  height: 64,
-                                  fit: BoxFit.cover,
-                                )
-                                    : const SizedBox()),
-                              ),
-                            ),
-                          ),
-                        );
-                      }),
-                    ),
-                  ],
-                ),
+                                ),
+                              );
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
               const SizedBox(height: 10),
 
-              /// Animated Upload Section
+              /// Upload Section
               AnimatedBuilder(
                 animation: _sectionAnimations[2],
                 builder: (context, child) {
@@ -348,7 +399,7 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
               ),
               const SizedBox(height: 15),
 
-              /// Animated Buttons Section
+              /// Buttons Section with API Integration
               AnimatedBuilder(
                 animation: _sectionAnimations[3],
                 builder: (context, child) {
@@ -363,51 +414,77 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
                     ),
                   );
                 },
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
+                child: Obx(() {
+                  final isCreating = profileController.isCreatingProfile.value;
+
+                  return Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            side: const BorderSide(color: Color(0xFFE27B4F)),
+                          ),
+                          onPressed: isCreating
+                              ? null
+                              : () {
+                            // Reset and go back to step 1
+                            profileController.resetSelections();
+                            context.go(RoutePath.profileSetup1.addBasePath);
+                          },
+                          child: Text(
+                            l10n.addAnotherProfile,
+                            style: TextStyle(
+                              color: isCreating ? Colors.grey : const Color(0xFFE27B4F),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 7),
+                      Center(
+                        child: Text(
+                          l10n.or,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF4B5563),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      SizedBox(
+                        width: double.infinity,
+                        child: isCreating
+                            ? Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE27B4F),
                             borderRadius: BorderRadius.circular(100),
                           ),
-                          side: const BorderSide(color: Color(0xFFE27B4F)),
-                        ),
-                        onPressed: () =>
-                            context.go(RoutePath.profileSetup1.addBasePath),
-                        child: Text(
-                          l10n.addAnotherProfile,
-                          style: const TextStyle(
-                            color: Color(0xFFE27B4F),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                          child: const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            ),
                           ),
+                        )
+                            : CustomButton(
+                          text: l10n.letsEat,
+                          onTap: _handleCreateProfile,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 7),
-                    Center(
-                      child: Text(
-                        l10n.or,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF4B5563),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: double.infinity,
-                      child: CustomButton(
-                        text: l10n.letsEat,
-                        onTap: () =>
-                            context.go(RoutePath.profileSetup6.addBasePath),
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+                }),
               ),
             ],
           ),

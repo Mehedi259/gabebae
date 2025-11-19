@@ -181,7 +181,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          initialValue: value,
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,

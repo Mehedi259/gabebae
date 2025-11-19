@@ -2,6 +2,7 @@
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/utils/app_colors/app_colors.dart';
@@ -9,6 +10,7 @@ import 'package:MenuSideKick/l10n/app_localizations.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup2_bottom_sheet.dart';
 import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
+import '../../../core/controllers/profile_setup_controller.dart';
 
 class ProfileSetup2Screen extends StatefulWidget {
   const ProfileSetup2Screen({super.key});
@@ -19,9 +21,10 @@ class ProfileSetup2Screen extends StatefulWidget {
 
 class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     with SingleTickerProviderStateMixin {
-  final Set<String> selectedFoods = {};
   late AnimationController _controller;
   late Animation<double> _progressAnim;
+
+  final ProfileSetupController profileController = Get.find<ProfileSetupController>();
 
   @override
   void initState() {
@@ -75,86 +78,81 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     required String title,
     required String image,
     bool isSeeMore = false,
+    bool isNetworkImage = false,
   }) {
-    final bool isSelected = selectedFoods.contains(title);
+    return Obx(() {
+      final bool isSelected = profileController.selectedAllergies.contains(title);
 
-    return GestureDetector(
-      onTap: () {
-        if (isSeeMore) {
-          _openProfileSetup2BottomSheet();
-        } else {
-          setState(() {
-            isSelected
-                ? selectedFoods.remove(title)
-                : selectedFoods.add(title);
-          });
-        }
-      },
-      child: Container(
-        width: 145,
-        height: 128,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isSeeMore ? const Color(0xFFF9FAFB) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: isSelected
-              ? Border.all(color: const Color(0xFFE27B4F), width: 2)
-              : Border.all(color: Colors.transparent),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 15,
-              offset: Offset(0, 10),
-            ),
-            BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 6,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              image,
-              width: 44,
-              height: 44,
-              color: isSeeMore ? const Color(0xFF4B5563) : null,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-                color: isSeeMore ? const Color(0xFF4B5563) : Colors.black,
+      return GestureDetector(
+        onTap: () {
+          if (isSeeMore) {
+            _openProfileSetup2BottomSheet();
+          } else {
+            profileController.toggleAllergy(title);
+          }
+        },
+        child: Container(
+          width: 145,
+          height: 128,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isSeeMore ? const Color(0xFFF9FAFB) : Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: isSelected
+                ? Border.all(color: const Color(0xFFE27B4F), width: 2)
+                : Border.all(color: Colors.transparent),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x1A000000),
+                blurRadius: 15,
+                offset: Offset(0, 10),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+              BoxShadow(
+                color: Color(0x1A000000),
+                blurRadius: 6,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              isNetworkImage
+                  ? Image.network(
+                image,
+                width: 44,
+                height: 44,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.no_food, size: 44);
+                },
+              )
+                  : Image.asset(
+                image,
+                width: 44,
+                height: 44,
+                color: isSeeMore ? const Color(0xFF4B5563) : null,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  color: isSeeMore ? const Color(0xFF4B5563) : Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-
-    final foods = [
-      {"title": l10n.nuts, "image": Assets.images.nuts.path},
-      {"title": l10n.dairy, "image": Assets.images.dairy.path},
-      {"title": l10n.gluten, "image": Assets.images.gluten.path},
-      {"title": l10n.shellfish, "image": Assets.images.shellfish.path},
-      {"title": l10n.egg, "image": Assets.images.egg.path},
-      {
-        "title": l10n.seeMore,
-        "image": Assets.images.plus.path,
-        "isSeeMore": "true",
-      },
-    ];
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -166,59 +164,108 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 24),
-              AnimatedBuilder(
-                animation: _progressAnim,
-                builder: (context, _) {
-                  return ProfileSetupHeading(
-                    stepText: l10n.step2Of5,
-                    progress: _progressAnim.value,
-                    title: l10n.anythingToAvoid,
-                    subtitle: l10n.keepYouSafe,
-                    onBack: () =>
-                        context.go(RoutePath.profileSetup1.addBasePath),
-                  );
-                },
+        child: Obx(() {
+          if (profileController.isLoadingAllergies.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (profileController.allergies.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No allergies available'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => profileController.fetchAllergies(),
+                    child: const Text('Retry'),
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              Wrap(
-                spacing: 16,
-                runSpacing: 16,
-                children: List.generate(foods.length, (index) {
-                  final item = foods[index];
-                  return AnimatedBuilder(
-                    animation: _controller,
-                    builder: (context, child) {
-                      final intervalStart = (index * 0.1).clamp(0.0, 1.0);
-                      final anim = CurvedAnimation(
-                        parent: _controller,
-                        curve: Interval(
-                          intervalStart,
-                          1.0,
-                          curve: Curves.easeOutBack,
-                        ),
-                      );
-                      return FadeTransition(
-                        opacity: anim,
-                        child: ScaleTransition(scale: anim, child: child),
-                      );
-                    },
-                    child: buildFoodCard(
-                      title: item["title"]!,
-                      image: item["image"]!,
-                      isSeeMore: item["isSeeMore"] == "true",
+            );
+          }
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 24),
+                AnimatedBuilder(
+                  animation: _progressAnim,
+                  builder: (context, _) {
+                    return ProfileSetupHeading(
+                      stepText: l10n.step2Of5,
+                      progress: _progressAnim.value,
+                      title: l10n.anythingToAvoid,
+                      subtitle: l10n.keepYouSafe,
+                      onBack: () =>
+                          context.go(RoutePath.profileSetup1.addBasePath),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 16,
+                  children: [
+                    ...List.generate(
+                      profileController.allergies.length > 5
+                          ? 5
+                          : profileController.allergies.length,
+                          (index) {
+                        final allergy = profileController.allergies[index];
+                        return AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, child) {
+                            final intervalStart = (index * 0.1).clamp(0.0, 1.0);
+                            final anim = CurvedAnimation(
+                              parent: _controller,
+                              curve: Interval(
+                                intervalStart,
+                                1.0,
+                                curve: Curves.easeOutBack,
+                              ),
+                            );
+                            return FadeTransition(
+                              opacity: anim,
+                              child: ScaleTransition(scale: anim, child: child),
+                            );
+                          },
+                          child: buildFoodCard(
+                            title: allergy.allergyName,
+                            image: allergy.allergyIcon,
+                            isNetworkImage: true,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                }),
-              ),
-            ],
-          ),
-        ),
+
+                    if (profileController.allergies.length > 5)
+                      AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          final anim = CurvedAnimation(
+                            parent: _controller,
+                            curve: const Interval(0.5, 1.0, curve: Curves.easeOutBack),
+                          );
+                          return FadeTransition(
+                            opacity: anim,
+                            child: ScaleTransition(scale: anim, child: child),
+                          );
+                        },
+                        child: buildFoodCard(
+                          title: l10n.seeMore,
+                          image: Assets.images.plus.path,
+                          isSeeMore: true,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

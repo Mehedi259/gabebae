@@ -1,12 +1,18 @@
 // lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart
-// Updated with localization
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/custom_assets/assets.gen.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ProfileSetup1BalanceControllerPopup extends StatefulWidget {
-  const ProfileSetup1BalanceControllerPopup({super.key});
+  final String eatingStyleName;
+  final Function(String level) onLevelSelected;
+
+  const ProfileSetup1BalanceControllerPopup({
+    super.key,
+    required this.eatingStyleName,
+    required this.onLevelSelected,
+  });
 
   @override
   State<ProfileSetup1BalanceControllerPopup> createState() =>
@@ -35,21 +41,27 @@ class _ProfileSetup1BalanceControllerPopupState
     return 1;
   }
 
+  String get selectedLevel {
+    if (selectedIndex == 0) return 'flexible';
+    if (selectedIndex == 2) return 'strict';
+    return 'balanced';
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     final dietOptions = [
-      {"title": l10n.flexible, "image": Assets.images.flexible.path},
-      {"title": l10n.balanced, "image": Assets.images.balanced.path},
-      {"title": l10n.strict, "image": Assets.images.strict.path},
+      {"title": l10n.flexible, "image": Assets.images.flexible.path, "level": "flexible"},
+      {"title": l10n.balanced, "image": Assets.images.balanced.path, "level": "balanced"},
+      {"title": l10n.strict, "image": Assets.images.strict.path, "level": "strict"},
     ];
 
     return SingleChildScrollView(
       child: Center(
         child: Container(
           width: double.infinity,
-          height: 300,
+          height: 400,
           padding: const EdgeInsets.symmetric(horizontal: 33, vertical: 24),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -66,6 +78,19 @@ class _ProfileSetup1BalanceControllerPopupState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // Title
+              Text(
+                widget.eatingStyleName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF111827),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Level options
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(dietOptions.length, (index) {
@@ -88,6 +113,8 @@ class _ProfileSetup1BalanceControllerPopupState
                 }),
               ),
               const SizedBox(height: 24),
+
+              // Slider
               SizedBox(
                 width: double.infinity,
                 height: 48,
@@ -156,6 +183,8 @@ class _ProfileSetup1BalanceControllerPopupState
                 ),
               ),
               const SizedBox(height: 24),
+
+              // Selected level display
               Column(
                 children: [
                   Container(
@@ -189,6 +218,33 @@ class _ProfileSetup1BalanceControllerPopupState
                     ),
                   ),
                 ],
+              ),
+
+              // Confirm button
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    widget.onLevelSelected(selectedLevel);
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF6CA865),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                  ),
+                  child: const Text(
+                     'Confirm',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

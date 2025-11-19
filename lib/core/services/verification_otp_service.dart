@@ -22,6 +22,8 @@ class VerificationOtpService {
         },
       );
 
+      developer.log('📥 OTP Response: $response', name: 'VerificationOtpService');
+
       // Store tokens
       if (response['access'] != null) {
         await StorageHelper.saveToken(response['access']);
@@ -31,6 +33,25 @@ class VerificationOtpService {
       if (response['refresh'] != null) {
         await StorageHelper.saveRefreshToken(response['refresh']);
         developer.log('✅ Refresh token saved', name: 'VerificationOtpService');
+      }
+
+      // Store user ID and email - THIS IS CRITICAL!
+      if (response['user'] != null) {
+        final user = response['user'];
+
+        // Save user ID
+        if (user['id'] != null) {
+          await StorageHelper.saveUserId(user['id']);
+          developer.log('✅ User ID saved: ${user['id']}', name: 'VerificationOtpService');
+        }
+
+        // Save user email
+        if (user['email'] != null) {
+          await StorageHelper.saveUserEmail(user['email']);
+          developer.log('✅ User email saved: ${user['email']}', name: 'VerificationOtpService');
+        }
+      } else {
+        developer.log('⚠️ No user data in response', name: 'VerificationOtpService');
       }
 
       developer.log('✅ OTP Verification Success', name: 'VerificationOtpService');

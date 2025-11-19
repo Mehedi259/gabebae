@@ -1,3 +1,4 @@
+//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_bottom_sheet.dart
 import 'package:flutter/material.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
@@ -75,7 +76,7 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
             color: Colors.transparent,
             child: Container(
               padding: const EdgeInsets.all(24),
-              child: const ProfileSetup1BalanceControllerPopup(),
+              child: ProfileSetup1BalanceControllerPopup(eatingStyleName: '',onLevelSelected: (String level) {  },),
             ),
           ),
         );

@@ -1,83 +1,37 @@
-//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart
+// lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
-import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+import 'package:get/get.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/controllers/profile_setup_controller.dart';
 import '../../../../core/routes/route_path.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class ProfileSetup3BottomSheet extends StatefulWidget {
+class ProfileSetup3BottomSheet extends StatelessWidget {
   const ProfileSetup3BottomSheet({super.key});
-
-  @override
-  State<ProfileSetup3BottomSheet> createState() =>
-      _ProfileSetup3BottomSheetState();
-}
-
-class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
-  /// Track switch states for health conditions - using language-independent keys
-  final Map<String, bool> _switchStates = {
-    "asthma": false,
-    "kidneyDisease": false,
-    "thyroidIssues": false,
-    "heartDisease": false,
-  };
-
-  List<Map<String, dynamic>> _getLocalizedHealthConditions(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return [
-      {
-        "key": "asthma",
-        "title": l10n.asthma,
-        "subtitle": l10n.chronicLungCondition,
-        "image": Assets.images.celiacDisease.path,
-      },
-      {
-        "key": "kidneyDisease",
-        "title": l10n.kidneyDisease,
-        "subtitle": l10n.renalHealthSupport,
-        "image": Assets.images.hypertension.path,
-      },
-      {
-        "key": "thyroidIssues",
-        "title": l10n.thyroidIssues,
-        "subtitle": l10n.hyperHypoThyroidism,
-        "image": Assets.images.highCholesterol.path,
-      },
-      {
-        "key": "heartDisease",
-        "title": l10n.heartDisease,
-        "subtitle": l10n.cardiacHealth,
-        "image": Assets.images.diabetes.path,
-      },
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final healthConditions = _getLocalizedHealthConditions(context);
+    final ProfileSetupController controller = Get.find<ProfileSetupController>();
 
     return DraggableScrollableSheet(
       initialChildSize: 0.7,
       maxChildSize: 0.95,
       minChildSize: 0.4,
-      builder: (_, controller) => Container(
+      builder: (_, scrollController) => Container(
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Stack(
           children: [
-            /// ===== Scrollable Content =====
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 90),
               child: ListView(
-                controller: controller,
+                controller: scrollController,
                 children: [
-                  /// ===== Updated Health-Driven Header =====
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
@@ -96,7 +50,7 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF669A59),
-                          height: 1.6, // line-height: 32px (18 * 1.6 ≈ 32)
+                          height: 1.6,
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -105,20 +59,43 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
 
                   const SizedBox(height: 24),
 
-                  /// ===== Cards =====
-                  ...healthConditions.map((condition) {
-                    return _buildHealthCard(
-                      conditionKey: condition["key"] as String,
-                      title: condition["title"] as String,
-                      subtitle: condition["subtitle"] as String,
-                      imagePath: condition["image"] as String,
+                  Obx(() {
+                    // Get remaining conditions (skip first 4)
+                    final remainingConditions = controller.medicalConditions.length > 4
+                        ? controller.medicalConditions.sublist(4)
+                        : <dynamic>[];
+
+                    if (remainingConditions.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(32.0),
+                          child: Text('No additional medical conditions'),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children: remainingConditions.map((condition) {
+                        return Obx(() {
+                          final bool isActive = controller.selectedMedicalConditions
+                              .contains(condition.medicalConditionName);
+
+                          return _buildHealthCard(
+                            controller: controller,
+                            conditionName: condition.medicalConditionName,
+                            title: condition.medicalConditionName,
+                            subtitle: condition.medicalDescription,
+                            imagePath: condition.medicalConditionIcon,
+                            isActive: isActive,
+                          );
+                        });
+                      }).toList(),
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
 
-            /// ===== Fixed Bottom Button =====
             Positioned(
               left: 24,
               right: 24,
@@ -134,17 +111,14 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
     );
   }
 
-  /// ===============================
-  /// Reusable Card With Custom Switch
-  /// ===============================
   Widget _buildHealthCard({
-    required String conditionKey,
+    required ProfileSetupController controller,
+    required String conditionName,
     required String title,
     required String subtitle,
     required String imagePath,
+    required bool isActive,
   }) {
-    final bool isActive = _switchStates[conditionKey] ?? false;
-
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(17),
@@ -162,7 +136,6 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
       ),
       child: Row(
         children: [
-          /// Icon
           Container(
             width: 48,
             height: 48,
@@ -172,16 +145,18 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
               borderRadius: BorderRadius.circular(9999),
             ),
             child: Center(
-              child: Image.asset(
+              child: Image.network(
                 imagePath,
                 width: 24,
                 height: 24,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.health_and_safety, size: 24);
+                },
               ),
             ),
           ),
           const SizedBox(width: 12),
 
-          /// Title & Subtitle
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -209,12 +184,9 @@ class _ProfileSetup3BottomSheetState extends State<ProfileSetup3BottomSheet> {
             ),
           ),
 
-          /// Custom Switch
           GestureDetector(
             onTap: () {
-              setState(() {
-                _switchStates[conditionKey] = !isActive;
-              });
+              controller.toggleMedicalCondition(conditionName);
             },
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
