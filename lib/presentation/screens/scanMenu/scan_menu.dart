@@ -1,3 +1,4 @@
+//lib/presentation/screens/scanMenu/scan_menu.dart
 import 'dart:io';
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';

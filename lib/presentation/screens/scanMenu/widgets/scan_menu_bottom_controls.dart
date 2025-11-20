@@ -1,3 +1,4 @@
+//lib/presentation/screens/scanMenu/widgets/scan_menu_bottom_controls.dart
 import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'scan_menu_round_image_button.dart';

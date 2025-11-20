@@ -113,6 +113,33 @@ class ApiService {
     }
   }
 
+
+  /// PATCH Request
+  static Future<dynamic> patchRequest(String endpoint,
+      {Map<String, dynamic>? body}) async {
+    try {
+      final token = await StorageHelper.getToken();
+      final uri = Uri.parse("${ApiConstants.baseUrl}$endpoint");
+
+      developer.log('📤 PATCH Request to: $uri', name: 'ApiService');
+      developer.log('📦 Body: $body', name: 'ApiService');
+
+      final response = await http.patch(
+        uri,
+        headers: _headers(token),
+        body: jsonEncode(body),
+      );
+
+      developer.log('📥 Response Status: ${response.statusCode}', name: 'ApiService');
+      developer.log('📥 Response Body: ${response.body}', name: 'ApiService');
+
+      return processResponse(response);
+    } catch (e) {
+      developer.log('❌ PATCH Error: $e', name: 'ApiService');
+      throw Exception("PATCH request error: $e");
+    }
+  }
+
   /// Headers with Token
   static Map<String, String> _headers(String? token) {
     final cleaned = token?.trim() ?? "";

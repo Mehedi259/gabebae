@@ -28,6 +28,11 @@ import '../../presentation/screens/profileSetup/profile_setup4.dart';
 import '../../presentation/screens/profileSetup/profile_setup5.dart';
 import '../../presentation/screens/profileSetup/profile_setup6.dart';
 import '../../presentation/screens/profileSetup/profile_setup7.dart';
+import '../../presentation/screens/profileSetupUpdate/profile_setup1.dart';
+import '../../presentation/screens/profileSetupUpdate/profile_setup2.dart';
+import '../../presentation/screens/profileSetupUpdate/profile_setup3.dart';
+import '../../presentation/screens/profileSetupUpdate/profile_setup4.dart';
+import '../../presentation/screens/profileSetupUpdate/profile_setup5.dart';
 import '../../presentation/screens/scanMenu/scan_menu.dart';
 import '../../presentation/screens/scanMenu/scan_result_all.dart';
 import '../../presentation/screens/scanMenu/scan_result_build_my_plate.dart';
@@ -123,6 +128,34 @@ class AppRouter {
         name: RoutePath.privacyPolicyPs,
         path: RoutePath.privacyPolicyPs.addBasePath,
         builder: (context, state) => const PrivacyPolicyScreenPs(),
+      ),
+
+
+      /// Profile Setup Update
+      GoRoute(
+        name: RoutePath.profileSetup1Update,
+        path: RoutePath.profileSetup1Update.addBasePath,
+        builder: (context, state) => const ProfileSetup1ScreenUpdate(),
+      ),
+      GoRoute(
+        name: RoutePath.profileSetup2Update,
+        path: RoutePath.profileSetup2Update.addBasePath,
+        builder: (context, state) => const ProfileSetup2ScreenUpdate(),
+      ),
+      GoRoute(
+        name: RoutePath.profileSetup3Update,
+        path: RoutePath.profileSetup3Update.addBasePath,
+        builder: (context, state) => const ProfileSetup3ScreenUpdate(),
+      ),
+      GoRoute(
+        name: RoutePath.profileSetup4Update,
+        path: RoutePath.profileSetup4Update.addBasePath,
+        builder: (context, state) => const ProfileSetup4ScreenUpdate(),
+      ),
+      GoRoute(
+        name: RoutePath.profileSetup5Update,
+        path: RoutePath.profileSetup5Update.addBasePath,
+        builder: (context, state) => const ProfileSetup5ScreenUpdate(),
       ),
 
       /// Home

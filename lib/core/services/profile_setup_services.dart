@@ -111,6 +111,27 @@ class ProfileSetupService {
     }
   }
 
+  /// Update Active Profile
+  static Future<ProfileResponse> updateProfile(ProfileCreateRequest request) async {
+    try {
+      developer.log('🔄 Updating active profile: ${request.profileName}', name: 'ProfileSetupService');
+
+      final response = await ApiService.patchRequest(
+        '/profiles/active/',
+        body: request.toJson(),
+      );
+
+      final profile = ProfileResponse.fromJson(response);
+
+      developer.log('✅ Profile updated successfully: ${profile.profileName}',
+          name: 'ProfileSetupService');
+      return profile;
+    } catch (e) {
+      developer.log('❌ Error updating profile: $e', name: 'ProfileSetupService');
+      rethrow;
+    }
+  }
+
   /// Create Profile - uses toJson() with 'eating_style_name'
   static Future<ProfileResponse> createProfile(ProfileCreateRequest request) async {
     try {

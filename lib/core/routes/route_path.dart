@@ -23,6 +23,14 @@ class RoutePath {
   static const String profileSetup6 = 'profileSetup6';
   static const String privacyPolicyPs = 'privacyPolicyPs';
 
+  //==================================== Profile Setup Update screens =====================================
+
+  static const String profileSetup1Update = 'profileSetup1Update';
+  static const String profileSetup2Update = 'profileSetup2Update';
+  static const String profileSetup3Update = 'profileSetup3Update';
+  static const String profileSetup4Update = 'profileSetup4Update';
+  static const String profileSetup5Update = 'profileSetup5Update';
+
   //==================================== Home screens =====================================
 
   static const String home = 'home';

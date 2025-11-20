@@ -1,3 +1,4 @@
+//lib/presentation/screens/scanMenu/scan_result_all.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

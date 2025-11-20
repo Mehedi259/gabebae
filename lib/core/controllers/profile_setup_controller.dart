@@ -275,6 +275,91 @@ class ProfileSetupController extends GetxController {
     }
   }
 
+
+
+// Loading state for update
+  final RxBool isUpdatingProfile = false.obs;
+
+  /// Update Profile
+  Future<bool> updateProfile() async {
+    developer.log('🔄 Starting profile update', name: 'ProfileSetupController');
+
+    // Validation
+    if (nameController.text.trim().isEmpty) {
+      _showError('Please enter your name');
+      return false;
+    }
+
+    if (selectedAvatar.value == null || selectedAvatar.value!.isEmpty) {
+      _showError('Please select an avatar');
+      return false;
+    }
+
+    if (selectedEatingStyles.isEmpty) {
+      _showError('Please select at least one eating style');
+      return false;
+    }
+
+    // Set default date if not provided
+    if (dateOfBirth.value == null) {
+      dateOfBirth.value = DateTime(2000, 1, 1);
+      developer.log('⚠️ Using default date of birth', name: 'ProfileSetupController');
+    }
+
+    try {
+      isUpdatingProfile.value = true;
+
+      // Get user ID
+      final userId = await StorageHelper.getUserId();
+      if (userId == null) {
+        developer.log('❌ User ID not found', name: 'ProfileSetupController');
+        _showError('User authentication error. Please login again.');
+        return false;
+      }
+
+      developer.log('✅ User ID: $userId', name: 'ProfileSetupController');
+
+      // Prepare eating style selections
+      final eatingStyleSelections = selectedEatingStyles.entries
+          .map((e) => EatingStyleSelection(name: e.key, level: e.value))
+          .toList();
+
+      developer.log('📝 Eating styles: ${eatingStyleSelections.map((e) => '${e.name}:${e.level}').toList()}',
+          name: 'ProfileSetupController');
+
+      // Create request
+      final request = ProfileCreateRequest(
+        user: userId,
+        eatingStyle: eatingStyleSelections,
+        allergies: selectedAllergies.toList(),
+        medicalConditions: selectedMedicalConditions.toList(),
+        magicList: selectedMagicListItems.toList(),
+        profileName: nameController.text.trim(),
+        country: country.value,
+        avatar: selectedAvatar.value!,
+        dateOfBirth: _formatDate(dateOfBirth.value!),
+        isActive: true,
+      );
+
+      developer.log('📤 Update Request Data: ${request.toJson()}', name: 'ProfileSetupController');
+
+      // Call UPDATE API instead of CREATE
+      final profile = await ProfileSetupService.updateProfile(request);
+
+      developer.log('✅ Profile updated: ${profile.profileName}', name: 'ProfileSetupController');
+
+      // Show success message
+      _showSuccess('Profile updated successfully!');
+
+      return true;
+    } catch (e) {
+      developer.log('❌ Error updating profile: $e', name: 'ProfileSetupController');
+      _showError('Failed to update profile. Please try again.');
+      return false;
+    } finally {
+      isUpdatingProfile.value = false;
+    }
+  }
   /// Format date
   String _formatDate(DateTime d) {
     return "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";

@@ -1,6 +1,7 @@
+// lib/presentation/screens/home/home_widgets/history_card.dart
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
-
 import '../../../../l10n/app_localizations.dart';
 
 class HistoryCard extends StatelessWidget {
@@ -9,6 +10,7 @@ class HistoryCard extends StatelessWidget {
   final int safeItems;
   final int notSafeItems;
   final String imagePath;
+  final bool isNetworkImage;
 
   const HistoryCard({
     super.key,
@@ -17,6 +19,7 @@ class HistoryCard extends StatelessWidget {
     required this.safeItems,
     required this.notSafeItems,
     required this.imagePath,
+    this.isNetworkImage = false,
   });
 
   @override
@@ -53,7 +56,28 @@ class HistoryCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
+                child: isNetworkImage
+                    ? CachedNetworkImage(
+                  imageUrl: imagePath,
+                  width: 64,
+                  height: 64,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: 64,
+                    height: 64,
+                    color: Colors.grey[300],
+                    child: const Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 64,
+                    height: 64,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.error),
+                  ),
+                )
+                    : Image.asset(
                   imagePath,
                   width: 64,
                   height: 64,
@@ -80,12 +104,16 @@ class HistoryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 16,
                         fontWeight: FontWeight.w500)),
                 const SizedBox(height: 4),
                 Text(date,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 14,
@@ -95,33 +123,39 @@ class HistoryCard extends StatelessWidget {
                 Row(
                   children: [
                     if (safeItems > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0x1A6CA865),
-                          borderRadius: BorderRadius.circular(9999),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0x1A6CA865),
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                          child: Text("✅ $safeItems ${l10n.safeItems}",
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF6CA865))),
                         ),
-                        child: Text("✅ $safeItems ${l10n.safeItems}",
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF6CA865))),
                       ),
                     if (notSafeItems > 0) const SizedBox(width: 8),
                     if (notSafeItems > 0)
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color(0x1AF87171),
-                          borderRadius: BorderRadius.circular(9999),
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: const Color(0x1AF87171),
+                            borderRadius: BorderRadius.circular(9999),
+                          ),
+                          child: Text("⚠️ $notSafeItems ${l10n.notSafe}",
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF991B1B))),
                         ),
-                        child: Text("⚠️ $notSafeItems ${l10n.notSafe}",
-                            style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF991B1B))),
                       ),
                   ],
                 ),

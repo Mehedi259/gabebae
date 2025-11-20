@@ -1,9 +1,13 @@
+// lib/presentation/screens/home/home.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/presentation/widgets/navigation.dart';
+import '../../../core/controllers/home_controller.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import 'home_widgets/history_card.dart';
@@ -17,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  final HomeController _homeController = Get.put(HomeController());
 
   void _onNavTap(int index) {
     setState(() {
@@ -41,115 +46,99 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// ===== Custom Bottom Navigation Bar =====
       bottomNavigationBar: CustomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onNavTap,
       ),
-
-      /// ===== Body =====
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// ===== Top Header =====
-              Row(
+        child: Obx(() {
+          if (_homeController.isLoadingProfile.value &&
+              _homeController.activeProfile.value == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return RefreshIndicator(
+            onRefresh: _homeController.refreshHomeData,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  GestureDetector(
-                    onTap: () => context.go(RoutePath.myProfile.addBasePath),
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: Colors.transparent,
-                      child: ClipOval(
-                        child: Image.asset(
-                          Assets.images.av1.path,
-                          width: 48,
-                          height: 48,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      l10n.hiUser,
-                      style: const TextStyle(
-                        fontFamily: "Montserrat",
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF154452),
-                      ),
-                    ),
-                  ),
+                  /// ===== Top Header =====
+                  _buildHeader(context),
+                  const SizedBox(height: 24),
+
+                  /// ===== Dining Profile Card =====
+                  _buildDiningProfileCard(context),
+                  const SizedBox(height: 24),
+
+                  /// ===== Favorites Section =====
+                  _buildFavoritesSection(context),
+                  const SizedBox(height: 24),
+
+                  /// ===== Recent Scans Section =====
+                  _buildRecentScansSection(context),
                 ],
               ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 
-              const SizedBox(height: 24),
+  /// ===== Header =====
+  Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final profile = _homeController.activeProfile.value;
 
-              /// ===== Dining Profile Card =====
-              _buildDiningProfileCard(context),
-
-              const SizedBox(height: 24),
-
-              /// ===== Favorites Section =====
-              _buildSectionHeader(
-                title: l10n.yourFavorites,
-                onSeeAllTap: () =>
-                    context.go(RoutePath.activity.addBasePath),
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () => context.go(RoutePath.myProfile.addBasePath),
+          child: CircleAvatar(
+            radius: 24,
+            backgroundColor: Colors.grey[200],
+            child: profile?.avatar != null
+                ? ClipOval(
+              child: CachedNetworkImage(
+                imageUrl: profile!.avatar!,
+                width: 48,
+                height: 48,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                const CircularProgressIndicator(),
+                errorWidget: (context, url, error) =>
+                const Icon(Icons.person),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                height: 120,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildFoodCard(
-                        l10n.avocadoToast, Assets.images.avocadoToast.path),
-                    _buildFoodCard(
-                        l10n.quinoaBowl, Assets.images.quinoaBowl.path),
-                    _buildFoodCard(l10n.greenSmoothie,
-                        Assets.images.greenSmoothie.path),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              /// ===== Recent Scans Section =====
-              _buildSectionHeader(
-                title: l10n.recentScans,
-                onSeeAllTap: () =>
-                    context.go(RoutePath.activity.addBasePath),
-              ),
-              const SizedBox(height: 16),
-              HistoryCard(
-                title: l10n.bellaVistalItalian,
-                date: "${l10n.scannedOn} Aug 25, 10:32 AM",
-                safeItems: 3,
-                notSafeItems: 2,
-                imagePath: Assets.images.bellaVistalItalian.path,
-              ),
-              HistoryCard(
-                title: l10n.oceanBreezeSeafood,
-                date: "${l10n.scannedOn} Aug 24, 07:15 AM",
-                safeItems: 5,
-                notSafeItems: 0,
-                imagePath: Assets.images.oceanBreezeSeafood.path,
-              ),
-            ],
+            )
+                : const Icon(Icons.person),
           ),
         ),
-      ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            profile?.profileName ?? l10n.hiUser,
+            style: const TextStyle(
+              fontFamily: "Montserrat",
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF154452),
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   /// ===== Dining Profile Card =====
   Widget _buildDiningProfileCard(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final profile = _homeController.activeProfile.value;
+
+    if (profile == null) {
+      return const SizedBox.shrink();
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -180,64 +169,89 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => context.go(RoutePath.profileSetup1.addBasePath),
+                onTap: () =>
+                    context.go(RoutePath.profileSetup1Update.addBasePath),
                 child: Assets.icons.edit.svg(width: 20, height: 20),
               ),
             ],
           ),
-
           const SizedBox(height: 16),
 
-          Text(l10n.diet,
-              style: const TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF4B5563),
-              )),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              _buildChipWithIcon(l10n.vegan, Assets.images.vegan.path,
-                  const Color(0x1A6CA865), const Color(0xFF6CA865)),
-              _buildChipWithIcon(l10n.dairyFree, Assets.images.dairy.path,
-                  const Color(0x1A3B8F9D), const Color(0xFF3B8F9D)),
-            ],
-          ),
+          /// Diet Section
+          if (profile.eatingStyle.isNotEmpty) ...[
+            Text(l10n.diet,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF4B5563),
+                )),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: profile.eatingStyle.map((style) {
+                final iconUrl = _homeController.getEatingStyleIcon(style.name);
+                return _buildChipWithNetworkIcon(
+                  style.name,
+                  iconUrl,
+                  const Color(0x1A6CA865),
+                  const Color(0xFF6CA865),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
 
-          const SizedBox(height: 16),
+          /// Allergies Section
+          if (profile.allergies.isNotEmpty) ...[
+            Text(l10n.allergies,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                )),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: profile.allergies.map((allergy) {
+                final iconUrl = _homeController.getAllergyIcon(allergy);
+                return _buildChipWithNetworkIcon(
+                  allergy,
+                  iconUrl,
+                  const Color(0xFFFEF2F2),
+                  const Color(0xFFDC2626),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
 
-          Text(l10n.allergies,
-              style: const TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              )),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            children: [
-              _buildChipWithIcon(l10n.peanuts, Assets.images.nuts.path,
-                  const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
-              _buildChipWithIcon(l10n.shellfish, Assets.images.shellfish.path,
-                  const Color(0xFFFEF2F2), const Color(0xFFDC2626)),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          Text(l10n.health,
-              style: const TextStyle(
-                fontFamily: "Poppins",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              )),
-          const SizedBox(height: 8),
-          _buildChipWithIcon(l10n.diabetic, Assets.images.diabetes.path,
-              const Color(0x1AE2B94C), const Color(0xFFE2B94C)),
-
-          const SizedBox(height: 16),
+          /// Health Section
+          if (profile.medicalConditions.isNotEmpty) ...[
+            Text(l10n.health,
+                style: const TextStyle(
+                  fontFamily: "Poppins",
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                )),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: profile.medicalConditions.map((condition) {
+                final iconUrl = _homeController.getMedicalConditionIcon(condition);
+                return _buildChipWithNetworkIcon(
+                  condition,
+                  iconUrl,
+                  const Color(0x1AE2B94C),
+                  const Color(0xFFE2B94C),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+          ],
 
           GestureDetector(
             onTap: () => context.go(RoutePath.myQrCode.addBasePath),
@@ -257,9 +271,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// ===== Chip with Icon =====
-  static Widget _buildChipWithIcon(
-      String text, String iconPath, Color bgColor, Color textColor) {
+  /// ===== Chip with Network Icon =====
+  Widget _buildChipWithNetworkIcon(
+      String text, String? iconUrl, Color bgColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -269,7 +283,17 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(iconPath, width: 16, height: 16),
+          if (iconUrl != null)
+            CachedNetworkImage(
+              imageUrl: iconUrl,
+              width: 16,
+              height: 16,
+              placeholder: (context, url) =>
+              const SizedBox(width: 16, height: 16),
+              errorWidget: (context, url, error) => const Icon(Icons.error, size: 16),
+            )
+          else
+            const Icon(Icons.circle, size: 16),
           const SizedBox(width: 4),
           Text(
             text,
@@ -285,7 +309,74 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// ===== Section Header with See All Click =====
+  /// ===== Favorites Section =====
+  Widget _buildFavoritesSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Obx(() {
+      final favorites = _homeController.myPlateFavorites;
+
+      return Column(
+        children: [
+          _buildSectionHeader(
+            title: l10n.yourFavorites,
+            onSeeAllTap: () => context.go(RoutePath.activity.addBasePath),
+          ),
+          const SizedBox(height: 16),
+          if (_homeController.isLoadingFavorites.value)
+            const Center(child: CircularProgressIndicator())
+          else if (favorites.isEmpty)
+            const Center(child: Text('No favorites yet'))
+          else
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: favorites.length,
+                itemBuilder: (context, index) {
+                  final favorite = favorites[index];
+                  return _buildFoodCard(favorite.mealName, favorite.imageUrl);
+                },
+              ),
+            ),
+        ],
+      );
+    });
+  }
+
+  /// ===== Recent Scans Section =====
+  Widget _buildRecentScansSection(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Obx(() {
+      final scans = _homeController.scannedDocuments;
+
+      return Column(
+        children: [
+          _buildSectionHeader(
+            title: l10n.recentScans,
+            onSeeAllTap: () => context.go(RoutePath.activity.addBasePath),
+          ),
+          const SizedBox(height: 16),
+          if (_homeController.isLoadingScans.value)
+            const Center(child: CircularProgressIndicator())
+          else if (scans.isEmpty)
+            const Center(child: Text('No recent scans'))
+          else
+            ...scans.map((scan) => HistoryCard(
+              title: scan.aiReply.documentTitle,
+              date: "${l10n.scannedOn} ${scan.uploadedAt}",
+              safeItems: scan.aiReply.totalSafeItems,
+              notSafeItems: scan.aiReply.totalUnsafeItems,
+              imagePath: scan.fileUrl,
+              isNetworkImage: true,
+            )),
+        ],
+      );
+    });
+  }
+
+  /// ===== Section Header =====
   Widget _buildSectionHeader(
       {required String title, required VoidCallback onSeeAllTap}) {
     final l10n = AppLocalizations.of(context)!;
@@ -319,7 +410,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// ===== Food Card =====
-  Widget _buildFoodCard(String title, String imagePath) {
+  Widget _buildFoodCard(String title, String imageUrl) {
     return Container(
       width: 128,
       height: 118,
@@ -331,26 +422,32 @@ class _HomeScreenState extends State<HomeScreen> {
         border: Border.all(color: const Color(0xFFE5E7EB)),
         boxShadow: const [
           BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 6,
-              offset: Offset(0, 4)),
+              color: Color(0x1A000000), blurRadius: 6, offset: Offset(0, 4)),
           BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 4,
-              offset: Offset(0, 2)),
+              color: Color(0x1A000000), blurRadius: 4, offset: Offset(0, 2)),
         ],
       ),
       child: Column(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
-            child: Image.asset(imagePath,
-                width: 112, height: 80, fit: BoxFit.cover),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              width: 112,
+              height: 80,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             title,
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontFamily: "Poppins",
               fontSize: 12,
