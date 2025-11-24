@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../presentation/screens/ProfileAndSettings/about_us.dart';
 import '../../presentation/screens/ProfileAndSettings/account_settings.dart';
-import '../../presentation/screens/ProfileAndSettings/change_password.dart';
 import '../../presentation/screens/ProfileAndSettings/edit_profile.dart';
 import '../../presentation/screens/ProfileAndSettings/help_and_support.dart';
 import '../../presentation/screens/ProfileAndSettings/my_profile.dart';
@@ -266,11 +265,7 @@ class AppRouter {
         path: RoutePath.accountSettings.addBasePath,
         builder: (context, state) => const AccountSettingsScreen(),
       ),
-      GoRoute(
-        name: RoutePath.changePassword,
-        path: RoutePath.changePassword.addBasePath,
-        builder: (context, state) => const ChangePasswordScreen(),
-      ),
+
       GoRoute(
         name: RoutePath.termsAndCondition,
         path: RoutePath.termsAndCondition.addBasePath,

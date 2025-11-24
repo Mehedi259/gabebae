@@ -1,3 +1,4 @@
+
 {
   "@@locale": "en",
   "letsBegin": "Let's Begin ✨",
@@ -312,5 +313,14 @@
   "scanOptionPDFDesc": "Natural light is best. Avoid strong reflections.",
   "scanOptionURL": "URL",
   "scanOptionURLDesc": "Capture the whole page edge to edge.",
-  "gotIt": "Got it!"
+  "gotIt": "Got it!",
+  "myProfile": "My Profile",
+  "accountSettings": "Account Settings",
+  "activeProfile": "Active Profile",
+  "switchProfile": "Switch Profile",
+  "helpSupport": "Help & Support",
+  "logout": "Logout",
+  "logoutConfirmation": "Are you sure you want to logout?",
+  "yes": "Yes",
+  "no": "No"
 }

@@ -60,6 +60,55 @@ class ApiService {
     }
   }
 
+  /// PATCH Request
+  static Future<dynamic> patchRequest(String endpoint,
+      {Map<String, dynamic>? body}) async {
+    try {
+      final token = await StorageHelper.getToken();
+      final uri = Uri.parse("${ApiConstants.baseUrl}$endpoint");
+
+      developer.log('📤 PATCH Request to: $uri', name: 'ApiService');
+      developer.log('📦 Body: $body', name: 'ApiService');
+
+      final response = await http.patch(
+        uri,
+        headers: _headers(token),
+        body: jsonEncode(body),
+      );
+
+      developer.log('📥 Response Status: ${response.statusCode}', name: 'ApiService');
+      developer.log('📥 Response Body: ${response.body}', name: 'ApiService');
+
+      return processResponse(response);
+    } catch (e) {
+      developer.log('❌ PATCH Error: $e', name: 'ApiService');
+      throw Exception("PATCH request error: $e");
+    }
+  }
+
+  /// DELETE Request
+  static Future<dynamic> deleteRequest(String endpoint) async {
+    try {
+      final token = await StorageHelper.getToken();
+      final uri = Uri.parse("${ApiConstants.baseUrl}$endpoint");
+
+      developer.log('📤 DELETE Request to: $uri', name: 'ApiService');
+
+      final response = await http.delete(
+        uri,
+        headers: _headers(token),
+      );
+
+      developer.log('📥 Response Status: ${response.statusCode}', name: 'ApiService');
+      developer.log('📥 Response Body: ${response.body}', name: 'ApiService');
+
+      return processResponse(response);
+    } catch (e) {
+      developer.log('❌ DELETE Error: $e', name: 'ApiService');
+      throw Exception("DELETE request error: $e");
+    }
+  }
+
   /// Multipart PUT request
   static Future<dynamic> putMultipartRequest(
       String endpoint, {
@@ -110,33 +159,6 @@ class ApiService {
     } catch (e) {
       developer.log('❌ Multipart PUT Error: $e', name: 'ApiService');
       throw Exception("Multipart PUT request error: $e");
-    }
-  }
-
-
-  /// PATCH Request
-  static Future<dynamic> patchRequest(String endpoint,
-      {Map<String, dynamic>? body}) async {
-    try {
-      final token = await StorageHelper.getToken();
-      final uri = Uri.parse("${ApiConstants.baseUrl}$endpoint");
-
-      developer.log('📤 PATCH Request to: $uri', name: 'ApiService');
-      developer.log('📦 Body: $body', name: 'ApiService');
-
-      final response = await http.patch(
-        uri,
-        headers: _headers(token),
-        body: jsonEncode(body),
-      );
-
-      developer.log('📥 Response Status: ${response.statusCode}', name: 'ApiService');
-      developer.log('📥 Response Body: ${response.body}', name: 'ApiService');
-
-      return processResponse(response);
-    } catch (e) {
-      developer.log('❌ PATCH Error: $e', name: 'ApiService');
-      throw Exception("PATCH request error: $e");
     }
   }
 

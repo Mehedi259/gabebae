@@ -18,41 +18,38 @@ class ApiConstants {
   static const String activeProfile = "/profiles/active/";
 
   // =================== Home Screen Endpoints ===================
-  /// Get eating style icons
-  /// GET /api/eating-style/
   static const String getEatingStyleIcons = "/eating-style/";
-
-  /// Get allergy icons
-  /// GET /api/allergies/
   static const String getAllergyIcons = "/allergies/";
-
-  /// Get medical condition icons
-  /// GET /api/medical-conditions/
   static const String getMedicalConditionIcons = "/medical-conditions/";
-
-  /// Get user's favorite plates
-  /// GET /api/myplate/
   static const String myPlate = "/myplate/";
-
-  /// Get scanned documents (recent scans)
-  /// GET /api/ocr/scanned-documents/active/
   static const String scannedDocuments = "/ocr/scanned-documents/active/";
 
   // =================== Activity Screen Endpoints ===================
-  /// Same as myPlate for favorites tab
   static const String favorites = "/myplate/";
-
-  /// Same as scannedDocuments for history tab
   static const String history = "/ocr/scanned-documents/active/";
 
-  // =================== Helper Methods ===================
+  // =================== OCR Scan Endpoints ===================
+  static const String ocrScan = "/ocr/scan";
 
-  /// Get full URL for any endpoint
+  // =================== Chat Endpoints ===================
+  static const String newConversation = "/chat/conversations/new/";
+  static const String sendMessage = "/chat/";
+  static const String conversations = "/chat/conversations/";
+
+  static String deleteConversation(int conversationId) =>
+      "/chat/conversations/$conversationId/delete/";
+
+  // =================== Settings & Support Endpoints ===================
+  static const String support = "/support/";
+  static const String privacyPolicy = "/privacy-policy/";
+  static const String terms = "/terms/";
+  static const String aboutUs = "/about-us/";
+
+  // =================== Helper Methods ===================
   static String getFullUrl(String endpoint) {
     return "$baseUrl$endpoint";
   }
 
-  /// Build URL with query parameters
   static String buildUrlWithParams(String endpoint, Map<String, dynamic> params) {
     final uri = Uri.parse("$baseUrl$endpoint");
     final newUri = uri.replace(queryParameters: params.map(

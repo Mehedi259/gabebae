@@ -1,5 +1,8 @@
+//lib/presentation/widgets/navigation.dart
 import 'package:flutter/material.dart';
-import '../../../core/custom_assets/assets.gen.dart';
+import 'package:get/get.dart';
+import '../../core/custom_assets/assets.gen.dart';
+import '../../core/controllers/chat_controller.dart';
 
 class CustomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -63,7 +66,16 @@ class CustomNavigationBar extends StatelessWidget {
 
                   /// Sidekick Button
                   GestureDetector(
-                    onTap: () => onTap(2),
+                    onTap: () async {
+
+                      try {
+                        final chatController = Get.find<ChatController>();
+                        await chatController.createNewConversation();
+                      } catch (e) {
+
+                      }
+                      onTap(2);
+                    },
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

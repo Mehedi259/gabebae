@@ -974,4 +974,31 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get gotIt => 'Compris !';
+
+  @override
+  String get myProfile => 'Mon Profil';
+
+  @override
+  String get accountSettings => 'Paramètres du Compte';
+
+  @override
+  String get activeProfile => 'Profil Actif';
+
+  @override
+  String get switchProfile => 'Changer de Profil';
+
+  @override
+  String get helpSupport => 'Aide et Support';
+
+  @override
+  String get logout => 'Déconnexion';
+
+  @override
+  String get logoutConfirmation => 'Êtes-vous sûr de vouloir vous déconnecter?';
+
+  @override
+  String get yes => 'Oui';
+
+  @override
+  String get no => 'Non';
 }

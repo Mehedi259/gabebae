@@ -1,5 +1,7 @@
+// lib/presentation/screens/ProfileAndSettings/help_and_support.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -7,6 +9,7 @@ import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
+import '../../../core/controllers/help_support_controller.dart';
 
 class HelpSupportScreen extends StatefulWidget {
   const HelpSupportScreen({super.key});
@@ -16,9 +19,25 @@ class HelpSupportScreen extends StatefulWidget {
 }
 
 class _HelpSupportScreenState extends State<HelpSupportScreen> {
-  final _titleController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _messageController = TextEditingController();
+  final HelpSupportController controller = Get.put(HelpSupportController());
+
+  Future<void> _handleSubmit() async {
+    final success = await controller.sendSupportMessage();
+    if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Message sent successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Navigate back after successful submission
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) {
+          context.go(RoutePath.myProfile.addBasePath);
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +47,10 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
       /// ===== Fixed Bottom Button =====
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        child: CustomButton(
-          text: "Send",
-          onTap: () => context.go(RoutePath.myProfile.addBasePath),
-        ),
+        child: Obx(() => CustomButton(
+          text: controller.isLoading.value ? "Sending..." : "Send",
+          onTap: controller.isLoading.value ? () {} : _handleSubmit,
+        )),
       ),
 
       appBar: AppBar(
@@ -63,21 +82,53 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
+
+            // Error/Success Messages
+            Obx(() {
+              if (controller.errorMessage.value.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red.shade700),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            controller.errorMessage.value,
+                            style: TextStyle(color: Colors.red.shade700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+
             _buildTextField(
               label: "Title",
-              controller: _titleController,
+              controller: controller.titleController,
               hintText: "Enter the title of your issue",
             ),
             const SizedBox(height: 16),
             _buildTextField(
               label: "Email",
-              controller: _emailController,
+              controller: controller.emailController,
               hintText: "Enter your email here",
+              keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               label: "Write in below box",
-              controller: _messageController,
+              controller: controller.messageController,
               hintText: "Write here...",
               maxLines: 5,
             ),
@@ -93,6 +144,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
     required TextEditingController controller,
     required String hintText,
     int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,6 +157,7 @@ class _HelpSupportScreenState extends State<HelpSupportScreen> {
         TextField(
           controller: controller,
           maxLines: maxLines,
+          keyboardType: keyboardType,
           decoration: InputDecoration(
             filled: true,
             fillColor: Colors.white,

@@ -312,5 +312,14 @@
   "scanOptionPDFDesc": "La luz natural es mejor. Evita reflejos fuertes.",
   "scanOptionURL": "URL",
   "scanOptionURLDesc": "Captura toda la página de borde a borde.",
-  "gotIt": "¡Entendido!"
+  "gotIt": "¡Entendido!",
+  "myProfile": "Mi Perfil",
+  "accountSettings": "Configuración de Cuenta",
+  "activeProfile": "Perfil Activo",
+  "switchProfile": "Cambiar Perfil",
+  "helpSupport": "Ayuda y Soporte",
+  "logout": "Cerrar Sesión",
+  "logoutConfirmation": "¿Estás seguro de que quieres cerrar sesión?",
+  "yes": "Sí",
+  "no": "No"
 }

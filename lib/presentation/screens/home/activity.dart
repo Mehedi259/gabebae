@@ -128,7 +128,6 @@ class _YourActivityScreenState extends State<YourActivityScreen>
 
   /// ===== Favorites Tab =====
   Widget _buildFavoritesTab(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
 
     return Obx(() {
       if (_homeController.isLoadingFavorites.value) {

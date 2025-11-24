@@ -971,4 +971,32 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get gotIt => '¡Entendido!';
+
+  @override
+  String get myProfile => 'Mi Perfil';
+
+  @override
+  String get accountSettings => 'Configuración de Cuenta';
+
+  @override
+  String get activeProfile => 'Perfil Activo';
+
+  @override
+  String get switchProfile => 'Cambiar Perfil';
+
+  @override
+  String get helpSupport => 'Ayuda y Soporte';
+
+  @override
+  String get logout => 'Cerrar Sesión';
+
+  @override
+  String get logoutConfirmation =>
+      '¿Estás seguro de que quieres cerrar sesión?';
+
+  @override
+  String get yes => 'Sí';
+
+  @override
+  String get no => 'No';
 }

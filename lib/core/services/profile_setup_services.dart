@@ -2,7 +2,6 @@
 
 import 'dart:developer' as developer;
 import '../../global/model/profile_setup_model.dart';
-import '../constants/api_constants.dart';
 import 'api_service.dart';
 
 class ProfileSetupService {

@@ -38,11 +38,6 @@ class AccountSettingsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildMenuItem(
-                title: "Change Password",
-                onTap: () =>
-                    context.go(RoutePath.changePassword.addBasePath),
-              ),
-              _buildMenuItem(
                 title: "Terms of Services",
                 onTap: () =>
                     context.go(RoutePath.termsAndCondition.addBasePath),

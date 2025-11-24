@@ -960,4 +960,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get gotIt => 'Got it!';
+
+  @override
+  String get myProfile => 'My Profile';
+
+  @override
+  String get accountSettings => 'Account Settings';
+
+  @override
+  String get activeProfile => 'Active Profile';
+
+  @override
+  String get switchProfile => 'Switch Profile';
+
+  @override
+  String get helpSupport => 'Help & Support';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmation => 'Are you sure you want to logout?';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
 }

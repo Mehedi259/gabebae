@@ -1,16 +1,17 @@
-//lib/presentation/screens/scanMenu/scan_result_all.dart
+// lib/presentation/screens/scanMenu/scan_result_all.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/controllers/chat_controller.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
-
-/// Enum for tab states
-enum MealTab { all, safe, modify, avoid }
+import '../../../core/controllers/scan_menu_controller.dart';
+import '../../../global/model/scan_menu_model.dart';
 
 class MealResultsScreen extends StatefulWidget {
   const MealResultsScreen({super.key});
@@ -20,10 +21,7 @@ class MealResultsScreen extends StatefulWidget {
 }
 
 class _MealResultsScreenState extends State<MealResultsScreen> {
-  MealTab selectedTab = MealTab.all; // ✅ Default: show all
-  final Set<int> favoriteCards = {}; // ✅ Track favorite cards
-
-  final Map<int, bool> tipsVisibility = {};
+  final ScanMenuController _scanController = Get.find<ScanMenuController>();
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +37,51 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
       ),
 
       /// ---------- SCROLLABLE BODY ----------
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 120),
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            _buildFilterTabs(l10n),
-            const SizedBox(height: 8),
-            _buildALaCarteButton(
-              l10n,
-              onTap: () =>
-                  context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
+      body: Obx(() {
+        if (_scanController.isScanning.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (!_scanController.hasScanResult.value ||
+            _scanController.scanResult.value == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.grey),
+                const SizedBox(height: 16),
+                Text(
+                  'No scan results available',
+                  style: GoogleFonts.poppins(fontSize: 16, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () => context.go(RoutePath.scanMenu.addBasePath),
+                  child: const Text('Scan Again'),
+                ),
+              ],
             ),
-            const SizedBox(height: 12),
-            _buildCardsView(l10n),
-          ],
-        ),
-      ),
+          );
+        }
+
+        return SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 120),
+          child: Column(
+            children: [
+              const SizedBox(height: 8),
+              _buildFilterTabs(l10n),
+              const SizedBox(height: 8),
+              _buildALaCarteButton(
+                l10n,
+                onTap: () =>
+                    context.go(RoutePath.scanResultBuildMyPlate.addBasePath),
+              ),
+              const SizedBox(height: 12),
+              _buildCardsView(l10n),
+            ],
+          ),
+        );
+      }),
 
       /// ---------- FIXED BOTTOM BUTTONS ----------
       bottomNavigationBar: _buildBottomButtons(l10n),
@@ -84,26 +110,29 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
               color: const Color(0xFF1F2937),
             ),
           ),
-          Container(
-            width: 75,
-            height: 44,
-            decoration: BoxDecoration(
-              color: const Color(0xFFD1D5DB),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(l10n.quickPdfView.split('\n')[0],
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w700, fontSize: 12)),
-                Text(l10n.quickPdfView.split('\n')[1],
-                    style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w400, fontSize: 12)),
-              ],
-            ),
-          ),
+          Obx(() {
+            final stats = _scanController.statistics;
+            return Container(
+              width: 75,
+              height: 44,
+              decoration: BoxDecoration(
+                color: const Color(0xFFD1D5DB),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: const Color(0xFFE5E7EB)),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('${stats['total']}',
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w700, fontSize: 16)),
+                  Text('Items',
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w400, fontSize: 10)),
+                ],
+              ),
+            );
+          }),
         ],
       ),
     );
@@ -111,47 +140,56 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
 
   /// -------------------- FILTER TABS --------------------
   Widget _buildFilterTabs(AppLocalizations l10n) {
-    return SizedBox(
-      height: 40,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _tabButton(
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Assets.images.blueright.image(width: 14, height: 14),
-                const SizedBox(width: 4),
-                Text(l10n.safe),
-              ],
+    return Obx(() {
+      final stats = _scanController.statistics;
+      final selectedFilter = _scanController.selectedFilter.value;
+
+      return SizedBox(
+        height: 40,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _tabButton(
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Assets.images.blueright.image(width: 14, height: 14),
+                  const SizedBox(width: 4),
+                  Text('${l10n.safe} (${stats['safe']})'),
+                ],
+              ),
+              'safe',
+              Colors.green,
+              selectedFilter,
             ),
-            MealTab.safe,
-            Colors.green,
-          ),
-          const SizedBox(width: 8),
-          _tabButton(
-            Text(l10n.modify),
-            MealTab.modify,
-            Colors.orange,
-          ),
-          const SizedBox(width: 8),
-          _tabButton(
-            Text(l10n.avoid),
-            MealTab.avoid,
-            Colors.red,
-          ),
-        ],
-      ),
-    );
+            const SizedBox(width: 8),
+            _tabButton(
+              Text('${l10n.modify} (${stats['modify']})'),
+              'modify',
+              Colors.orange,
+              selectedFilter,
+            ),
+            const SizedBox(width: 8),
+            _tabButton(
+              Text('${l10n.avoid} (${stats['avoid']})'),
+              'avoid',
+              Colors.red,
+              selectedFilter,
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   /// -------------------- TAB BUTTON --------------------
-  Widget _tabButton(Widget child, MealTab tab, Color color) {
-    final bool isActive = selectedTab == tab;
+  Widget _tabButton(
+      Widget child, String filter, Color color, String selectedFilter) {
+    final bool isActive = selectedFilter == filter;
     return GestureDetector(
-      onTap: () => setState(() => selectedTab = tab),
+      onTap: () => _scanController.changeFilter(filter),
       child: Container(
-        width: 112,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         height: 34,
         decoration: BoxDecoration(
           color: isActive ? color : Colors.white,
@@ -173,7 +211,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
   }
 
   /// -------------------- A La Carte Button --------------------
-  Widget _buildALaCarteButton(AppLocalizations l10n, {required VoidCallback onTap}) {
+  Widget _buildALaCarteButton(AppLocalizations l10n,
+      {required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -184,7 +223,8 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
           borderRadius: BorderRadius.circular(9999),
           border: Border.all(color: const Color(0xFFE5E7EB)),
           boxShadow: const [
-            BoxShadow(color: Colors.black26, offset: Offset(0, 3), blurRadius: 6)
+            BoxShadow(
+                color: Colors.black26, offset: Offset(0, 3), blurRadius: 6)
           ],
         ),
         child: Center(
@@ -203,260 +243,183 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
 
   /// -------------------- CARD SECTION --------------------
   Widget _buildCardsView(AppLocalizations l10n) {
-    List<Widget> cards = [];
+    return Obx(() {
+      final filteredItems = _scanController.filteredFoodItems;
 
-    if (selectedTab == MealTab.all || selectedTab == MealTab.safe) {
-      cards.addAll([
-        _buildCard(
-          l10n,
-          index: 0,
-          title: l10n.grilledChickenSalad,
-          subtitle: l10n.grilledChickenSaladSubtitle,
-          statusIcon: Icons.check_circle,
-          statusColor: Colors.green,
-          tags: [l10n.tagGlutenFree, l10n.tagDairyFree],
-          message: l10n.alignedAndGlowing,
-          messageColor: const Color(0xFFF0FDF4),
-          tipMessage: l10n.tipOliveOil,
-        ),
-        _buildCard(
-          l10n,
-          index: 2,
-          title: l10n.quinoaBuddha,
-          subtitle: l10n.quinoaBuddhaSubtitle,
-          statusIcon: Icons.check_circle,
-          statusColor: Colors.green,
-          tags: [l10n.tagVegan, l10n.tagHighProtein],
-          message: l10n.perfectPowerBowl,
-          messageColor: const Color(0xFFF0FDF4),
-          tipMessage: l10n.tipOliveOil,
-        ),
-      ]);
-    }
-    if (selectedTab == MealTab.all || selectedTab == MealTab.modify) {
-      cards.addAll([
-        _buildCard(
-          l10n,
-          index: 1,
-          title: l10n.vegetableStirFry,
-          subtitle: l10n.vegetableStirFrySubtitle,
-          statusIcon: Icons.warning_amber_rounded,
-          statusColor: Colors.orange,
-          tags: [l10n.tagVegan, l10n.tagSpicy],
-          message: l10n.almostSafeTweak,
-          messageColor: const Color(0x33FFCA28),
-          tipMessage: l10n.tipOliveOil,
-        ),
-        _buildCard(
-          l10n,
-          index: 3,
-          title: l10n.paneerTikka,
-          subtitle: l10n.paneerTikkaSubtitle,
-          statusIcon: Icons.warning_amber_rounded,
-          statusColor: Colors.orange,
-          tags: [l10n.tagDairy, l10n.tagVegetarian],
-          message: l10n.considerReplacing,
-          messageColor: const Color(0x33FFCA28),
-          tipMessage: l10n.tipOliveOil,
-        ),
-      ]);
-    }
-    if (selectedTab == MealTab.all || selectedTab == MealTab.avoid) {
-      cards.addAll([
-        _buildCard(
-          l10n,
-          index: 4,
-          title: l10n.cheesyPasta,
-          subtitle: l10n.cheesyPastaSubtitle,
-          statusIcon: Icons.close,
-          statusColor: Colors.red,
-          tags: [l10n.tagGluten, l10n.tagDairy],
-          message: l10n.notAMatch,
-          messageColor: const Color(0x33FF4C00),
-          tipMessage: l10n.tipOliveOil,
-        ),
-        _buildCard(
-          l10n,
-          index: 5,
-          title: l10n.deepFriedSnacks,
-          subtitle: l10n.deepFriedSnacksSubtitle,
-          statusIcon: Icons.close,
-          statusColor: Colors.red,
-          tags: [l10n.tagDeepFried, l10n.tagHighOil],
-          message: l10n.avoidThisMeal,
-          messageColor: const Color(0x33FF4C00),
-          tipMessage: l10n.tipOliveOil,
-        ),
-      ]);
-    }
+      if (filteredItems.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Text(
+              'No items in this category',
+              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey),
+            ),
+          ),
+        );
+      }
 
-    return Column(children: cards);
+      return Column(
+        children: filteredItems.asMap().entries.map((entry) {
+          final index = entry.key;
+          final item = entry.value;
+          return _buildCard(l10n, index: index, foodItem: item);
+        }).toList(),
+      );
+    });
   }
 
   /// -------------------- CARD WIDGET --------------------
   Widget _buildCard(
       AppLocalizations l10n, {
         required int index,
-        required String title,
-        required String subtitle,
-        required IconData statusIcon,
-        required Color statusColor,
-        required List<String> tags,
-        required String message,
-        required Color messageColor,
-        required String tipMessage,
+        required FoodItem foodItem,
       }) {
-    final bool isTipsVisible = tipsVisibility[index] ?? false;
+    return Obx(() {
+      final isTipsVisible = _scanController.getTipsVisibility(index);
 
-    return Container(
-      width: 352,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE5E7EB)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, offset: Offset(0, 2), blurRadius: 4)
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// HEADER
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600, fontSize: 14)),
-                  Text(subtitle,
-                      style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          color: Colors.grey)),
-                ],
-              ),
-              Icon(statusIcon, color: statusColor, size: 24),
-            ],
-          ),
-          const SizedBox(height: 8),
-
-          /// TAGS
-          Wrap(
-            spacing: 8,
-            children: tags.map((tag) => _buildTag(tag)).toList(),
-          ),
-          const SizedBox(height: 8),
-
-          /// MESSAGE BOX
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: messageColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-            ),
-            child: Text(message,
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.black)),
-          ),
-
-          const SizedBox(height: 12),
-
-          /// ✅ Tips Section
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                tipsVisibility[index] = !isTipsVisible;
-              });
-            },
-            child: Row(
+      return Container(
+        width: 352,
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12, offset: Offset(0, 2), blurRadius: 4)
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// HEADER
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.lightbulb, color: Colors.green, size: 20),
-                const SizedBox(width: 6),
-                Text(
-                  l10n.tips,
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                    color: Colors.green,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(foodItem.foodTitle,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600, fontSize: 14)),
+                      if (foodItem.frenchName.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(foodItem.frenchName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: Colors.grey)),
+                      ],
+                    ],
                   ),
                 ),
-                const Spacer(),
-                Icon(
-                  isTipsVisible
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: Colors.green,
-                )
+                const SizedBox(width: 8),
+                Icon(foodItem.statusIcon,
+                    color: foodItem.statusColor, size: 24),
               ],
             ),
-          ),
-          if (isTipsVisible) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
+
+            /// INGREDIENT TAGS
+            if (foodItem.ingredientsMarks.isNotEmpty) ...[
+              Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: foodItem.ingredientsMarks
+                    .take(5)
+                    .map((ingredient) => _buildIngredientTag(ingredient))
+                    .toList(),
+              ),
+              const SizedBox(height: 8),
+            ],
+
+            /// MESSAGE BOX (AI Recommendations)
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0FDF4),
+                color: foodItem.messageBackgroundColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFFE5E7EB)),
               ),
-              child: Text(
-                tipMessage,
-                style:
-                GoogleFonts.poppins(fontSize: 13, color: Colors.black87),
+              child: Text(foodItem.aiRecommendations,
+                  style:
+                  GoogleFonts.poppins(fontSize: 13, color: Colors.black87)),
+            ),
+
+            const SizedBox(height: 12),
+
+            /// ✅ Tips Section
+            GestureDetector(
+              onTap: () => _scanController.toggleTips(index),
+              child: Row(
+                children: [
+                  const Icon(Icons.lightbulb, color: Colors.green, size: 20),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.tips,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Colors.green,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    isTipsVisible
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.green,
+                  )
+                ],
               ),
             ),
+            if (isTipsVisible && foodItem.tips.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0FDF4),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                ),
+                child: Text(
+                  foodItem.tips,
+                  style:
+                  GoogleFonts.poppins(fontSize: 13, color: Colors.black87),
+                ),
+              ),
+            ],
           ],
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
-  Widget _buildTag(String text) {
-    Color bg;
-    Color textColor = Colors.black;
-
-    if (text.contains("Gluten-Free") ||
-        text.contains("Sin Gluten") ||
-        text.contains("Sans Gluten") ||
-        text.contains("Vegan") ||
-        text.contains("Vegano") ||
-        text.contains("Végétalien")) {
-      bg = const Color(0xFFDCFCE7);
-    } else if (text.contains("Dairy") ||
-        text.contains("Lácteos") ||
-        text.contains("Laitiers")) {
-      bg = const Color(0xFFDBEAFE);
-      textColor = const Color(0xFF1D4ED8);
-    } else if (text.contains("Spicy") ||
-        text.contains("Picante") ||
-        text.contains("Épicé")) {
-      bg = const Color(0xFFFFE4E0);
-      textColor = const Color(0xFFC2410C);
-    } else if (text.contains("Protein") ||
-        text.contains("Proteínas") ||
-        text.contains("Protéines")) {
-      bg = const Color(0xFFE0F2FE);
-      textColor = Colors.blue.shade900;
-    } else {
-      bg = const Color(0xFFF3F4F6);
-    }
-
+  /// Build ingredient tag
+  Widget _buildIngredientTag(IngredientMark ingredient) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: bg,
+        color: ingredient.tagColor,
         borderRadius: BorderRadius.circular(9999),
         border: Border.all(color: const Color(0xFFE5E7EB)),
       ),
-      child: Text(text,
-          style: GoogleFonts.poppins(fontSize: 12, color: textColor)),
+      child: Text(
+        ingredient.ingredient,
+        style: GoogleFonts.poppins(
+          fontSize: 11,
+          color: ingredient.textColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 
@@ -478,7 +441,14 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
               shadowColor: Colors.black,
               elevation: 6,
             ),
-            onPressed: () => context.go(RoutePath.askChatBot.addBasePath),
+            onPressed: () async {
+              // ✅ Create new conversation and navigate
+              final chatController = Get.find<ChatController>();
+              await chatController.createNewConversation();
+              if (context.mounted) {
+                context.go(RoutePath.askChatBot.addBasePath);
+              }
+            },
             icon: const Icon(Icons.chat, color: Colors.white),
             label: Text(
               l10n.askAiChatAboutThis,

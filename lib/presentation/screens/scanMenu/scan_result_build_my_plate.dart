@@ -1,8 +1,12 @@
+//lib/presentation/screens/scanMenu/scan_result_build_my_plate.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/controllers/chat_controller.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
@@ -343,7 +347,13 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                 shadowColor: Colors.black,
                 elevation: 6,
               ),
-              onPressed: () {},
+              onPressed: () async {
+                final chatController = Get.find<ChatController>();
+                await chatController.createNewConversation();
+                if (context.mounted) {
+                  context.go(RoutePath.askChatBot.addBasePath);
+                }
+              },
               icon: const Icon(Icons.chat, color: Colors.white),
               label: Text(
                 l10n.askAiChatAboutThis,
