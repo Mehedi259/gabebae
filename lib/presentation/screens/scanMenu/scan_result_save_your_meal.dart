@@ -1,10 +1,15 @@
+// lib/presentation/screens/scanMenu/scan_result_save_your_meal.dart (UPDATED)
+
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../core/controllers/create_plate_controller.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
@@ -18,18 +23,22 @@ class SaveMealScreen extends StatefulWidget {
 
 class _SaveMealScreenState extends State<SaveMealScreen> {
   final TextEditingController _mealNameController = TextEditingController();
-  File? _selectedImage;
   final ImagePicker _picker = ImagePicker();
+  late CreatePlateController _controller;
 
-  List<String> getPlateCombo(AppLocalizations l10n) {
-    return [
-      l10n.extraVeggies,
-      l10n.spicy,
-      l10n.spicy, // Duplicate as shown in image
-    ];
+  @override
+  void initState() {
+    super.initState();
+    _controller = Get.find<CreatePlateController>();
   }
 
-  // Function to pick image from camera or gallery
+  List<String> getPlateCombo(AppLocalizations l10n) {
+    // Get from controller
+    return _controller.selectedIngredients.isNotEmpty
+        ? _controller.selectedIngredients
+        : [l10n.extraVeggies, l10n.spicy, l10n.spicy];
+  }
+
   Future<void> _pickImage(AppLocalizations l10n) async {
     showModalBottomSheet(
       context: context,
@@ -47,9 +56,13 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                     imageQuality: 80,
                   );
                   if (image != null) {
-                    setState(() {
-                      _selectedImage = File(image.path);
-                    });
+                    if (kIsWeb) {
+                      final bytes = await image.readAsBytes();
+                      _controller.setMealImageBytes(bytes);
+                    } else {
+                      _controller.setMealImage(File(image.path));
+                    }
+                    setState(() {});
                   }
                 },
               ),
@@ -63,9 +76,13 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                     imageQuality: 80,
                   );
                   if (image != null) {
-                    setState(() {
-                      _selectedImage = File(image.path);
-                    });
+                    if (kIsWeb) {
+                      final bytes = await image.readAsBytes();
+                      _controller.setMealImageBytes(bytes);
+                    } else {
+                      _controller.setMealImage(File(image.path));
+                    }
+                    setState(() {});
                   }
                 },
               ),
@@ -74,6 +91,37 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
         );
       },
     );
+  }
+
+  Future<void> _saveMeal() async {
+    if (_mealNameController.text.trim().isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please enter a meal name',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (_controller.selectedIngredients.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please select at least one ingredient',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    final success = await _controller.saveMyPlate(
+      mealName: _mealNameController.text.trim(),
+      plateCombo: _controller.selectedIngredients,
+      imageFile: _controller.currentMealImage,
+      imageBytes: _controller.currentMealImageBytes,
+    );
+
+    if (success && mounted) {
+      context.go(RoutePath.home.addBasePath);
+    }
   }
 
   @override
@@ -89,8 +137,6 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// HEADER
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(64),
         child: AppBar(
@@ -102,7 +148,8 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => context.go(RoutePath.scanResultOrderingTips.addBasePath),
+                onPressed: () =>
+                    context.go(RoutePath.scanResultOrderingTips.addBasePath),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -119,7 +166,6 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
           ),
         ),
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -149,9 +195,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                         letterSpacing: 0.5,
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
                     Wrap(
                       spacing: 8,
                       runSpacing: 8,
@@ -159,14 +203,14 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                         Color bgColor = const Color(0xFFDCFCE7);
                         Color textColor = const Color(0xFF059669);
 
-                        // Check for spicy emoji
                         if (ingredient.contains("🌶️")) {
                           bgColor = const Color(0xFFFEF3C7);
                           textColor = const Color(0xFFD97706);
                         }
 
                         return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             color: bgColor,
                             borderRadius: BorderRadius.circular(20),
@@ -184,11 +228,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                                 ),
                               ),
                               const SizedBox(width: 6),
-                              Icon(
-                                Icons.close,
-                                size: 16,
-                                color: textColor,
-                              ),
+                              Icon(Icons.close, size: 16, color: textColor),
                             ],
                           ),
                         );
@@ -209,11 +249,19 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: const Color(0xFFD1D5DB)),
                 ),
-                child: _selectedImage != null
+                child: _controller.currentMealImage != null ||
+                    _controller.currentMealImageBytes != null
                     ? ClipRRect(
                   borderRadius: BorderRadius.circular(15),
-                  child: Image.file(
-                    _selectedImage!,
+                  child: kIsWeb && _controller.currentMealImageBytes != null
+                      ? Image.memory(
+                    _controller.currentMealImageBytes!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  )
+                      : Image.file(
+                    _controller.currentMealImage!,
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: double.infinity,
@@ -251,8 +299,8 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                 ),
               ),
 
-              // Change photo option when image is selected
-              if (_selectedImage != null) ...[
+              if (_controller.currentMealImage != null ||
+                  _controller.currentMealImageBytes != null) ...[
                 const SizedBox(height: 12),
                 Center(
                   child: TextButton.icon(
@@ -271,7 +319,7 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
 
               const SizedBox(height: 32),
 
-              /// MEAL NAME SECTION
+              /// MEAL NAME
               Text(
                 l10n.giveYourMealName,
                 style: GoogleFonts.poppins(
@@ -280,7 +328,6 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                   color: const Color(0xFF1F2937),
                 ),
               ),
-
               const SizedBox(height: 16),
 
               /// TEXT INPUT
@@ -306,14 +353,13 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                     border: InputBorder.none,
                   ),
                   onChanged: (value) {
-                    setState(() {}); // Rebuild to update save button state
+                    _controller.setMealName(value);
+                    setState(() {});
                   },
                 ),
               ),
 
               const SizedBox(height: 12),
-
-              /// HELPER TEXT
               Text(
                 l10n.thisWillAppear,
                 style: GoogleFonts.poppins(
@@ -321,39 +367,21 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
                   color: const Color(0xFF9CA3AF),
                 ),
               ),
-
-              const SizedBox(height: 60), // Space for bottom button
+              const SizedBox(height: 60),
             ],
           ),
         ),
       ),
 
-      /// BOTTOM SAVE BUTTON
+      /// SAVE BUTTON
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         color: Colors.white,
-        child: ElevatedButton(
-          onPressed: _mealNameController.text.trim().isEmpty
+        child: Obx(() => ElevatedButton(
+          onPressed: _mealNameController.text.trim().isEmpty ||
+              _controller.isSavingMeal.value
               ? null
-              : () {
-            // Save meal logic
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  l10n.mealSavedSuccess(_mealNameController.text),
-                  style: GoogleFonts.poppins(),
-                ),
-                backgroundColor: const Color(0xFF10B981),
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            );
-
-            // Navigate to Home using GoRouter
-            context.go(RoutePath.home.addBasePath);
-          },
+              : _saveMeal,
           style: ElevatedButton.styleFrom(
             backgroundColor: _mealNameController.text.trim().isEmpty
                 ? const Color(0xFFD1D5DB)
@@ -365,7 +393,16 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
             elevation: _mealNameController.text.trim().isEmpty ? 0 : 6,
             shadowColor: Colors.black26,
           ),
-          child: Text(
+          child: _controller.isSavingMeal.value
+              ? const SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          )
+              : Text(
             l10n.save,
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
@@ -373,9 +410,8 @@ class _SaveMealScreenState extends State<SaveMealScreen> {
               color: Colors.white,
             ),
           ),
-        ),
+        )),
       ),
-
     );
   }
 }

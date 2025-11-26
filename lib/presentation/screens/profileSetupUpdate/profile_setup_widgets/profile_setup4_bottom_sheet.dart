@@ -114,24 +114,6 @@ class ProfileSetup4BottomSheet extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F4F5),
-              border: Border.all(color: const Color(0xFFE5E7EB)),
-              borderRadius: BorderRadius.circular(9999),
-            ),
-            child: const Center(
-              child: Icon(
-                Icons.no_food,
-                size: 24,
-                color: Color(0xFF669A59),
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-
           Expanded(
             child: Text(
               item,

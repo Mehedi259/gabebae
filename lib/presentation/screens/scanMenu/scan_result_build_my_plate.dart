@@ -1,12 +1,13 @@
-//lib/presentation/screens/scanMenu/scan_result_build_my_plate.dart
+// lib/presentation/screens/scanMenu/scan_result_build_my_plate.dart (UPDATED)
+
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../core/controllers/chat_controller.dart';
+import '../../../core/controllers/create_plate_controller.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
@@ -19,9 +20,15 @@ class BuildMyPlateScreen extends StatefulWidget {
 }
 
 class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
-  final List<String> selectedIngredients = [];
+  late CreatePlateController _controller;
 
-  // Ingredient names will be fetched from l10n
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controller
+    _controller = Get.put(CreatePlateController());
+  }
+
   List<Map<String, dynamic>> getSafeIngredients(AppLocalizations l10n) {
     return [
       {"name": l10n.extraSauce, "color": const Color(0xFFDCFCE7)},
@@ -39,8 +46,6 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-
-      /// HEADER
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(64),
         child: AppBar(
@@ -67,7 +72,6 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
           ),
         ),
       ),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -76,7 +80,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
             children: [
               const SizedBox(height: 20),
 
-              /// TITLE SECTION
+              /// TITLE
               Text(
                 l10n.buildMyPlate,
                 style: GoogleFonts.poppins(
@@ -85,9 +89,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   color: const Color(0xFF1F2937),
                 ),
               ),
-
               const SizedBox(height: 12),
-
               Text(
                 l10n.pickSafeIngredients,
                 textAlign: TextAlign.center,
@@ -97,11 +99,10 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   color: const Color(0xFF6B7280),
                 ),
               ),
-
               const SizedBox(height: 32),
 
-              /// MY PLATE SECTION
-              Container(
+              /// MY PLATE SECTION with Obx
+              Obx(() => Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -120,10 +121,8 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                         color: const Color(0xFF154452),
                       ),
                     ),
-
                     const SizedBox(height: 16),
-
-                    if (selectedIngredients.isEmpty)
+                    if (_controller.selectedIngredients.isEmpty)
                       Text(
                         l10n.addIngredientsPrompt,
                         style: GoogleFonts.poppins(
@@ -137,9 +136,10 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: selectedIngredients.map((ingredient) {
+                        children: _controller.selectedIngredients.map((ingredient) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: const Color(0xFFDCFCE7),
                               borderRadius: BorderRadius.circular(20),
@@ -158,11 +158,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedIngredients.remove(ingredient);
-                                    });
-                                  },
+                                  onTap: () => _controller.removeIngredient(ingredient),
                                   child: const Icon(
                                     Icons.close,
                                     size: 16,
@@ -176,7 +172,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                       ),
                   ],
                 ),
-              ),
+              )),
 
               const SizedBox(height: 20),
 
@@ -184,19 +180,26 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
               Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // Suggest combo logic
-                        setState(() {
-                          selectedIngredients.clear();
-                          selectedIngredients.addAll([
-                            l10n.extraVeggies,
-                            l10n.garlic,
-                            l10n.olives
-                          ]);
-                        });
+                    child: Obx(() => ElevatedButton.icon(
+                      onPressed: _controller.isLoadingCombo.value
+                          ? null
+                          : () async {
+                        // Replace with actual profile data
+                        await _controller.fetchComboSuggestions(
+                          profileId: 1,
+                          profileName: 'default',
+                        );
                       },
-                      icon: const Icon(Icons.auto_awesome, color: Colors.yellow),
+                      icon: _controller.isLoadingCombo.value
+                          ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                          : const Icon(Icons.auto_awesome, color: Colors.yellow),
                       label: Text(
                         l10n.suggestCombo,
                         style: GoogleFonts.poppins(
@@ -212,14 +215,13 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
-                    ),
+                    )),
                   ),
-
                   const SizedBox(width: 12),
-
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => context.go(RoutePath.scanResultOrderingTips.addBasePath),
+                      onPressed: () =>
+                          context.go(RoutePath.scanResultOrderingTips.addBasePath),
                       icon: const Icon(Icons.thumb_up, color: Colors.yellow),
                       label: Text(
                         l10n.looksGood,
@@ -243,7 +245,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
 
               const SizedBox(height: 32),
 
-              /// SAFE INGREDIENTS SECTION
+              /// SAFE INGREDIENTS
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -255,32 +257,28 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 16),
 
-              /// INGREDIENT CHIPS
-              Wrap(
+              /// INGREDIENT CHIPS with Obx
+              Obx(() => Wrap(
                 spacing: 10,
                 runSpacing: 10,
                 children: safeIngredients.map((ingredient) {
-                  final isSelected = selectedIngredients.contains(ingredient["name"]);
+                  final isSelected =
+                  _controller.selectedIngredients.contains(ingredient["name"]);
                   return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (isSelected) {
-                          selectedIngredients.remove(ingredient["name"]);
-                        } else {
-                          selectedIngredients.add(ingredient["name"]);
-                        }
-                      });
-                    },
+                    onTap: () => _controller.toggleIngredient(ingredient["name"]),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       decoration: BoxDecoration(
-                        color: isSelected ? const Color(0xFF10B981) : ingredient["color"],
+                        color: isSelected
+                            ? const Color(0xFF10B981)
+                            : ingredient["color"],
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
-                          color: isSelected ? const Color(0xFF10B981) : const Color(0xFFE5E7EB),
+                          color: isSelected
+                              ? const Color(0xFF10B981)
+                              : const Color(0xFFE5E7EB),
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -295,7 +293,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                     ),
                   );
                 }).toList(),
-              ),
+              )),
 
               const SizedBox(height: 24),
 
@@ -323,8 +321,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                   ],
                 ),
               ),
-
-              const SizedBox(height: 100), // Space for bottom buttons
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -364,9 +361,7 @@ class _BuildMyPlateScreenState extends State<BuildMyPlateScreen> {
                 ),
               ),
             ),
-
             const SizedBox(height: 12),
-
             OutlinedButton.icon(
               icon: const Icon(Icons.qr_code, color: Color(0xFFE27B4F)),
               style: OutlinedButton.styleFrom(

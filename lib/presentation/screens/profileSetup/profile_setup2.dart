@@ -91,16 +91,21 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
             profileController.toggleAllergy(title);
           }
         },
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
           width: 145,
           height: 128,
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isSeeMore ? const Color(0xFFF9FAFB) : Colors.white,
             borderRadius: BorderRadius.circular(16),
-            border: isSelected
-                ? Border.all(color: const Color(0xFFE27B4F), width: 2)
-                : Border.all(color: Colors.transparent),
+            border: Border.all(
+              color: isSelected
+                  ? const Color(0xFFE27B4F)
+                  : const Color(0xFFE5E7EB),
+              width: 2,
+            ),
             boxShadow: const [
               BoxShadow(
                 color: Color(0x1A000000),

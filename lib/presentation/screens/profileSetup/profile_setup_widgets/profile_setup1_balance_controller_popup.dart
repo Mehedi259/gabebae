@@ -88,7 +88,7 @@ class _ProfileSetup1BalanceControllerPopupState
                   color: Color(0xFF111827),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // Level options
               Row(
@@ -98,7 +98,7 @@ class _ProfileSetup1BalanceControllerPopupState
                   return Column(
                     children: [
                       Image.asset(option["image"]!, width: 32, height: 32),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
                       Text(
                         option["title"]!,
                         style: const TextStyle(
@@ -112,7 +112,7 @@ class _ProfileSetup1BalanceControllerPopupState
                   );
                 }),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
 
               // Slider
               SizedBox(
@@ -182,7 +182,7 @@ class _ProfileSetup1BalanceControllerPopupState
                   },
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
 
               // Selected level display
               Column(
@@ -206,7 +206,7 @@ class _ProfileSetup1BalanceControllerPopupState
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Text(
                     l10n.varietyHealthy,
                     textAlign: TextAlign.center,
@@ -221,7 +221,7 @@ class _ProfileSetup1BalanceControllerPopupState
               ),
 
               // Confirm button
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

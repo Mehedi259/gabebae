@@ -1,4 +1,4 @@
-// lib/core/constants/api_constants.dart
+// lib/core/constants/api_constants.dart (UPDATED)
 
 class ApiConstants {
   // =================== Base URL ===================
@@ -7,6 +7,7 @@ class ApiConstants {
   // =================== Authentication Endpoints ===================
   static const String requestOtp = "/auth/request-otp/";
   static const String verifyOtp = "/auth/verify-otp/";
+  static const String usersMe = "/users/me/"; // Add this line
 
   // =================== Profile Setup Endpoints ===================
   static const String eatingStyle = "/eating-style/";
@@ -38,6 +39,18 @@ class ApiConstants {
 
   static String deleteConversation(int conversationId) =>
       "/chat/conversations/$conversationId/delete/";
+
+  // =================== Combo & Plate Endpoints ===================
+  /// GET /api/combo/:id/:profile_name
+  static String getCombo(int profileId, String profileName) =>
+      "/combo/$profileId/$profileName";
+
+  /// POST /api/myplate/
+  /// Fields: meal_name, plate_combo (JSON array), image (multipart file)
+  static const String createMyPlate = "/myplate/";
+
+  /// GET /api/myplate/
+  static const String getMyPlates = "/myplate/";
 
   // =================== Settings & Support Endpoints ===================
   static const String support = "/support/";

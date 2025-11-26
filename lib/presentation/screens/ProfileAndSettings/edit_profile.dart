@@ -32,6 +32,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _nameController;
   String _country = "Mexico";
 
+  // Available countries list - IMPORTANT: value must be in this list
+  final List<String> _countryList = ["Mexico", "USA", "Canada", "Bangladesh"];
+
   // Image handling
   File? _selectedImageFile;
   Uint8List? _selectedWebImage;
@@ -48,7 +51,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     _nameController = TextEditingController(
         text: activeProfile?.profileName ?? "User"
     );
-    _country = _profileController.country.value;
+
+    // IMPORTANT: Ensure country value is in the list
+    String profileCountry = _profileController.country.value;
+    if (_countryList.contains(profileCountry)) {
+      _country = profileCountry;
+    } else {
+      // Default to first item if not in list
+      _country = _countryList.first;
+    }
+
     _currentAvatarUrl = activeProfile?.avatar;
 
     // Load data if not already loaded
@@ -307,8 +319,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               _buildDropdownField(
                 label: l10n.country,
                 value: _country,
-                items: ["Mexico", "USA", "Canada", "Bangladesh"],
-                onChanged: (value) => setState(() => _country = value!),
+                items: _countryList,
+                onChanged: (value) {
+                  if (value != null && _countryList.contains(value)) {
+                    setState(() => _country = value);
+                  }
+                },
               ),
               const SizedBox(height: 16),
 
@@ -444,6 +460,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     required List<String> items,
     required ValueChanged<String?> onChanged,
   }) {
+    // Ensure value is in items list
+    final String safeValue = items.contains(value) ? value : items.first;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -453,7 +472,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
-          value: value,
+          value: safeValue,
           items: items.map((String item) {
             return DropdownMenuItem<String>(
               value: item,

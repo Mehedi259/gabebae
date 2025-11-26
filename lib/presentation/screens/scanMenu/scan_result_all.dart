@@ -99,22 +99,22 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: Assets.images.dibbaback.image(width: 40, height: 40),
-            onPressed: () => context.go(RoutePath.scanMenu.addBasePath),
+            icon: Assets.images.dibbaback.image(width: 30, height: 30),
+            onPressed: () => context.go(RoutePath.home.addBasePath),
           ),
           Text(
             l10n.yourMealResults,
             style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
               color: const Color(0xFF1F2937),
             ),
           ),
           Obx(() {
             final stats = _scanController.statistics;
             return Container(
-              width: 75,
-              height: 44,
+              width: 50,
+              height: 30,
               decoration: BoxDecoration(
                 color: const Color(0xFFD1D5DB),
                 borderRadius: BorderRadius.circular(8),
@@ -125,7 +125,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
                 children: [
                   Text('${stats['total']}',
                       style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w700, fontSize: 16)),
+                          fontWeight: FontWeight.w500, fontSize: 12)),
                   Text('Items',
                       style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w400, fontSize: 10)),
@@ -138,7 +138,7 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
     );
   }
 
-  /// -------------------- FILTER TABS --------------------
+  /// -------------------- FILTER TABS (SCROLLABLE) --------------------
   Widget _buildFilterTabs(AppLocalizations l10n) {
     return Obx(() {
       final stats = _scanController.statistics;
@@ -146,41 +146,45 @@ class _MealResultsScreenState extends State<MealResultsScreen> {
 
       return SizedBox(
         height: 40,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _tabButton(
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Assets.images.blueright.image(width: 14, height: 14),
-                  const SizedBox(width: 4),
-                  Text('${l10n.safe} (${stats['safe']})'),
-                ],
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Row(
+            children: [
+              _tabButton(
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Assets.images.blueright.image(width: 14, height: 14),
+                    const SizedBox(width: 4),
+                    Text('${l10n.safe} (${stats['safe']})'),
+                  ],
+                ),
+                'safe',
+                Colors.green,
+                selectedFilter,
               ),
-              'safe',
-              Colors.green,
-              selectedFilter,
-            ),
-            const SizedBox(width: 8),
-            _tabButton(
-              Text('${l10n.modify} (${stats['modify']})'),
-              'modify',
-              Colors.orange,
-              selectedFilter,
-            ),
-            const SizedBox(width: 8),
-            _tabButton(
-              Text('${l10n.avoid} (${stats['avoid']})'),
-              'avoid',
-              Colors.red,
-              selectedFilter,
-            ),
-          ],
+              const SizedBox(width: 8),
+              _tabButton(
+                Text('${l10n.modify} (${stats['modify']})'),
+                'modify',
+                Colors.orange,
+                selectedFilter,
+              ),
+              const SizedBox(width: 8),
+              _tabButton(
+                Text('${l10n.avoid} (${stats['avoid']})'),
+                'avoid',
+                Colors.red,
+                selectedFilter,
+              ),
+            ],
+          ),
         ),
       );
     });
   }
+
 
   /// -------------------- TAB BUTTON --------------------
   Widget _tabButton(

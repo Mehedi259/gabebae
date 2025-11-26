@@ -43,6 +43,8 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // ✅ Reset scan data when entering screen
     _scanController.resetScan();
 
     _slideCtrl = AnimationController(
@@ -64,7 +66,10 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
     );
 
-    _initCamera();
+    // ✅ Initialize camera after frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initCamera();
+    });
   }
 
   @override
@@ -79,16 +84,38 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (_camera == null || !_camera!.value.isInitialized) return;
-    if (state == AppLifecycleState.inactive) _camera?.dispose();
-    if (state == AppLifecycleState.resumed) _initCamera();
+    if (state == AppLifecycleState.inactive) {
+      _camera?.dispose();
+    }
+    if (state == AppLifecycleState.resumed) {
+      _initCamera();
+    }
   }
 
   Future<void> _initCamera() async {
-    _cameras = widget.cameras ?? await availableCameras();
-    _camera = CameraController(_cameras[_camIndex], ResolutionPreset.high,
-        enableAudio: false);
-    await _camera!.initialize();
-    if (mounted) setState(() => _isReady = true);
+    try {
+      _cameras = widget.cameras ?? await availableCameras();
+
+      // ✅ Dispose old camera before creating new one
+      await _camera?.dispose();
+
+      _camera = CameraController(
+        _cameras[_camIndex],
+        ResolutionPreset.high,
+        enableAudio: false,
+      );
+
+      await _camera!.initialize();
+
+      if (mounted) {
+        setState(() => _isReady = true);
+      }
+    } catch (e) {
+      debugPrint('❌ Camera initialization error: $e');
+      if (mounted) {
+        setState(() => _isReady = false);
+      }
+    }
   }
 
   @override
@@ -123,7 +150,6 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
               shutterAsset: Assets.images.shutter.path,
             ),
 
-            /// ✅ Fixed Container with XFile support
             Positioned(
               bottom: 0,
               left: 0,
@@ -175,7 +201,8 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                                 return Stack(
                                   children: [
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(2),
+                                      borderRadius:
+                                      BorderRadius.circular(2),
                                       child: Image.memory(
                                         snapshot.data!,
                                         width: 76,
@@ -188,11 +215,14 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                                       right: -12,
                                       child: IconButton(
                                         icon: const Icon(Icons.close,
-                                            color: Colors.white, size: 18),
+                                            color: Colors.white,
+                                            size: 18),
                                         padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
+                                        constraints:
+                                        const BoxConstraints(),
                                         onPressed: () {
-                                          _scanController.removeImage(index);
+                                          _scanController
+                                              .removeImage(index);
                                         },
                                       ),
                                     ),
@@ -203,9 +233,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                           },
                         ),
                       ),
-
                       const SizedBox(width: 12),
-
                       ElevatedButton(
                         onPressed: images.isEmpty || isScanning
                             ? null
@@ -268,13 +296,14 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     builder: (context) => const ScanMenuHelpDialog(),
   );
 
-  /// ✅ Capture returns XFile
   Future<void> _capture() async {
     if (!_isReady || _capturing) return;
     setState(() => _capturing = true);
     try {
       final xFile = await _camera!.takePicture();
-      _scanController.addImage(xFile); // Already XFile
+      _scanController.addImage(xFile);
+    } catch (e) {
+      debugPrint('❌ Capture error: $e');
     } finally {
       setState(() => _capturing = false);
     }
@@ -285,14 +314,19 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     try {
       await _camera!.setFlashMode(_flashOn ? FlashMode.off : FlashMode.torch);
       setState(() => _flashOn = !_flashOn);
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('❌ Flash toggle error: $e');
+    }
   }
 
-  /// ✅ Gallery returns XFile
   Future<void> _openGallery() async {
-    final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (xFile != null) {
-      _scanController.addImage(xFile); // Already XFile
+    try {
+      final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (xFile != null) {
+        _scanController.addImage(xFile);
+      }
+    } catch (e) {
+      debugPrint('❌ Gallery picker error: $e');
     }
   }
 

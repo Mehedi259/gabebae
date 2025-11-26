@@ -25,7 +25,6 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
   late AnimationController _controller;
   late Animation<double> _progressAnim;
 
-  // Get the controller
   final ProfileSetupController profileController = Get.put(ProfileSetupController());
 
   @override
@@ -91,12 +90,10 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
       ),
       body: SafeArea(
         child: Obx(() {
-          // Show loading indicator while fetching eating styles
           if (profileController.isLoadingEatingStyles.value) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          // If no eating styles loaded, show empty state
           if (profileController.eatingStyles.isEmpty) {
             return Center(
               child: Column(
@@ -132,12 +129,10 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
                 ),
                 const SizedBox(height: 24),
 
-                // Display eating styles from API
                 Wrap(
                   spacing: 16,
                   runSpacing: 16,
                   children: [
-                    // API-loaded eating styles
                     ...List.generate(
                       profileController.eatingStyles.length > 5
                           ? 5
@@ -170,7 +165,6 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
                       },
                     ),
 
-                    // See More button (if more than 5 items)
                     if (profileController.eatingStyles.length > 5)
                       AnimatedBuilder(
                         animation: _controller,
@@ -210,108 +204,113 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
     bool isSeeMore = false,
     bool isNetworkImage = false,
   }) {
-    final bool isSelected = profileController.selectedEatingStyles.containsKey(title);
+    // Obx wrap করে reactive করা হয়েছে
+    return Obx(() {
+      final bool isSelected = profileController.selectedEatingStyles.containsKey(title);
 
-    return GestureDetector(
-      onTap: () {
-        if (isSeeMore) {
-          _openAnimatedBottomSheet();
-        } else {
-          // Show level selection popup
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel: '',
-            transitionDuration: const Duration(milliseconds: 400),
-            pageBuilder: (context, anim1, anim2) {
-              return const SizedBox.shrink();
-            },
-            transitionBuilder: (context, anim1, anim2, child) {
-              return Transform.scale(
-                scale: Curves.easeOutBack.transform(anim1.value),
-                child: Opacity(
-                  opacity: anim1.value,
-                  child: Dialog(
-                    backgroundColor: Colors.transparent,
-                    insetPadding: const EdgeInsets.all(24),
-                    child: ProfileSetup1BalanceControllerPopup(
-                      eatingStyleName: title,
-                      onLevelSelected: (level) {
-                        profileController.toggleEatingStyle(title, level);
-                      },
+      return GestureDetector(
+        onTap: () {
+          if (isSeeMore) {
+            _openAnimatedBottomSheet();
+          } else {
+            // Popup দেখানোর আগেই selection করা হবে
+            showGeneralDialog(
+              context: context,
+              barrierDismissible: true,
+              barrierLabel: '',
+              transitionDuration: const Duration(milliseconds: 400),
+              pageBuilder: (context, anim1, anim2) {
+                return const SizedBox.shrink();
+              },
+              transitionBuilder: (context, anim1, anim2, child) {
+                return Transform.scale(
+                  scale: Curves.easeOutBack.transform(anim1.value),
+                  child: Opacity(
+                    opacity: anim1.value,
+                    child: Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: const EdgeInsets.all(24),
+                      child: ProfileSetup1BalanceControllerPopup(
+                        eatingStyleName: title,
+                        onLevelSelected: (level) {
+                          profileController.toggleEatingStyle(title, level);
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        }
-      },
-      child: Container(
-        width: 145,
-        height: 130,
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? const Color(0xFFFC4C02)
-                : const Color(0xFFE5E7EB),
-            width: 2,
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x1A000000),
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            isNetworkImage
-                ? Image.network(
-              image,
-              width: 40,
-              height: 40,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.restaurant, size: 40);
+                );
               },
-            )
-                : Image.asset(
-              image,
-              width: 40,
-              height: 40,
-              color: isSeeMore ? const Color(0xFF6B7280) : null,
+            );
+          }
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          width: 145,
+          height: 130,
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: isSelected
+                  ? const Color(0xFFFC4C02)
+                  : const Color(0xFFE5E7EB),
+              width: 2,
             ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.w700,
-                fontSize: 15,
-                color: isSeeMore ? const Color(0xFF4B5563) : Colors.black,
-              ),
-            ),
-            if (subtitle.isNotEmpty) ...[
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: "Poppins",
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: Color(0xFF6B7280),
-                ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x1A000000),
+                blurRadius: 10,
+                offset: Offset(0, 4),
               ),
             ],
-          ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              isNetworkImage
+                  ? Image.network(
+                image,
+                width: 40,
+                height: 40,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.restaurant, size: 40);
+                },
+              )
+                  : Image.asset(
+                image,
+                width: 40,
+                height: 40,
+                color: isSeeMore ? const Color(0xFF6B7280) : null,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                  color: isSeeMore ? const Color(0xFF4B5563) : Colors.black,
+                ),
+              ),
+              if (subtitle.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: Color(0xFF6B7280),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
