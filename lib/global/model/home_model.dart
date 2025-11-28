@@ -1,4 +1,5 @@
-// lib/global/model/home_model.dart
+import 'dart:convert';
+import 'dart:developer' as developer;
 
 /// Active Profile Model
 class ActiveProfileModel {
@@ -158,8 +159,31 @@ class ScannedDocumentModel {
   });
 
   factory ScannedDocumentModel.fromJson(Map<String, dynamic> json) {
+    // Parse file_url - it comes as a JSON array string
+    String parsedFileUrl = '';
+    try {
+      final fileUrlRaw = json['file_url'] ?? '';
+
+      if (fileUrlRaw is String) {
+        // Check if it's a JSON array string
+        if (fileUrlRaw.startsWith('[') && fileUrlRaw.endsWith(']')) {
+          // Parse the JSON array and get the first URL
+          final List<dynamic> urlList = jsonDecode(fileUrlRaw);
+          parsedFileUrl = urlList.isNotEmpty ? urlList[0].toString() : '';
+        } else {
+          // It's already a direct URL
+          parsedFileUrl = fileUrlRaw;
+        }
+      } else if (fileUrlRaw is List) {
+        // It's already a list
+        parsedFileUrl = fileUrlRaw.isNotEmpty ? fileUrlRaw[0].toString() : '';
+      }
+    } catch (e) {
+      developer.log('❌ Error parsing file_url: $e', name: 'ScannedDocumentModel');
+    }
+
     return ScannedDocumentModel(
-      fileUrl: json['file_url'] ?? '',
+      fileUrl: parsedFileUrl,
       uploadedAt: json['uploaded_at'] ?? '',
       aiReply: AiReply.fromJson(json['ai_reply'] ?? {}),
     );

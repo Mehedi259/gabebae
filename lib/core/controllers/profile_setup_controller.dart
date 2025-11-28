@@ -15,6 +15,7 @@ class ProfileSetupController extends GetxController {
   final RxBool isLoadingAvatars = false.obs;
   final RxBool isGeneratingMagicList = false.obs;
   final RxBool isCreatingProfile = false.obs;
+  final RxBool isUpdatingProfile = false.obs;
 
   // Data lists
   final RxList<EatingStyle> eatingStyles = <EatingStyle>[].obs;
@@ -180,9 +181,9 @@ class ProfileSetupController extends GetxController {
       );
 
       magicList.value = result.magicList;
-      selectedMagicListItems.value = result.magicList.toSet();
+      // Items will be inactive by default - users must manually toggle them
+      selectedMagicListItems.clear();
 
-      // Don't show success snackbar - it causes error
       developer.log('✅ Magic list generated successfully', name: 'ProfileSetupController');
       return true;
     } catch (e) {
@@ -275,11 +276,6 @@ class ProfileSetupController extends GetxController {
     }
   }
 
-
-
-// Loading state for update
-  final RxBool isUpdatingProfile = false.obs;
-
   /// Update Profile
   Future<bool> updateProfile() async {
     developer.log('🔄 Starting profile update', name: 'ProfileSetupController');
@@ -360,6 +356,7 @@ class ProfileSetupController extends GetxController {
       isUpdatingProfile.value = false;
     }
   }
+
   /// Format date
   String _formatDate(DateTime d) {
     return "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";

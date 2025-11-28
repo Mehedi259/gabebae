@@ -1,9 +1,11 @@
-//lib/presentation/screens/scanMenu/scan_result_ordering_tips.dart
+// lib/presentation/screens/scanMenu/scan_result_ordering_tips.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Add this
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../core/controllers/create_plate_controller.dart'; // Add this
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_colors/app_colors.dart';
@@ -16,12 +18,13 @@ class OrderingTipsScreen extends StatefulWidget {
 }
 
 class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
-  List<String> getPlateCombo(AppLocalizations l10n) {
-    return [
-      l10n.extraVeggies,
-      l10n.spicy,
-      l10n.spicy,
-    ];
+  late CreatePlateController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Get the existing controller instance
+    _controller = Get.find<CreatePlateController>();
   }
 
   List<Map<String, dynamic>> getTips(AppLocalizations l10n) {
@@ -49,10 +52,38 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
     ];
   }
 
+  // Helper method to determine color based on ingredient name
+  Map<String, Color> _getIngredientColors(String ingredient, AppLocalizations l10n) {
+    // Check if it's spicy (you can customize this logic)
+    if (ingredient.toLowerCase().contains('spicy') ||
+        ingredient.toLowerCase().contains('🌶️') ||
+        ingredient == l10n.spicy) {
+      return {
+        'bg': const Color(0xFFFEF3C7),
+        'text': const Color(0xFFD97706),
+        'border': const Color(0xFFD97706),
+      };
+    }
+    // Check if it's garlic
+    else if (ingredient.toLowerCase().contains('garlic') ||
+        ingredient == l10n.garlic) {
+      return {
+        'bg': const Color(0x33FECACA),
+        'text': const Color(0xFFDC2626),
+        'border': const Color(0xFFDC2626),
+      };
+    }
+    // Default green color for safe ingredients
+    return {
+      'bg': const Color(0xFFDCFCE7),
+      'text': const Color(0xFF059669),
+      'border': const Color(0xFF10B981),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final plateCombo = getPlateCombo(l10n);
     final tips = getTips(l10n);
 
     return Scaffold(
@@ -101,8 +132,8 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                 ),
                 const SizedBox(height: 32),
 
-                /// PLATE COMBO SECTION
-                Container(
+                /// PLATE COMBO SECTION (Updated with Obx)
+                Obx(() => Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -123,51 +154,62 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: plateCombo.map((ingredient) {
-                          Color bgColor = const Color(0xFFDCFCE7);
-                          Color textColor = const Color(0xFF059669);
 
-                          // Check for "Spicy" in multiple languages
-                          if (ingredient.contains("🌶️")) {
-                            bgColor = const Color(0xFFFEF3C7);
-                            textColor = const Color(0xFFD97706);
-                          }
+                      // Show message if no ingredients selected
+                      if (_controller.selectedIngredients.isEmpty)
+                        Text(
+                          l10n.addIngredientsPrompt,
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 14,
+                            color: const Color(0xFF9CA3AF),
+                            fontStyle: FontStyle.italic,
+                          ),
+                        )
+                      else
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: _controller.selectedIngredients.map((ingredient) {
+                            final colors = _getIngredientColors(ingredient, l10n);
 
-                          return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: bgColor,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: textColor),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  ingredient,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: textColor,
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: colors['bg'],
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: colors['border']!),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    ingredient,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                      color: colors['text'],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 6),
-                                Icon(
-                                  Icons.close,
-                                  size: 16,
-                                  color: textColor,
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () => _controller.removeIngredient(ingredient),
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 16,
+                                      color: colors['text'],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                     ],
                   ),
-                ),
+                )),
+
                 const SizedBox(height: 32),
 
                 /// TIPS SELECTION TITLE
@@ -194,7 +236,7 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
         ),
       ),
 
-      /// BOTTOM BUTTONS
+      /// BOTTOM BUTTONS (unchanged)
       bottomNavigationBar: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -202,7 +244,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// TOP ROW BUTTONS
             Row(
               children: [
                 Expanded(
@@ -252,7 +293,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
             ),
             const SizedBox(height: 12),
 
-            /// AI CHAT BUTTON
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE27B4F),
@@ -291,7 +331,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// TIP HEADER
           Row(
             children: [
               Text(
@@ -312,8 +351,6 @@ class _OrderingTipsScreenState extends State<OrderingTipsScreen> {
             ],
           ),
           const SizedBox(height: 8),
-
-          /// TIP DESCRIPTION
           Padding(
             padding: const EdgeInsets.only(left: 28),
             child: Text(
