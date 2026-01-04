@@ -2,7 +2,7 @@ name: MenuSideKick
 description: "Menu Side Kick"
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0+1
 
 environment:
   sdk: ^3.6.0
@@ -61,6 +61,7 @@ dev_dependencies:
   json_serializable: ^6.2.0
   flutter_launcher_icons: ^0.14.3
 
+
 flutter_gen:
   output: lib/core/custom_assets/
   line_length: 80
@@ -69,8 +70,11 @@ flutter_gen:
 
 flutter_launcher_icons:
   android: true
-  ios:
-    remove_alpha_ios: true
+  ios: true
+  image_path: "assets/icons/app_icon.png"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  image_path_android: "assets/icons/app_icon.png"
 
 
 flutter:

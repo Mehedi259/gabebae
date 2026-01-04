@@ -2,7 +2,8 @@
 
 class ApiConstants {
   // =================== Base URL ===================
-  static const String baseUrl = "http://127.0.0.1:8000/api";
+  //static const String baseUrl = "http://127.0.0.1:8000/api";
+  static const String baseUrl = "https://api.menusidekick.app/api";
 
   // =================== Authentication Endpoints ===================
   static const String requestOtp = "/auth/request-otp/";
