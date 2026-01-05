@@ -36,7 +36,6 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   @override
   void initState() {
     super.initState();
-    // ✅ স্ক্রিন এ ঢুকলেই নতুন conversation create করবে
     _initializeChat();
   }
 

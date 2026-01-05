@@ -51,7 +51,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
       context: context,
       barrierDismissible: true,
       barrierLabel: "BottomSheet",
-      barrierColor: Colors.black,
+      barrierColor: Colors.black54,
       transitionDuration: const Duration(milliseconds: 500),
       pageBuilder: (context, _, __) {
         return const Align(
@@ -204,7 +204,6 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
     bool isSeeMore = false,
     bool isNetworkImage = false,
   }) {
-    // Obx wrap করে reactive করা হয়েছে
     return Obx(() {
       final bool isSelected = profileController.selectedEatingStyles.containsKey(title);
 
@@ -213,34 +212,37 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
           if (isSeeMore) {
             _openAnimatedBottomSheet();
           } else {
-            // Popup দেখানোর আগেই selection করা হবে
-            showGeneralDialog(
-              context: context,
-              barrierDismissible: true,
-              barrierLabel: '',
-              transitionDuration: const Duration(milliseconds: 400),
-              pageBuilder: (context, anim1, anim2) {
-                return const SizedBox.shrink();
-              },
-              transitionBuilder: (context, anim1, anim2, child) {
-                return Transform.scale(
-                  scale: Curves.easeOutBack.transform(anim1.value),
-                  child: Opacity(
-                    opacity: anim1.value,
-                    child: Dialog(
-                      backgroundColor: Colors.transparent,
-                      insetPadding: const EdgeInsets.all(24),
-                      child: ProfileSetup1BalanceControllerPopup(
-                        eatingStyleName: title,
-                        onLevelSelected: (level) {
-                          profileController.toggleEatingStyle(title, level);
-                        },
+            if (isSelected) {
+              profileController.selectedEatingStyles.remove(title);
+            } else {
+              showGeneralDialog(
+                context: context,
+                barrierDismissible: true,
+                barrierLabel: '',
+                transitionDuration: const Duration(milliseconds: 400),
+                pageBuilder: (context, anim1, anim2) {
+                  return const SizedBox.shrink();
+                },
+                transitionBuilder: (context, anim1, anim2, child) {
+                  return Transform.scale(
+                    scale: Curves.easeOutBack.transform(anim1.value),
+                    child: Opacity(
+                      opacity: anim1.value,
+                      child: Dialog(
+                        backgroundColor: Colors.transparent,
+                        insetPadding: const EdgeInsets.all(24),
+                        child: ProfileSetup1BalanceControllerPopup(
+                          eatingStyleName: title,
+                          onLevelSelected: (level) {
+                            profileController.toggleEatingStyle(title, level);
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
+                  );
+                },
+              );
+            }
           }
         },
         child: AnimatedContainer(
