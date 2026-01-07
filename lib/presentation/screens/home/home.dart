@@ -19,9 +19,28 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMixin {
   int _currentIndex = 0;
-  final HomeController _homeController = Get.put(HomeController());
+  late final HomeController _homeController;
+
+  @override
+  bool get wantKeepAlive => true; // Keep state alive
+
+  @override
+  void initState() {
+    super.initState();
+    // Use Get.find if controller already exists, otherwise create new one
+    if (Get.isRegistered<HomeController>()) {
+      _homeController = Get.find<HomeController>();
+    } else {
+      _homeController = Get.put(HomeController());
+    }
+
+    // Reload data when screen is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _homeController.refreshHomeData();
+    });
+  }
 
   void _onNavTap(int index) {
     setState(() {
@@ -42,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Required for AutomaticKeepAliveClientMixin
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
@@ -59,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
           return RefreshIndicator(
             onRefresh: _homeController.refreshHomeData,
             child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +310,8 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 16,
               placeholder: (context, url) =>
               const SizedBox(width: 16, height: 16),
-              errorWidget: (context, url, error) => const Icon(Icons.error, size: 16),
+              errorWidget: (context, url, error) =>
+              const Icon(Icons.error, size: 16),
             )
           else
             const Icon(Icons.circle, size: 16),
@@ -325,7 +347,18 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_homeController.isLoadingFavorites.value)
             const Center(child: CircularProgressIndicator())
           else if (favorites.isEmpty)
-            const Center(child: Text('No favorites yet'))
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  'No favorites yet',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
           else
             SizedBox(
               height: 120,
@@ -360,7 +393,18 @@ class _HomeScreenState extends State<HomeScreen> {
           if (_homeController.isLoadingScans.value)
             const Center(child: CircularProgressIndicator())
           else if (scans.isEmpty)
-            const Center(child: Text('No recent scans'))
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  'No recent scans',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            )
           else
             ...scans.map((scan) => HistoryCard(
               title: scan.aiReply.documentTitle,

@@ -21,20 +21,31 @@ class YourActivityScreen extends StatefulWidget {
 class _YourActivityScreenState extends State<YourActivityScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final HomeController _homeController = Get.find<HomeController>();
+  late final HomeController _homeController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
 
-    // Load data if not already loaded
-    if (_homeController.myPlateFavorites.isEmpty) {
-      _homeController.loadMyPlateFavorites();
+    // Get existing controller or create new one
+    if (Get.isRegistered<HomeController>()) {
+      _homeController = Get.find<HomeController>();
+    } else {
+      _homeController = Get.put(HomeController());
     }
-    if (_homeController.scannedDocuments.isEmpty) {
-      _homeController.loadScannedDocuments();
-    }
+
+    // Reload data when activity screen opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _refreshData();
+    });
+  }
+
+  Future<void> _refreshData() async {
+    await Future.wait([
+      _homeController.reloadFavorites(),
+      _homeController.reloadScans(),
+    ]);
   }
 
   @override
@@ -59,7 +70,11 @@ class _YourActivityScreenState extends State<YourActivityScreen>
                 children: [
                   IconButton(
                     icon: Assets.images.dibbaback.image(width: 40, height: 40),
-                    onPressed: () => context.go(RoutePath.home.addBasePath),
+                    onPressed: () {
+                      // Refresh home data before going back
+                      _homeController.refreshHomeData();
+                      context.go(RoutePath.home.addBasePath);
+                    },
                   ),
                   Expanded(
                     child: Text(
@@ -128,7 +143,6 @@ class _YourActivityScreenState extends State<YourActivityScreen>
 
   /// ===== Favorites Tab =====
   Widget _buildFavoritesTab(BuildContext context) {
-
     return Obx(() {
       if (_homeController.isLoadingFavorites.value) {
         return const Center(child: CircularProgressIndicator());
@@ -165,7 +179,7 @@ class _YourActivityScreenState extends State<YourActivityScreen>
       }
 
       return RefreshIndicator(
-        onRefresh: () => _homeController.loadMyPlateFavorites(),
+        onRefresh: () => _homeController.reloadFavorites(),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           physics: const AlwaysScrollableScrollPhysics(),
@@ -232,7 +246,7 @@ class _YourActivityScreenState extends State<YourActivityScreen>
       }
 
       return RefreshIndicator(
-        onRefresh: () => _homeController.loadScannedDocuments(),
+        onRefresh: () => _homeController.reloadScans(),
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           physics: const AlwaysScrollableScrollPhysics(),

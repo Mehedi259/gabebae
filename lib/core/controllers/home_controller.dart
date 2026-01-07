@@ -21,16 +21,31 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    developer.log('🚀 HomeController initialized', name: 'HomeController');
     loadHomeData();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    developer.log('✅ HomeController ready', name: 'HomeController');
   }
 
   /// Load all home data
   Future<void> loadHomeData() async {
-    await Future.wait([
-      loadActiveProfile(),
-      loadMyPlateFavorites(),
-      loadScannedDocuments(),
-    ]);
+    developer.log('📥 Loading all home data...', name: 'HomeController');
+
+    try {
+      await Future.wait([
+        loadActiveProfile(),
+        loadMyPlateFavorites(),
+        loadScannedDocuments(),
+      ]);
+
+      developer.log('✅ All home data loaded successfully', name: 'HomeController');
+    } catch (e) {
+      developer.log('❌ Error loading home data: $e', name: 'HomeController');
+    }
   }
 
   /// Load Active Profile with Icons
@@ -44,7 +59,7 @@ class HomeController extends GetxController {
 
       if (profile != null) {
         activeProfile.value = profile;
-        developer.log('✅ Active profile loaded', name: 'HomeController');
+        developer.log('✅ Active profile loaded: ${profile.profileName}', name: 'HomeController');
 
         // Fetch icons for eating styles, allergies, and medical conditions
         await Future.wait([
@@ -54,9 +69,11 @@ class HomeController extends GetxController {
         ]);
       } else {
         developer.log('⚠️ No active profile found', name: 'HomeController');
+        activeProfile.value = null;
       }
     } catch (e) {
       developer.log('❌ Error loading active profile: $e', name: 'HomeController');
+      activeProfile.value = null;
     } finally {
       isLoadingProfile.value = false;
     }
@@ -70,6 +87,7 @@ class HomeController extends GetxController {
       developer.log('✅ Loaded ${icons.length} eating style icons', name: 'HomeController');
     } catch (e) {
       developer.log('❌ Error loading eating style icons: $e', name: 'HomeController');
+      eatingStyleIcons.value = [];
     }
   }
 
@@ -81,6 +99,7 @@ class HomeController extends GetxController {
       developer.log('✅ Loaded ${icons.length} allergy icons', name: 'HomeController');
     } catch (e) {
       developer.log('❌ Error loading allergy icons: $e', name: 'HomeController');
+      allergyIcons.value = [];
     }
   }
 
@@ -92,6 +111,7 @@ class HomeController extends GetxController {
       developer.log('✅ Loaded ${icons.length} medical condition icons', name: 'HomeController');
     } catch (e) {
       developer.log('❌ Error loading medical condition icons: $e', name: 'HomeController');
+      medicalConditionIcons.value = [];
     }
   }
 
@@ -106,6 +126,7 @@ class HomeController extends GetxController {
       developer.log('✅ Loaded ${favorites.length} favorites', name: 'HomeController');
     } catch (e) {
       developer.log('❌ Error loading favorites: $e', name: 'HomeController');
+      myPlateFavorites.value = [];
     } finally {
       isLoadingFavorites.value = false;
     }
@@ -122,6 +143,7 @@ class HomeController extends GetxController {
       developer.log('✅ Loaded ${scans.length} scanned documents', name: 'HomeController');
     } catch (e) {
       developer.log('❌ Error loading scanned documents: $e', name: 'HomeController');
+      scannedDocuments.value = [];
     } finally {
       isLoadingScans.value = false;
     }
@@ -134,6 +156,7 @@ class HomeController extends GetxController {
           .firstWhere((icon) => icon.eatingStyleName.toLowerCase() == name.toLowerCase())
           .eatingStyleIcon;
     } catch (e) {
+      developer.log('⚠️ Icon not found for eating style: $name', name: 'HomeController');
       return null;
     }
   }
@@ -145,6 +168,7 @@ class HomeController extends GetxController {
           .firstWhere((icon) => icon.allergyName.toLowerCase() == name.toLowerCase())
           .allergyIcon;
     } catch (e) {
+      developer.log('⚠️ Icon not found for allergy: $name', name: 'HomeController');
       return null;
     }
   }
@@ -156,13 +180,33 @@ class HomeController extends GetxController {
           .firstWhere((icon) => icon.medicalConditionName.toLowerCase() == name.toLowerCase())
           .medicalConditionIcon;
     } catch (e) {
+      developer.log('⚠️ Icon not found for medical condition: $name', name: 'HomeController');
       return null;
     }
   }
 
-  /// Refresh all data
+  /// Refresh all data (for pull-to-refresh)
   Future<void> refreshHomeData() async {
     developer.log('🔄 Refreshing home data...', name: 'HomeController');
     await loadHomeData();
+    developer.log('✅ Home data refreshed', name: 'HomeController');
+  }
+
+  /// Force reload favorites only
+  Future<void> reloadFavorites() async {
+    developer.log('🔄 Force reloading favorites...', name: 'HomeController');
+    await loadMyPlateFavorites();
+  }
+
+  /// Force reload scans only
+  Future<void> reloadScans() async {
+    developer.log('🔄 Force reloading scans...', name: 'HomeController');
+    await loadScannedDocuments();
+  }
+
+  @override
+  void onClose() {
+    developer.log('👋 HomeController disposed', name: 'HomeController');
+    super.onClose();
   }
 }
