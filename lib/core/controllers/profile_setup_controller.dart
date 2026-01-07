@@ -181,10 +181,13 @@ class ProfileSetupController extends GetxController {
       );
 
       magicList.value = result.magicList;
-      // Items will be inactive by default - users must manually toggle them
-      selectedMagicListItems.clear();
 
-      developer.log('✅ Magic list generated successfully', name: 'ProfileSetupController');
+      // ✅ Automatically select all magic list items
+      selectedMagicListItems.clear();
+      selectedMagicListItems.addAll(result.magicList);
+
+      developer.log('✅ Magic list generated with ${result.magicList.length} items (all auto-selected)',
+          name: 'ProfileSetupController');
       return true;
     } catch (e) {
       developer.log('❌ Error generating magic list: $e', name: 'ProfileSetupController');
