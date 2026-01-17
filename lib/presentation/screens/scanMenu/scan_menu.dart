@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
+import 'package:file_picker/file_picker.dart';
 
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
@@ -36,8 +37,15 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
 
   late final AnimationController _slideCtrl;
   late final AnimationController _pulseCtrl;
+  late final AnimationController _focusCtrl;
   late final Animation<Offset> _slideAnim;
   late final Animation<double> _pulseAnim;
+  late final Animation<double> _focusScaleAnim;
+  late final Animation<double> _focusOpacityAnim;
+
+  // ✅ Focus indicator animation
+  bool _showFocusIndicator = true;
+  Offset _focusPoint = const Offset(0.5, 0.5);
 
   @override
   void initState() {
@@ -57,6 +65,12 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
+    // ✅ Modern focus animation controller
+    _focusCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    )..repeat();
+
     _slideAnim = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
@@ -66,9 +80,30 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
     );
 
+    // ✅ Breathing scale animation
+    _focusScaleAnim = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _focusCtrl, curve: Curves.easeInOut),
+    );
+
+    // ✅ Pulsing opacity animation
+    _focusOpacityAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(parent: _focusCtrl, curve: Curves.easeInOut),
+    );
+
     // ✅ Initialize camera after frame is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initCamera();
+      // Set initial focus point to center of screen
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted && context.size != null) {
+          setState(() {
+            _focusPoint = Offset(
+              context.size!.width / 2,
+              context.size!.height / 2,
+            );
+          });
+        }
+      });
     });
   }
 
@@ -78,6 +113,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     _camera?.dispose();
     _slideCtrl.dispose();
     _pulseCtrl.dispose();
+    _focusCtrl.dispose();
     super.dispose();
   }
 
@@ -107,6 +143,14 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
 
       await _camera!.initialize();
 
+      // ✅ Enable auto focus mode after initialization
+      if (_camera!.value.isInitialized) {
+        await _camera!.setFocusMode(FocusMode.auto);
+        // Set initial focus point to center
+        await _camera!.setFocusPoint(const Offset(0.5, 0.5));
+        await _camera!.setExposurePoint(const Offset(0.5, 0.5));
+      }
+
       if (mounted) {
         setState(() => _isReady = true);
       }
@@ -127,7 +171,145 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       body: SafeArea(
         child: Stack(
           children: [
+            // ✅ Blur overlay outside focus area
+            if (_showFocusIndicator)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                ),
+              ),
+
             _cameraPreview(),
+
+            // ✅ Modern animated focus indicator overlay (draggable)
+            if (_showFocusIndicator)
+              AnimatedBuilder(
+                animation: _focusCtrl,
+                builder: (context, child) {
+                  return Positioned(
+                    left: _focusPoint.dx - 110,
+                    top: _focusPoint.dy - 160,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        setState(() {
+                          _focusPoint = Offset(
+                            (_focusPoint.dx + details.delta.dx).clamp(110.0, MediaQuery.of(context).size.width - 110),
+                            (_focusPoint.dy + details.delta.dy).clamp(160.0, MediaQuery.of(context).size.height - 160),
+                          );
+                        });
+
+                        // Update camera focus when dragging
+                        if (_camera != null && _camera!.value.isInitialized) {
+                          final renderBox = context.findRenderObject() as RenderBox;
+                          final offset = Offset(
+                            _focusPoint.dx / renderBox.size.width,
+                            _focusPoint.dy / renderBox.size.height,
+                          );
+                          _camera!.setFocusPoint(offset);
+                          _camera!.setExposurePoint(offset);
+                        }
+                      },
+                      child: Transform.scale(
+                        scale: _focusScaleAnim.value,
+                        child: Opacity(
+                          opacity: _focusOpacityAnim.value,
+                          child: Container(
+                            width: 220,
+                            height: 320,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                width: 3,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  blurRadius: 20,
+                                  spreadRadius: 2,
+                                ),
+                              ],
+                            ),
+                            child: Stack(
+                              children: [
+                                // Corner decorations
+                                Positioned(
+                                  top: -2,
+                                  left: -2,
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(color: Colors.white, width: 4),
+                                        left: BorderSide(color: Colors.white, width: 4),
+                                      ),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: -2,
+                                  right: -2,
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        top: BorderSide(color: Colors.white, width: 4),
+                                        right: BorderSide(color: Colors.white, width: 4),
+                                      ),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: -2,
+                                  left: -2,
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(color: Colors.white, width: 4),
+                                        left: BorderSide(color: Colors.white, width: 4),
+                                      ),
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: -2,
+                                  right: -2,
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: const BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(color: Colors.white, width: 4),
+                                        right: BorderSide(color: Colors.white, width: 4),
+                                      ),
+                                      borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
 
             ScanMenuTopBar(
               onClose: () => context.go(RoutePath.home.addBasePath),
@@ -140,6 +322,9 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
               selectedMode: _mode,
               onModeChange: (value) {
                 setState(() => _mode = value);
+                if (value == "PDF") {
+                  _pickPdfFile();
+                }
               },
               onCapture: _capture,
               onOpenGallery: _openGallery,
@@ -156,7 +341,9 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
               right: 0,
               child: Obx(() {
                 final images = _scanController.scannedImages;
+                final pdfFiles = _scanController.scannedPdfs;
                 final isScanning = _scanController.isScanning.value;
+                final totalFiles = images.length + pdfFiles.length;
 
                 return Container(
                   width: double.infinity,
@@ -167,10 +354,10 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                   child: Row(
                     children: [
                       Expanded(
-                        child: images.isEmpty
+                        child: totalFiles == 0
                             ? const Center(
                           child: Text(
-                            'No images captured',
+                            'No files captured',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
@@ -179,63 +366,103 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                         )
                             : ListView.separated(
                           scrollDirection: Axis.horizontal,
-                          itemCount: images.length,
+                          itemCount: totalFiles,
                           separatorBuilder: (_, __) =>
                           const SizedBox(width: 8),
                           itemBuilder: (context, index) {
-                            return FutureBuilder<Uint8List>(
-                              future: images[index].readAsBytes(),
-                              builder: (context, snapshot) {
-                                if (!snapshot.hasData) {
-                                  return const SizedBox(
+                            // Show images first, then PDFs
+                            if (index < images.length) {
+                              return FutureBuilder<Uint8List>(
+                                future: images[index].readAsBytes(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const SizedBox(
+                                      width: 76,
+                                      height: 48,
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    );
+                                  }
+
+                                  return Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(2),
+                                        child: Image.memory(
+                                          snapshot.data!,
+                                          width: 76,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: -12,
+                                        right: -12,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.close,
+                                              color: Colors.white,
+                                              size: 18),
+                                          padding: EdgeInsets.zero,
+                                          constraints:
+                                          const BoxConstraints(),
+                                          onPressed: () {
+                                            _scanController
+                                                .removeImage(index);
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              // PDF file preview
+                              final pdfIndex = index - images.length;
+                              return Stack(
+                                children: [
+                                  Container(
                                     width: 76,
                                     height: 48,
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
-                                    ),
-                                  );
-                                }
-
-                                return Stack(
-                                  children: [
-                                    ClipRRect(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.shade100,
                                       borderRadius:
                                       BorderRadius.circular(2),
-                                      child: Image.memory(
-                                        snapshot.data!,
-                                        width: 76,
-                                        height: 48,
-                                        fit: BoxFit.cover,
-                                      ),
+                                      border: Border.all(
+                                          color: Colors.red.shade300),
                                     ),
-                                    Positioned(
-                                      top: -12,
-                                      right: -12,
-                                      child: IconButton(
-                                        icon: const Icon(Icons.close,
-                                            color: Colors.white,
-                                            size: 18),
-                                        padding: EdgeInsets.zero,
-                                        constraints:
-                                        const BoxConstraints(),
-                                        onPressed: () {
-                                          _scanController
-                                              .removeImage(index);
-                                        },
-                                      ),
+                                    child: const Icon(
+                                      Icons.picture_as_pdf,
+                                      color: Colors.red,
+                                      size: 24,
                                     ),
-                                  ],
-                                );
-                              },
-                            );
+                                  ),
+                                  Positioned(
+                                    top: -12,
+                                    right: -12,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.close,
+                                          color: Colors.white, size: 18),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () {
+                                        _scanController
+                                            .removePdf(pdfIndex);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
                           },
                         ),
                       ),
                       const SizedBox(width: 12),
                       ElevatedButton(
-                        onPressed: images.isEmpty || isScanning
+                        onPressed: totalFiles == 0 || isScanning
                             ? null
                             : _runScanAndNavigate,
                         style: ElevatedButton.styleFrom(
@@ -277,18 +504,96 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     );
   }
 
-  Widget _cameraPreview() => !_isReady
-      ? const Center(child: CircularProgressIndicator(color: Colors.blue))
-      : SizedBox.expand(
-    child: FittedBox(
-      fit: BoxFit.cover,
-      child: SizedBox(
-        width: _camera!.value.previewSize!.height,
-        height: _camera!.value.previewSize!.width,
-        child: CameraPreview(_camera!),
+  Widget _cameraPreview() {
+    if (!_isReady) {
+      return const Center(child: CircularProgressIndicator(color: Colors.blue));
+    }
+
+    // Check if camera is still valid before building preview
+    if (_camera == null || !_camera!.value.isInitialized) {
+      return const Center(child: CircularProgressIndicator(color: Colors.blue));
+    }
+
+    return GestureDetector(
+      onTapDown: (details) => _onTapToFocus(details),
+      child: SizedBox.expand(
+        child: FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: _camera!.value.previewSize!.height,
+            height: _camera!.value.previewSize!.width,
+            child: CameraPreview(_camera!),
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  // ✅ Tap to focus with visual indicator
+  Future<void> _onTapToFocus(TapDownDetails details) async {
+    if (_camera == null || !_camera!.value.isInitialized) return;
+
+    try {
+      // Calculate relative position
+      final renderBox = context.findRenderObject() as RenderBox;
+      final offset = Offset(
+        details.localPosition.dx / renderBox.size.width,
+        details.localPosition.dy / renderBox.size.height,
+      );
+
+      // Update focus indicator position
+      setState(() {
+        _focusPoint = details.localPosition;
+      });
+
+      // Set focus and exposure point
+      await _camera!.setFocusPoint(offset);
+      await _camera!.setExposurePoint(offset);
+      await _camera!.setFocusMode(FocusMode.auto);
+    } catch (e) {
+      debugPrint('❌ Focus error: $e');
+    }
+  }
+
+  // ✅ Pick PDF file
+  Future<void> _pickPdfFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['pdf'],
+        allowMultiple: false,
+      );
+
+      if (result != null) {
+        final file = result.files.first;
+        _scanController.addPdf(file);
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('PDF added: ${file.name}'),
+              backgroundColor: Colors.green,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+
+      // Reset mode back to Photo
+      setState(() => _mode = "Photo");
+    } catch (e) {
+      debugPrint('❌ PDF picker error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to pick PDF file'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      setState(() => _mode = "Photo");
+    }
+  }
 
   void _helpDialog() => showDialog(
     context: context,

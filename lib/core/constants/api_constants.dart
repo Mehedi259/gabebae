@@ -31,7 +31,7 @@ class ApiConstants {
   static const String history = "/ocr/scanned-documents/active/";
 
   // =================== OCR Scan Endpoints ===================
-  static const String ocrScan = "/ocr/scan";
+  static const String ocrScan = "/ocr/scan/";
 
   // =================== Chat Endpoints ===================
   static const String newConversation = "/chat/conversations/new/";

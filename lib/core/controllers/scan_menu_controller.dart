@@ -1,9 +1,8 @@
 // lib/core/controllers/scan_menu_controller.dart
-import 'dart:io';
 import 'dart:developer' as developer;
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart'; // ✅ Add this
-import 'package:flutter/foundation.dart' show kIsWeb; // ✅ Add this
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../global/model/scan_menu_model.dart';
 import '../services/scan_menu_service.dart';
 
@@ -12,8 +11,9 @@ class ScanMenuController extends GetxController {
   final RxBool isScanning = false.obs;
   final RxBool hasScanResult = false.obs;
 
-  // ✅ Store XFile instead of File for web compatibility
+  // ✅ Store XFile for images and PlatformFile for PDFs
   final RxList<XFile> scannedImages = <XFile>[].obs;
+  final RxList<PlatformFile> scannedPdfs = <PlatformFile>[].obs;
 
   // OCR Result
   final Rx<OcrScanResponse?> scanResult = Rx<OcrScanResponse?>(null);
@@ -31,11 +31,27 @@ class ScanMenuController extends GetxController {
         name: 'ScanMenuController');
   }
 
+  /// Add PDF to scan list
+  void addPdf(PlatformFile pdf) {
+    scannedPdfs.add(pdf);
+    developer.log('✅ PDF added. Total: ${scannedPdfs.length}',
+        name: 'ScanMenuController');
+  }
+
   /// Remove image from scan list
   void removeImage(int index) {
     if (index >= 0 && index < scannedImages.length) {
       scannedImages.removeAt(index);
       developer.log('🗑️ Image removed. Remaining: ${scannedImages.length}',
+          name: 'ScanMenuController');
+    }
+  }
+
+  /// Remove PDF from scan list
+  void removePdf(int index) {
+    if (index >= 0 && index < scannedPdfs.length) {
+      scannedPdfs.removeAt(index);
+      developer.log('🗑️ PDF removed. Remaining: ${scannedPdfs.length}',
           name: 'ScanMenuController');
     }
   }
@@ -46,25 +62,36 @@ class ScanMenuController extends GetxController {
     developer.log('🗑️ All images cleared', name: 'ScanMenuController');
   }
 
-  /// Run OCR scan
+  /// Clear all PDFs
+  void clearPdfs() {
+    scannedPdfs.clear();
+    developer.log('🗑️ All PDFs cleared', name: 'ScanMenuController');
+  }
+
+  /// Run OCR scan with images and PDFs
   Future<bool> runScan() async {
-    if (scannedImages.isEmpty) {
-      developer.log('⚠️ No images to scan', name: 'ScanMenuController');
+    if (scannedImages.isEmpty && scannedPdfs.isEmpty) {
+      developer.log('⚠️ No files to scan', name: 'ScanMenuController');
       return false;
     }
 
     try {
       isScanning.value = true;
-      developer.log('🔄 Starting OCR scan with ${scannedImages.length} images...',
+      developer.log(
+          '🔄 Starting OCR scan with ${scannedImages.length} images and ${scannedPdfs.length} PDFs...',
           name: 'ScanMenuController');
 
-      final result = await ScanMenuService.scanMenu(scannedImages.toList());
+      final result = await ScanMenuService.scanMenu(
+        images: scannedImages.toList(),
+        pdfs: scannedPdfs.toList(),
+      );
 
       if (result != null) {
         scanResult.value = result;
         hasScanResult.value = true;
 
-        developer.log('✅ Scan completed successfully', name: 'ScanMenuController');
+        developer.log('✅ Scan completed successfully',
+            name: 'ScanMenuController');
         developer.log('📊 Total items: ${result.foodItems.length}',
             name: 'ScanMenuController');
         developer.log('✅ Safe items: ${result.foodItems.safeCount}',
@@ -140,6 +167,7 @@ class ScanMenuController extends GetxController {
   /// Reset scan data
   void resetScan() {
     scannedImages.clear();
+    scannedPdfs.clear();
     scanResult.value = null;
     hasScanResult.value = false;
     selectedFilter.value = 'all';
@@ -150,6 +178,7 @@ class ScanMenuController extends GetxController {
   @override
   void onClose() {
     clearImages();
+    clearPdfs();
     super.onClose();
   }
 }

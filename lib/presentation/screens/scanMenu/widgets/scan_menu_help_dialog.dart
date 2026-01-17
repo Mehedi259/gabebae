@@ -12,150 +12,141 @@ class ScanMenuHelpDialog extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Container(
         width: double.infinity,
+        constraints: const BoxConstraints(maxWidth: 500),
         decoration: BoxDecoration(
-          color: AppColors.backgroundColor,
-          borderRadius: BorderRadius.circular(20),
+          color: const Color(0xFFFFEED8),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE5E7EB)),
         ),
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              /// ---- Title ----
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text("🌿", style: TextStyle(fontSize: 20)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.tipsForClearScan,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF10B981),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🌿", style: TextStyle(fontSize: 20)),
-                  ],
+              /// ---- Tips Section ----
+              Text(
+                '🌿 ${l10n.tipsForClearScan} 🌿',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF669A59),
+                  height: 1.33,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
-              /// ---- Subtitle ----
-              Center(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Text(
-                    l10n.tipsForClearScanSubtitle,
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: const Color(0xFF8B7355),
-                      height: 1.4,
-                    ),
-                  ),
+              Text(
+                l10n.tipsForClearScanSubtitle,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF75360F),
                 ),
               ),
               const SizedBox(height: 24),
 
-              /// ---- Tips ----
-              _buildTipItem("✨", l10n.tipFlatSteadyTitle,
-                  l10n.tipFlatSteadyDesc, const Color(0xFFFFCA28)),
-              const SizedBox(height: 16),
-              _buildTipItem("✨", l10n.tipGoodLightingTitle,
-                  l10n.tipGoodLightingDesc, const Color(0xFFFFCA28)),
-              const SizedBox(height: 16),
-              _buildTipItem("✨", l10n.tipNoCroppingTitle,
-                  l10n.tipNoCroppingDesc, const Color(0xFF10B981)),
-              const SizedBox(height: 16),
-              _buildTipItem("✨", l10n.tipSharpClearTitle,
-                  l10n.tipSharpClearDesc, const Color(0xFFFFCA28)),
-              const SizedBox(height: 20),
+              /// ---- Tips List ----
+              _buildTipItem(
+                "✨",
+                l10n.tipFlatSteadyTitle,
+                l10n.tipFlatSteadyDesc,
+                const Color(0xFFE27B4F),
+              ),
+              const SizedBox(height: 10),
+
+              _buildTipItem(
+                "✨",
+                l10n.tipGoodLightingTitle,
+                l10n.tipGoodLightingDesc,
+                const Color(0xFFFFC986),
+              ),
+              const SizedBox(height: 10),
+
+              _buildTipItem(
+                "✨",
+                l10n.tipNoCroppingTitle,
+                l10n.tipNoCroppingDesc,
+                const Color(0xFF669A59),
+              ),
+              const SizedBox(height: 10),
+
+              _buildTipItem(
+                "✨",
+                l10n.tipSharpClearTitle,
+                l10n.tipSharpClearDesc,
+                const Color(0xFF75360F),
+              ),
+              const SizedBox(height: 24),
 
               /// ---- Special Message ----
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFCE7F3),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFF472B6)),
-                ),
-                child: Row(
-                  children: [
-                    const Text("🌸", style: TextStyle(fontSize: 18)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.tipSpecialMessage,
-                        style: GoogleFonts.poppins(
-                          fontSize: 13,
-                          color: const Color(0xFF831843),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🌸", style: TextStyle(fontSize: 18)),
-                  ],
+              Text(
+                '🌸 ${l10n.tipSpecialMessage} 🌸',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF75360F),
                 ),
               ),
               const SizedBox(height: 24),
 
               /// ---- Choose How to Scan ----
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.chooseHowToScan,
-                        textAlign: TextAlign.center,
-                        style: GoogleFonts.poppins(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF10B981),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text("🦋", style: TextStyle(fontSize: 20)),
-                  ],
+              Text(
+                '${l10n.chooseHowToScan} 🦋',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF669A59),
+                  height: 1.33,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
 
               /// ---- Scan Options ----
-              _buildScanOption("📷", l10n.scanOptionPhoto,
-                  l10n.scanOptionPhotoDesc),
-              const SizedBox(height: 12),
-              _buildScanOption("📄", l10n.scanOptionPDF,
-                  l10n.scanOptionPDFDesc),
-              const SizedBox(height: 12),
-              _buildScanOption("🔗", l10n.scanOptionURL,
-                  l10n.scanOptionURLDesc),
+              _buildScanOption(
+                "📷",
+                l10n.scanOptionPhoto,
+                l10n.scanOptionPhotoDesc,
+                const Color(0xFFE27B4F),
+              ),
+              const SizedBox(height: 10),
+
+              _buildScanOption(
+                "📄",
+                l10n.scanOptionPDF,
+                l10n.scanOptionPDFDesc,
+                const Color(0xFFFFC986),
+              ),
+              const SizedBox(height: 10),
+
+              _buildScanOption(
+                "🔗",
+                l10n.scanOptionURL,
+                l10n.scanOptionURLDesc,
+                const Color(0xFFC26932),
+              ),
               const SizedBox(height: 24),
 
               /// ---- Close Button ----
-              Center(
-                child: TextButton(
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF10B981),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF669A59),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
+                    elevation: 0,
                   ),
                   child: Text(
                     l10n.gotIt,
@@ -174,22 +165,38 @@ class ScanMenuHelpDialog extends StatelessWidget {
     );
   }
 
-  /// ---- Helper Widgets ----
-  Widget _buildTipItem(String emoji, String title, String desc, Color color) {
+  Widget _buildTipItem(String emoji, String title, String desc, Color titleColor) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 18)),
-        const SizedBox(width: 8),
+        Text(
+          '$emoji ',
+          style: GoogleFonts.poppins(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFFE27B4F),
+          ),
+        ),
+        const SizedBox(width: 4),
         Expanded(
           child: RichText(
             text: TextSpan(
-              style: GoogleFonts.poppins(fontSize: 14, color: color, height: 1.4),
               children: [
-                TextSpan(text: "$title\n", style: const TextStyle(fontWeight: FontWeight.w600)),
+                TextSpan(
+                  text: '$title - ',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: titleColor,
+                  ),
+                ),
                 TextSpan(
                   text: desc,
-                  style: const TextStyle(fontWeight: FontWeight.w400, color: Colors.black87),
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF75360F),
+                  ),
                 ),
               ],
             ),
@@ -199,22 +206,45 @@ class ScanMenuHelpDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildScanOption(String emoji, String title, String desc) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Text(emoji, style: const TextStyle(fontSize: 20)),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              "$title – $desc",
-              style: GoogleFonts.poppins(fontSize: 14, color: Colors.black87, height: 1.4),
+  Widget _buildScanOption(String emoji, String title, String desc, Color titleColor) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          alignment: Alignment.center,
+          child: Text(
+            emoji,
+            style: const TextStyle(fontSize: 12),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              children: [
+                TextSpan(
+                  text: '$title – ',
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: titleColor,
+                  ),
+                ),
+                TextSpan(
+                  text: desc,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    color: const Color(0xFF75360F),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
