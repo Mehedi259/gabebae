@@ -74,7 +74,7 @@ class HistoryCard extends StatelessWidget {
                     width: 64,
                     height: 64,
                     color: Colors.grey[300],
-                    child: const Icon(Icons.error),
+                    child: const Icon(Icons.picture_as_pdf),
                   ),
                 )
                     : Image.asset(

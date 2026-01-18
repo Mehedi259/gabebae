@@ -54,7 +54,7 @@ class EatingStyle {
 
   factory EatingStyle.fromJson(Map<String, dynamic> json) {
     return EatingStyle(
-      name: json['name'] ?? '',
+      name: json['eating_style_name'] ?? json['name'] ?? '',
     );
   }
 }
@@ -159,27 +159,32 @@ class ScannedDocumentModel {
   });
 
   factory ScannedDocumentModel.fromJson(Map<String, dynamic> json) {
-    // Parse file_url - it comes as a JSON array string
+    // Parse file_urls - it comes as an array
     String parsedFileUrl = '';
     try {
-      final fileUrlRaw = json['file_url'] ?? '';
+      // The API returns "file_urls" as an array
+      final fileUrlsRaw = json['file_urls'];
 
-      if (fileUrlRaw is String) {
-        // Check if it's a JSON array string
-        if (fileUrlRaw.startsWith('[') && fileUrlRaw.endsWith(']')) {
-          // Parse the JSON array and get the first URL
-          final List<dynamic> urlList = jsonDecode(fileUrlRaw);
-          parsedFileUrl = urlList.isNotEmpty ? urlList[0].toString() : '';
-        } else {
-          // It's already a direct URL
-          parsedFileUrl = fileUrlRaw;
+      if (fileUrlsRaw != null) {
+        if (fileUrlsRaw is List && fileUrlsRaw.isNotEmpty) {
+          // It's already a list, get first URL
+          parsedFileUrl = fileUrlsRaw[0].toString();
+        } else if (fileUrlsRaw is String) {
+          // It's a string, try to parse as JSON array
+          if (fileUrlsRaw.startsWith('[') && fileUrlsRaw.endsWith(']')) {
+            final List<dynamic> urlList = jsonDecode(fileUrlsRaw);
+            parsedFileUrl = urlList.isNotEmpty ? urlList[0].toString() : '';
+          } else {
+            // It's a direct URL string
+            parsedFileUrl = fileUrlsRaw;
+          }
         }
-      } else if (fileUrlRaw is List) {
-        // It's already a list
-        parsedFileUrl = fileUrlRaw.isNotEmpty ? fileUrlRaw[0].toString() : '';
       }
+
+      developer.log('✅ Parsed file URL: $parsedFileUrl', name: 'ScannedDocumentModel');
     } catch (e) {
-      developer.log('❌ Error parsing file_url: $e', name: 'ScannedDocumentModel');
+      developer.log('❌ Error parsing file_urls: $e', name: 'ScannedDocumentModel');
+      developer.log('Raw data: ${json['file_urls']}', name: 'ScannedDocumentModel');
     }
 
     return ScannedDocumentModel(

@@ -311,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               placeholder: (context, url) =>
               const SizedBox(width: 16, height: 16),
               errorWidget: (context, url, error) =>
-              const Icon(Icons.error, size: 16),
+              const Icon(Icons.picture_as_pdf, size: 16),
             )
           else
             const Icon(Icons.circle, size: 16),
@@ -482,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> with AutomaticKeepAliveClientMi
               placeholder: (context, url) => const Center(
                 child: CircularProgressIndicator(),
               ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
+              errorWidget: (context, url, error) => const Icon(Icons.picture_as_pdf),
             ),
           ),
           const SizedBox(height: 4),
