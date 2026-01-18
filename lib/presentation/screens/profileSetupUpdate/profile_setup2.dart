@@ -1,5 +1,7 @@
 // lib/presentation/screens/profileSetupUpdate/profile_setup2.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup2_bottom_sheet.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
@@ -7,8 +9,6 @@ import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
 import 'package:MenuSideKick/utils/app_colors/app_colors.dart';
 import 'package:MenuSideKick/l10n/app_localizations.dart';
-import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup2_bottom_sheet.dart';
-import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import '../../../core/controllers/profile_setup_controller.dart';
 
@@ -200,7 +200,7 @@ class _ProfileSetup2ScreenUpdateState extends State<ProfileSetup2ScreenUpdate>
                       title: l10n.anythingToAvoid,
                       subtitle: l10n.keepYouSafe,
                       onBack: () =>
-                          context.go(RoutePath.profileSetup1.addBasePath),
+                          context.go(RoutePath.profileSetup1Update.addBasePath),
                     );
                   },
                 ),

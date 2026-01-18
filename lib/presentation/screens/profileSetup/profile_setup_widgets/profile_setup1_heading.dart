@@ -49,11 +49,11 @@ class ProfileHeading1 extends StatelessWidget {
 
 
             // Close Button (Asset Image)
-            IconButton(
-              onPressed: onClose ?? () => context.go(RoutePath.home.addBasePath),
-              icon: Assets.images.crosswhite.image(width: 40, height: 40),
-              splashRadius: 24,
-            ),
+            // IconButton(
+            //   onPressed: onClose ?? () => context.go(RoutePath.profileSetup2.addBasePath),
+            //   icon: Assets.images.crosswhite.image(width: 40, height: 40),
+            //   splashRadius: 24,
+            // ),
           ],
         ),
 

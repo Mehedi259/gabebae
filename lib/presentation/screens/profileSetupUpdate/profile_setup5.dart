@@ -1,8 +1,8 @@
 // lib/presentation/screens/profileSetupUpdate/profile_setup5.dart
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup_heading2345.dart' show ProfileSetupHeading;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:MenuSideKick/core/routes/routes.dart';
-import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:MenuSideKick/presentation/widgets/custom_bottons/custom_button/button.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/controllers/profile_setup_controller.dart';
@@ -66,7 +66,7 @@ class _ProfileSetup5ScreenUpdateState extends State<ProfileSetup5ScreenUpdate>
     super.dispose();
   }
 
-  // ✅ এখানে UPDATE method call করছি
+
   Future<void> _handleUpdateProfile() async {
     // Validate before updating
     if (profileController.nameController.text.trim().isEmpty) {
@@ -97,7 +97,7 @@ class _ProfileSetup5ScreenUpdateState extends State<ProfileSetup5ScreenUpdate>
       profileController.dateOfBirth.value = DateTime(2000, 1, 1);
     }
 
-    // ✅ updateProfile() call করছি createProfile() এর বদলে
+
     final success = await profileController.updateProfile();
     if (success && mounted) {
       context.go(RoutePath.home.addBasePath);
@@ -124,79 +124,79 @@ class _ProfileSetup5ScreenUpdateState extends State<ProfileSetup5ScreenUpdate>
                     progress: _progressAnim.value,
                     title: l10n.allSetLovely,
                     subtitle: l10n.diningReadyMessage,
-                    onBack: () => context.go(RoutePath.profileSetup4.addBasePath),
+                    onBack: () => context.go(RoutePath.profileSetup4Update.addBasePath),
                   );
                 },
               ),
               const SizedBox(height: 14),
 
-              /// Name Input Section
-              AnimatedBuilder(
-                animation: _sectionAnimations[0],
-                builder: (context, child) {
-                  return FadeTransition(
-                    opacity: _sectionAnimations[0],
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.3),
-                        end: Offset.zero,
-                      ).animate(_sectionAnimations[0]),
-                      child: child,
-                    ),
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.whatToCallYou,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF374151),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      height: 58,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade300),
-                        color: Colors.white,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x0A000000),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.person_outline,
-                              color: Colors.grey, size: 22),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: TextField(
-                              controller: profileController.nameController,
-                              decoration: InputDecoration(
-                                hintText: l10n.enterYourName,
-                                hintStyle: const TextStyle(
-                                  fontSize: 16,
-                                  color: Color(0xFFADAEBC),
-                                ),
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
+              // /// Name Input Section
+              // AnimatedBuilder(
+              //   animation: _sectionAnimations[0],
+              //   builder: (context, child) {
+              //     return FadeTransition(
+              //       opacity: _sectionAnimations[0],
+              //       child: SlideTransition(
+              //         position: Tween<Offset>(
+              //           begin: const Offset(0, 0.3),
+              //           end: Offset.zero,
+              //         ).animate(_sectionAnimations[0]),
+              //         child: child,
+              //       ),
+              //     );
+              //   },
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         l10n.whatToCallYou,
+              //         style: const TextStyle(
+              //           fontSize: 16,
+              //           fontWeight: FontWeight.w600,
+              //           color: Color(0xFF374151),
+              //         ),
+              //       ),
+              //       const SizedBox(height: 12),
+              //       Container(
+              //         height: 58,
+              //         padding: const EdgeInsets.symmetric(horizontal: 16),
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(16),
+              //           border: Border.all(color: Colors.grey.shade300),
+              //           color: Colors.white,
+              //           boxShadow: const [
+              //             BoxShadow(
+              //               color: Color(0x0A000000),
+              //               blurRadius: 8,
+              //               offset: Offset(0, 2),
+              //             ),
+              //           ],
+              //         ),
+              //         child: Row(
+              //           children: [
+              //             const Icon(Icons.person_outline,
+              //                 color: Colors.grey, size: 22),
+              //             const SizedBox(width: 12),
+              //             Expanded(
+              //               child: TextField(
+              //                 controller: profileController.nameController,
+              //                 decoration: InputDecoration(
+              //                   hintText: l10n.enterYourName,
+              //                   hintStyle: const TextStyle(
+              //                     fontSize: 16,
+              //                     color: Color(0xFFADAEBC),
+              //                   ),
+              //                   border: InputBorder.none,
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // const SizedBox(height: 16),
 
               /// Avatar Selection Section
               AnimatedBuilder(
@@ -344,64 +344,64 @@ class _ProfileSetup5ScreenUpdateState extends State<ProfileSetup5ScreenUpdate>
               const SizedBox(height: 10),
 
               /// Upload Section
-              AnimatedBuilder(
-                animation: _sectionAnimations[2],
-                builder: (context, child) {
-                  return FadeTransition(
-                    opacity: _sectionAnimations[2],
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0.3, 0),
-                        end: Offset.zero,
-                      ).animate(_sectionAnimations[2]),
-                      child: child,
-                    ),
-                  );
-                },
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        l10n.or,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF4B5563),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.white),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x0A000000),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          l10n.uploadPhoto,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF374151),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 15),
+              // AnimatedBuilder(
+              //   animation: _sectionAnimations[2],
+              //   builder: (context, child) {
+              //     return FadeTransition(
+              //       opacity: _sectionAnimations[2],
+              //       child: SlideTransition(
+              //         position: Tween<Offset>(
+              //           begin: const Offset(0.3, 0),
+              //           end: Offset.zero,
+              //         ).animate(_sectionAnimations[2]),
+              //         child: child,
+              //       ),
+              //     );
+              //   },
+              //   child: Column(
+              //     children: [
+              //       Center(
+              //         child: Text(
+              //           l10n.or,
+              //           style: const TextStyle(
+              //             fontSize: 12,
+              //             color: Color(0xFF4B5563),
+              //           ),
+              //         ),
+              //       ),
+              //       const SizedBox(height: 8),
+              //       Container(
+              //         width: double.infinity,
+              //         padding: const EdgeInsets.symmetric(vertical: 13),
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(16),
+              //           color: Colors.white,
+              //           border: Border.all(color: Colors.white),
+              //           boxShadow: const [
+              //             BoxShadow(
+              //               color: Color(0x0A000000),
+              //               blurRadius: 8,
+              //               offset: Offset(0, 2),
+              //             ),
+              //           ],
+              //         ),
+              //         child: Center(
+              //           child: Text(
+              //             l10n.uploadPhoto,
+              //             style: const TextStyle(
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w500,
+              //               color: Color(0xFF374151),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // const SizedBox(height: 15),
 
-              /// Buttons Section - ✅ isUpdatingProfile ব্যবহার করছি
+              /// Buttons Section
               AnimatedBuilder(
                 animation: _sectionAnimations[3],
                 builder: (context, child) {
@@ -481,7 +481,7 @@ class _ProfileSetup5ScreenUpdateState extends State<ProfileSetup5ScreenUpdate>
                         )
                             : CustomButton(
                           text: l10n.letsEat,
-                          onTap: _handleUpdateProfile, // ✅ Update method call
+                          onTap: _handleUpdateProfile,
                         ),
                       ),
                     ],

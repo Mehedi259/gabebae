@@ -75,6 +75,26 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
     );
   }
 
+  void _handleNextButton() {
+    // Validate: Check if at least 1 eating style is selected
+    if (profileController.selectedEatingStyles.isEmpty) {
+      Get.snackbar(
+        '',
+        'Please select at least 1 eating style',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color(0xFFFC4C02),
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 8,
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    // If validation passes, navigate to next screen
+    context.go(RoutePath.profileSetup2.addBasePath);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -85,7 +105,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
           text: l10n.nextUp,
-          onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
+          onTap: _handleNextButton,
         ),
       ),
       body: SafeArea(

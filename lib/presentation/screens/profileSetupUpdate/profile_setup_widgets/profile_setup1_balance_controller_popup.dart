@@ -1,26 +1,26 @@
-// lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_balance_controller_popup.dart
+// lib/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup1_balance_controller_popup_update.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/custom_assets/assets.gen.dart';
 import '../../../../l10n/app_localizations.dart';
 
-class ProfileSetup1BalanceControllerPopup extends StatefulWidget {
+class ProfileSetup1BalanceControllerPopupUpdate extends StatefulWidget {
   final String eatingStyleName;
   final Function(String level) onLevelSelected;
 
-  const ProfileSetup1BalanceControllerPopup({
+  const ProfileSetup1BalanceControllerPopupUpdate({
     super.key,
     required this.eatingStyleName,
     required this.onLevelSelected,
   });
 
   @override
-  State<ProfileSetup1BalanceControllerPopup> createState() =>
-      _ProfileSetup1BalanceControllerPopupState();
+  State<ProfileSetup1BalanceControllerPopupUpdate> createState() =>
+      _ProfileSetup1BalanceControllerPopupUpdateState();
 }
 
-class _ProfileSetup1BalanceControllerPopupState
-    extends State<ProfileSetup1BalanceControllerPopup> {
+class _ProfileSetup1BalanceControllerPopupUpdateState
+    extends State<ProfileSetup1BalanceControllerPopupUpdate> {
   double dragValue = 0.5;
 
   void _onDragEnd(DragEndDetails details) {
@@ -237,7 +237,7 @@ class _ProfileSetup1BalanceControllerPopupState
                     ),
                   ),
                   child: const Text(
-                     'Confirm',
+                    'Confirm',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

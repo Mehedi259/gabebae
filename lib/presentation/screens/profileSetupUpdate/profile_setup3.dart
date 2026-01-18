@@ -1,11 +1,11 @@
 // lib/presentation/screens/profileSetupUpdate/profile_setup3.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup3_bottom_sheet.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
 import 'package:MenuSideKick/core/routes/route_path.dart';
-import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup3_bottom_sheet.dart';
-import 'package:MenuSideKick/presentation/screens/profileSetup/profile_setup_widgets/profile_setup_heading2345.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/controllers/profile_setup_controller.dart';
 import '../../../l10n/app_localizations.dart';
@@ -100,7 +100,7 @@ class _ProfileSetup3ScreenUpdateState extends State<ProfileSetup3ScreenUpdate>
                       progress: _progressAnim.value,
                       title: l10n.watchOutHealthNeeds,
                       subtitle: l10n.gotYourBack,
-                      onBack: () => context.go(RoutePath.profileSetup2.addBasePath),
+                      onBack: () => context.go(RoutePath.profileSetup2Update.addBasePath),
                     );
                   },
                 ),

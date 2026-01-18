@@ -1,93 +1,29 @@
-//lib/presentation/screens/profileSetup/profile_setup_widgets/profile_setup1_bottom_sheet.dart
-import 'package:flutter/material.dart';
-import 'package:MenuSideKick/core/custom_assets/assets.gen.dart';
+// lib/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup1_bottom_sheet_update.dart
 import 'package:MenuSideKick/core/routes/routes.dart';
+import 'package:MenuSideKick/presentation/screens/profileSetupUpdate/profile_setup_widgets/profile_setup1_balance_controller_popup.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/controllers/profile_setup_controller.dart';
 import '../../../../core/routes/route_path.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'profile_setup1_balance_controller_popup.dart';
 import '../../../widgets/custom_bottons/custom_button/button.dart';
 
-class ProfileSetup1BottomSheet extends StatefulWidget {
-  const ProfileSetup1BottomSheet({super.key});
+
+class ProfileSetup1BottomSheetUpdate extends StatefulWidget {
+  const ProfileSetup1BottomSheetUpdate({super.key});
 
   @override
-  State<ProfileSetup1BottomSheet> createState() =>
-      _ProfileSetup1BottomSheetState();
+  State<ProfileSetup1BottomSheetUpdate> createState() =>
+      _ProfileSetup1BottomSheetUpdateState();
 }
 
-class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
-  String? selectedOption;
-
-  List<Map<String, String>> _getLocalizedOptions(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return [
-      {
-        "title": "Flexitarian",
-        "subtitle": l10n.varietyHealthy,
-        "image": Assets.images.vegan.path,
-      },
-      {
-        "title": "Whole30",
-        "subtitle": "30-day clean eating",
-        "image": Assets.images.whole30.path,
-      },
-      {
-        "title": "DASH",
-        "subtitle": "Low salt, heart-friendly",
-        "image": Assets.images.dash.path,
-      },
-      {
-        "title": "Mediterranean",
-        "subtitle": "Olive oil, fish, grains",
-        "image": Assets.images.mediterranean.path,
-      },
-      {
-        "title": "Low-FODMAP",
-        "subtitle": "Gut-friendly carb limits",
-        "image": Assets.images.dash.path,
-      },
-      {
-        "title": "Raw Food",
-        "subtitle": "Uncooked plant-based meals",
-        "image": Assets.images.whole30.path,
-      },
-      {
-        "title": l10n.paleo,
-        "subtitle": l10n.wholeFoodsOnly,
-        "image": Assets.images.paleo.path,
-      },
-      {
-        "title": l10n.keto,
-        "subtitle": l10n.lowCarbHighFat,
-        "image": Assets.images.keto.path,
-      },
-    ];
-  }
-
-  void _openBalanceControllerPopup() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        return Center(
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: const EdgeInsets.all(24),
-              child: ProfileSetup1BalanceControllerPopup(eatingStyleName: '',onLevelSelected: (String level) {  },),
-            ),
-          ),
-        );
-      },
-    );
-  }
+class _ProfileSetup1BottomSheetUpdateState extends State<ProfileSetup1BottomSheetUpdate> {
+  final ProfileSetupController profileController = Get.find<ProfileSetupController>();
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final options = _getLocalizedOptions(context);
 
     return Container(
       height: 680,
@@ -121,82 +57,136 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
 
           const SizedBox(height: 20),
 
-          /// ====== Scrollable Options ======
+          /// ====== Scrollable Options (6th item থেকে শুরু) ======
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(right: 8),
-              child: Column(
-                children: options.map((item) {
-                  final bool isSelected = selectedOption == item["title"];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedOption = item["title"];
-                      });
-                      _openBalanceControllerPopup();
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      height: 75,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                          color: isSelected
-                              ? const Color(0xFFE27B4F)
-                              : const Color(0xFFE5E7EB),
-                          width: 1,
+            child: Obx(() {
+              final remainingItems = profileController.eatingStyles.length > 5
+                  ? profileController.eatingStyles.sublist(5)
+                  : <dynamic>[];
+
+              if (remainingItems.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'No more items',
+                    style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontSize: 14,
+                      color: Color(0xFF6B7280),
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                );
+              }
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.only(right: 8),
+                child: Column(
+                  children: remainingItems.map((eatingStyle) {
+                    final title = eatingStyle.eatingStyleName;
+                    final subtitle = eatingStyle.details ?? '';
+                    final image = eatingStyle.eatingStyleIcon;
+                    final bool isSelected = profileController.selectedEatingStyles.containsKey(title);
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (isSelected) {
+                          profileController.selectedEatingStyles.remove(title);
+                        } else {
+                          showGeneralDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            barrierLabel: '',
+                            transitionDuration: const Duration(milliseconds: 400),
+                            pageBuilder: (context, anim1, anim2) {
+                              return const SizedBox.shrink();
+                            },
+                            transitionBuilder: (context, anim1, anim2, child) {
+                              return Transform.scale(
+                                scale: Curves.easeOutBack.transform(anim1.value),
+                                child: Opacity(
+                                  opacity: anim1.value,
+                                  child: Dialog(
+                                    backgroundColor: Colors.transparent,
+                                    insetPadding: const EdgeInsets.all(24),
+                                    child: ProfileSetup1BalanceControllerPopupUpdate(
+                                      eatingStyleName: title,
+                                      onLevelSelected: (level) {
+                                        profileController.toggleEatingStyle(title, level);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        height: 75,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFFE27B4F)
+                                : const Color(0xFFE5E7EB),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.network(
+                              image,
+                              width: 30,
+                              height: 30,
+                              errorBuilder: (context, error, stackTrace) {
+                                return const Icon(Icons.restaurant, size: 30);
+                              },
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    title,
+                                    style: const TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF111827),
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    subtitle,
+                                    style: const TextStyle(
+                                      fontFamily: "Poppins",
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xFF6B7280),
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      child: Row(
-                        children: [
-                          Image.asset(
-                            item["image"]!,
-                            width: 30,
-                            height: 30,
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  item["title"]!,
-                                  style: const TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF111827),
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  item["subtitle"]!,
-                                  style: const TextStyle(
-                                    fontFamily: "Poppins",
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Color(0xFF6B7280),
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ),
+                    );
+                  }).toList(),
+                ),
+              );
+            }),
           ),
 
           const SizedBox(height: 16),
@@ -206,7 +196,7 @@ class _ProfileSetup1BottomSheetState extends State<ProfileSetup1BottomSheet> {
             width: double.infinity,
             child: CustomButton(
               text: l10n.nextUp,
-              onTap: () => context.go(RoutePath.profileSetup2.addBasePath),
+              onTap: () => context.go(RoutePath.profileSetup2Update.addBasePath),
             ),
           ),
         ],

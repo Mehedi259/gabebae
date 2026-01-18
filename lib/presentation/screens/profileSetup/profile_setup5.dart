@@ -342,62 +342,62 @@ class _ProfileSetup5ScreenState extends State<ProfileSetup5Screen>
               const SizedBox(height: 10),
 
               /// Upload Section
-              AnimatedBuilder(
-                animation: _sectionAnimations[2],
-                builder: (context, child) {
-                  return FadeTransition(
-                    opacity: _sectionAnimations[2],
-                    child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0.3, 0),
-                        end: Offset.zero,
-                      ).animate(_sectionAnimations[2]),
-                      child: child,
-                    ),
-                  );
-                },
-                child: Column(
-                  children: [
-                    Center(
-                      child: Text(
-                        l10n.or,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF4B5563),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.white),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0x0A000000),
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Text(
-                          l10n.uploadPhoto,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF374151),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 15),
+              // AnimatedBuilder(
+              //   animation: _sectionAnimations[2],
+              //   builder: (context, child) {
+              //     return FadeTransition(
+              //       opacity: _sectionAnimations[2],
+              //       child: SlideTransition(
+              //         position: Tween<Offset>(
+              //           begin: const Offset(0.3, 0),
+              //           end: Offset.zero,
+              //         ).animate(_sectionAnimations[2]),
+              //         child: child,
+              //       ),
+              //     );
+              //   },
+              //   child: Column(
+              //     children: [
+              //       Center(
+              //         child: Text(
+              //           l10n.or,
+              //           style: const TextStyle(
+              //             fontSize: 12,
+              //             color: Color(0xFF4B5563),
+              //           ),
+              //         ),
+              //       ),
+              //       const SizedBox(height: 8),
+              //       Container(
+              //         width: double.infinity,
+              //         padding: const EdgeInsets.symmetric(vertical: 13),
+              //         decoration: BoxDecoration(
+              //           borderRadius: BorderRadius.circular(16),
+              //           color: Colors.white,
+              //           border: Border.all(color: Colors.white),
+              //           boxShadow: const [
+              //             BoxShadow(
+              //               color: Color(0x0A000000),
+              //               blurRadius: 8,
+              //               offset: Offset(0, 2),
+              //             ),
+              //           ],
+              //         ),
+              //         child: Center(
+              //           child: Text(
+              //             l10n.uploadPhoto,
+              //             style: const TextStyle(
+              //               fontSize: 16,
+              //               fontWeight: FontWeight.w500,
+              //               color: Color(0xFF374151),
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // const SizedBox(height: 15),
 
               /// Buttons Section with API Integration
               AnimatedBuilder(

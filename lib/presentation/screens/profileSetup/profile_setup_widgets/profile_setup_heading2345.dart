@@ -31,41 +31,37 @@ class ProfileSetupHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        /// ===== Top Navigation Bar =====
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            /// Back Button
-            IconButton(
-              onPressed: onBack ?? () => Navigator.of(context).maybePop(),
-              icon: Assets.images.backround.image(width: 40, height: 40),
-              splashRadius: 24,
-            ),
 
-            /// Step Text (e.g., "Step 2 of 5")
-            Expanded(
-              child: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  stepText,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF6B7280),
-                  ),
-                ),
-              ),
-            ),
-
-            /// Close Button
-            IconButton(
-              onPressed: onClose ??
-                      () => context.go(RoutePath.home.addBasePath),
-              icon: Assets.images.crosswhite.image(width: 40, height: 40),
-              splashRadius: 24,
-            ),
-          ],
+      /// ===== Top Navigation Bar =====
+      Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        /// Back Button
+        IconButton(
+          onPressed: onBack ?? () => Navigator.of(context).maybePop(),
+          icon: Assets.images.backround.image(
+            width: 40,
+            height: 40,
+          ),
+          splashRadius: 24,
         ),
+
+        /// Step Text (e.g., "Step 2 of 5")
+        Text(
+          stepText,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF6B7280),
+          ),
+        ),
+
+        /// Empty space to balance layout (same width as back button)
+        const SizedBox(width: 40),
+      ],
+    ),
+
 
         const SizedBox(height: 8),
 

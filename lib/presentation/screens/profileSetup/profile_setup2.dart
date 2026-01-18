@@ -74,6 +74,26 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
     );
   }
 
+  void _handleNextButton() {
+    // Validate: Check if at least 1 allergy is selected
+    if (profileController.selectedAllergies.isEmpty) {
+      Get.snackbar(
+        '',
+        'Please select at least 1 allergy item',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: const Color(0xFFE27B4F),
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 8,
+        duration: const Duration(seconds: 2),
+      );
+      return;
+    }
+
+    // If validation passes, navigate to next screen
+    context.go(RoutePath.profileSetup3.addBasePath);
+  }
+
   Widget buildFoodCard({
     required String title,
     required String image,
@@ -165,7 +185,7 @@ class _ProfileSetup2ScreenState extends State<ProfileSetup2Screen>
         padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
         child: CustomButton(
           text: l10n.looksGood,
-          onTap: () => context.go(RoutePath.profileSetup3.addBasePath),
+          onTap: _handleNextButton,
         ),
       ),
       body: SafeArea(
