@@ -249,7 +249,7 @@ class _ProfileSetup1ScreenState extends State<ProfileSetup1Screen>
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           width: 145,
-          height: 130,
+          height: 150,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,

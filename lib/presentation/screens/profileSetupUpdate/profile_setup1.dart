@@ -249,7 +249,7 @@ class _ProfileSetup1ScreenUpdateState extends State<ProfileSetup1ScreenUpdate>
       },
       child: Container(
         width: 145,
-        height: 130,
+        height: 150,
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,

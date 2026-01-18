@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:get/get.dart';
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
@@ -43,16 +44,15 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   late final Animation<double> _focusScaleAnim;
   late final Animation<double> _focusOpacityAnim;
 
-  // ✅ Focus indicator animation
   bool _showFocusIndicator = true;
   Offset _focusPoint = const Offset(0.5, 0.5);
+  bool _isDisposing = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // ✅ Reset scan data when entering screen
     _scanController.resetScan();
 
     _slideCtrl = AnimationController(
@@ -65,7 +65,6 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       duration: const Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    // ✅ Modern focus animation controller
     _focusCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 2000),
@@ -80,22 +79,137 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
     );
 
-    // ✅ Breathing scale animation
     _focusScaleAnim = Tween<double>(begin: 1.0, end: 1.05).animate(
       CurvedAnimation(parent: _focusCtrl, curve: Curves.easeInOut),
     );
 
-    // ✅ Pulsing opacity animation
     _focusOpacityAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
       CurvedAnimation(parent: _focusCtrl, curve: Curves.easeInOut),
     );
 
-    // ✅ Initialize camera after frame is built
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    _initCamera();
+  }
+
+  @override
+  void dispose() {
+    _isDisposing = true;
+    WidgetsBinding.instance.removeObserver(this);
+    _disposeCamera();
+    _slideCtrl.dispose();
+    _pulseCtrl.dispose();
+    _focusCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _disposeCamera() async {
+    final camera = _camera;
+    if (camera != null) {
+      _camera = null;
+      try {
+        await camera.dispose();
+      } catch (e) {
+        debugPrint('Camera dispose error: $e');
+      }
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_isDisposing) return;
+
+    final camera = _camera;
+    if (camera == null || !camera.value.isInitialized) return;
+
+    if (state == AppLifecycleState.inactive) {
+      _disposeCamera().then((_) {
+        if (mounted && !_isDisposing) {
+          setState(() => _isReady = false);
+        }
+      });
+    } else if (state == AppLifecycleState.resumed) {
       _initCamera();
-      // Set initial focus point to center of screen
+    }
+  }
+
+  Future<void> _initCamera() async {
+    if (_isDisposing) return;
+
+    try {
+      // Get available cameras
+      if (widget.cameras != null && widget.cameras!.isNotEmpty) {
+        _cameras = widget.cameras!;
+      } else {
+        try {
+          _cameras = await availableCameras();
+        } catch (e) {
+          debugPrint('❌ Failed to get available cameras: $e');
+          _cameras = [];
+        }
+      }
+
+      if (_cameras.isEmpty) {
+        debugPrint('❌ No cameras available');
+        if (mounted && !_isDisposing) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('No camera available. Please check camera permissions.'),
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 5),
+                ),
+              );
+            }
+          });
+        }
+        return;
+      }
+
+      // Dispose old camera first
+      await _disposeCamera();
+
+      if (_isDisposing || !mounted) return;
+
+      // Add delay to ensure clean state
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      if (_isDisposing || !mounted) return;
+
+      // Create new camera instance
+      final newCamera = CameraController(
+        _cameras[_camIndex],
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.jpeg,
+      );
+
+      // Initialize camera
+      await newCamera.initialize();
+
+      if (_isDisposing || !mounted) {
+        await newCamera.dispose();
+        return;
+      }
+
+      // Set camera properties
+      if (newCamera.value.isInitialized) {
+        try {
+          await newCamera.setFocusMode(FocusMode.auto);
+          await newCamera.setExposureMode(ExposureMode.auto);
+        } catch (e) {
+          debugPrint('Camera settings error: $e');
+        }
+      }
+
+      // Update state
+      _camera = newCamera;
+      if (mounted && !_isDisposing) {
+        setState(() => _isReady = true);
+      }
+
+      // Set initial focus point after a delay
       Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted && context.size != null) {
+        if (mounted && !_isDisposing && context.size != null) {
           setState(() {
             _focusPoint = Offset(
               context.size!.width / 2,
@@ -104,59 +218,9 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
           });
         }
       });
-    });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _camera?.dispose();
-    _slideCtrl.dispose();
-    _pulseCtrl.dispose();
-    _focusCtrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (_camera == null || !_camera!.value.isInitialized) return;
-    if (state == AppLifecycleState.inactive) {
-      _camera?.dispose();
-    }
-    if (state == AppLifecycleState.resumed) {
-      _initCamera();
-    }
-  }
-
-  Future<void> _initCamera() async {
-    try {
-      _cameras = widget.cameras ?? await availableCameras();
-
-      // ✅ Dispose old camera before creating new one
-      await _camera?.dispose();
-
-      _camera = CameraController(
-        _cameras[_camIndex],
-        ResolutionPreset.high,
-        enableAudio: false,
-      );
-
-      await _camera!.initialize();
-
-      // ✅ Enable auto focus mode after initialization
-      if (_camera!.value.isInitialized) {
-        await _camera!.setFocusMode(FocusMode.auto);
-        // Set initial focus point to center
-        await _camera!.setFocusPoint(const Offset(0.5, 0.5));
-        await _camera!.setExposurePoint(const Offset(0.5, 0.5));
-      }
-
-      if (mounted) {
-        setState(() => _isReady = true);
-      }
     } catch (e) {
       debugPrint('❌ Camera initialization error: $e');
-      if (mounted) {
+      if (mounted && !_isDisposing) {
         setState(() => _isReady = false);
       }
     }
@@ -171,17 +235,15 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       body: SafeArea(
         child: Stack(
           children: [
-            // ✅ Blur overlay outside focus area
             if (_showFocusIndicator)
               Positioned.fill(
                 child: Container(
-                  color: Colors.black.withValues(alpha: 0.5),
+                  color: Colors.black.withOpacity(0.5),
                 ),
               ),
 
             _cameraPreview(),
 
-            // ✅ Modern animated focus indicator overlay (draggable)
             if (_showFocusIndicator)
               AnimatedBuilder(
                 animation: _focusCtrl,
@@ -193,21 +255,14 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                       onPanUpdate: (details) {
                         setState(() {
                           _focusPoint = Offset(
-                            (_focusPoint.dx + details.delta.dx).clamp(110.0, MediaQuery.of(context).size.width - 110),
-                            (_focusPoint.dy + details.delta.dy).clamp(160.0, MediaQuery.of(context).size.height - 160),
+                            (_focusPoint.dx + details.delta.dx).clamp(
+                                110.0, MediaQuery.of(context).size.width - 110),
+                            (_focusPoint.dy + details.delta.dy).clamp(
+                                160.0, MediaQuery.of(context).size.height - 160),
                           );
                         });
 
-                        // Update camera focus when dragging
-                        if (_camera != null && _camera!.value.isInitialized) {
-                          final renderBox = context.findRenderObject() as RenderBox;
-                          final offset = Offset(
-                            _focusPoint.dx / renderBox.size.width,
-                            _focusPoint.dy / renderBox.size.height,
-                          );
-                          _camera!.setFocusPoint(offset);
-                          _camera!.setExposurePoint(offset);
-                        }
+                        _updateCameraFocus();
                       },
                       child: Transform.scale(
                         scale: _focusScaleAnim.value,
@@ -218,91 +273,19 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                             height: 320,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.3),
+                                color: Colors.white.withOpacity(0.3),
                                 width: 3,
                               ),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.white.withValues(alpha: 0.1),
+                                  color: Colors.white.withOpacity(0.1),
                                   blurRadius: 20,
                                   spreadRadius: 2,
                                 ),
                               ],
                             ),
-                            child: Stack(
-                              children: [
-                                // Corner decorations
-                                Positioned(
-                                  top: -2,
-                                  left: -2,
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(color: Colors.white, width: 4),
-                                        left: BorderSide(color: Colors.white, width: 4),
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: -2,
-                                  right: -2,
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(color: Colors.white, width: 4),
-                                        right: BorderSide(color: Colors.white, width: 4),
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: -2,
-                                  left: -2,
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(color: Colors.white, width: 4),
-                                        left: BorderSide(color: Colors.white, width: 4),
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: -2,
-                                  right: -2,
-                                  child: Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(color: Colors.white, width: 4),
-                                        right: BorderSide(color: Colors.white, width: 4),
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        bottomRight: Radius.circular(12),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            child: _buildFocusCorners(),
                           ),
                         ),
                       ),
@@ -335,227 +318,308 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
               shutterAsset: Assets.images.shutter.path,
             ),
 
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Obx(() {
-                final images = _scanController.scannedImages;
-                final pdfFiles = _scanController.scannedPdfs;
-                final isScanning = _scanController.isScanning.value;
-                final totalFiles = images.length + pdfFiles.length;
-
-                return Container(
-                  width: double.infinity,
-                  height: 84,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  color: const Color(0xFF6B7280),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: totalFiles == 0
-                            ? const Center(
-                          child: Text(
-                            'No files captured',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
-                            ),
-                          ),
-                        )
-                            : ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: totalFiles,
-                          separatorBuilder: (_, __) =>
-                          const SizedBox(width: 8),
-                          itemBuilder: (context, index) {
-                            // Show images first, then PDFs
-                            if (index < images.length) {
-                              return FutureBuilder<Uint8List>(
-                                future: images[index].readAsBytes(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const SizedBox(
-                                      width: 76,
-                                      height: 48,
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                        ),
-                                      ),
-                                    );
-                                  }
-
-                                  return Stack(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                        BorderRadius.circular(2),
-                                        child: Image.memory(
-                                          snapshot.data!,
-                                          width: 76,
-                                          height: 48,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Positioned(
-                                        top: -12,
-                                        right: -12,
-                                        child: IconButton(
-                                          icon: const Icon(Icons.close,
-                                              color: Colors.white,
-                                              size: 18),
-                                          padding: EdgeInsets.zero,
-                                          constraints:
-                                          const BoxConstraints(),
-                                          onPressed: () {
-                                            _scanController
-                                                .removeImage(index);
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            } else {
-                              // PDF file preview
-                              final pdfIndex = index - images.length;
-                              return Stack(
-                                children: [
-                                  Container(
-                                    width: 76,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      color: Colors.red.shade100,
-                                      borderRadius:
-                                      BorderRadius.circular(2),
-                                      border: Border.all(
-                                          color: Colors.red.shade300),
-                                    ),
-                                    child: const Icon(
-                                      Icons.picture_as_pdf,
-                                      color: Colors.red,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: -12,
-                                    right: -12,
-                                    child: IconButton(
-                                      icon: const Icon(Icons.close,
-                                          color: Colors.white, size: 18),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () {
-                                        _scanController
-                                            .removePdf(pdfIndex);
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton(
-                        onPressed: totalFiles == 0 || isScanning
-                            ? null
-                            : _runScanAndNavigate,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF287FBE),
-                          disabledBackgroundColor: Colors.grey,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: isScanning
-                            ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
-                        )
-                            : Text(
-                          l10n.runScan,
-                          style: const TextStyle(
-                            fontFamily: "Poppins",
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-            ),
+            _buildBottomFileList(l10n),
           ],
         ),
       ),
     );
   }
 
-  Widget _cameraPreview() {
-    if (!_isReady) {
-      return const Center(child: CircularProgressIndicator(color: Colors.blue));
-    }
+  Widget _buildFocusCorners() {
+    return Stack(
+      children: [
+        // Top-left corner
+        Positioned(
+          top: -2,
+          left: -2,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.white, width: 4),
+                left: BorderSide(color: Colors.white, width: 4),
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        // Top-right corner
+        Positioned(
+          top: -2,
+          right: -2,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              border: Border(
+                top: BorderSide(color: Colors.white, width: 4),
+                right: BorderSide(color: Colors.white, width: 4),
+              ),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        // Bottom-left corner
+        Positioned(
+          bottom: -2,
+          left: -2,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.white, width: 4),
+                left: BorderSide(color: Colors.white, width: 4),
+              ),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12),
+              ),
+            ),
+          ),
+        ),
+        // Bottom-right corner
+        Positioned(
+          bottom: -2,
+          right: -2,
+          child: Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.white, width: 4),
+                right: BorderSide(color: Colors.white, width: 4),
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(12),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
-    // Check if camera is still valid before building preview
-    if (_camera == null || !_camera!.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator(color: Colors.blue));
+  Widget _buildBottomFileList(AppLocalizations l10n) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Obx(() {
+        final images = _scanController.scannedImages;
+        final pdfFiles = _scanController.scannedPdfs;
+        final isScanning = _scanController.isScanning.value;
+        final totalFiles = images.length + pdfFiles.length;
+
+        return Container(
+          width: double.infinity,
+          height: 84,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          color: const Color(0xFF6B7280),
+          child: Row(
+            children: [
+              Expanded(
+                child: totalFiles == 0
+                    ? const Center(
+                  child: Text(
+                    'No files captured',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                )
+                    : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: totalFiles,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    if (index < images.length) {
+                      return _buildImageThumbnail(images[index], index);
+                    } else {
+                      final pdfIndex = index - images.length;
+                      return _buildPdfThumbnail(pdfFiles[pdfIndex], pdfIndex);
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: totalFiles == 0 || isScanning ? null : _runScanAndNavigate,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF287FBE),
+                  disabledBackgroundColor: Colors.grey,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: isScanning
+                    ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+                    : Text(
+                  l10n.runScan,
+                  style: const TextStyle(
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildImageThumbnail(dynamic image, int index) {
+    return FutureBuilder<Uint8List>(
+      future: image.readAsBytes(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const SizedBox(
+            width: 76,
+            height: 48,
+            child: Center(
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
+        }
+
+        return Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: Image.memory(
+                snapshot.data!,
+                width: 76,
+                height: 48,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Positioned(
+              top: -12,
+              right: -12,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 18),
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => _scanController.removeImage(index),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPdfThumbnail(dynamic pdfFile, int index) {
+    return Stack(
+      children: [
+        Container(
+          width: 76,
+          height: 48,
+          decoration: BoxDecoration(
+            color: Colors.red.shade100,
+            borderRadius: BorderRadius.circular(2),
+            border: Border.all(color: Colors.red.shade300),
+          ),
+          child: const Icon(Icons.picture_as_pdf, color: Colors.red, size: 24),
+        ),
+        Positioned(
+          top: -12,
+          right: -12,
+          child: IconButton(
+            icon: const Icon(Icons.close, color: Colors.white, size: 18),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () => _scanController.removePdf(index),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _cameraPreview() {
+    final camera = _camera;
+
+    if (!_isReady || camera == null || !camera.value.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(color: Colors.blue),
+      );
     }
 
     return GestureDetector(
-      onTapDown: (details) => _onTapToFocus(details),
+      onTapDown: _onTapToFocus,
       child: SizedBox.expand(
         child: FittedBox(
           fit: BoxFit.cover,
           child: SizedBox(
-            width: _camera!.value.previewSize!.height,
-            height: _camera!.value.previewSize!.width,
-            child: CameraPreview(_camera!),
+            width: camera.value.previewSize!.height,
+            height: camera.value.previewSize!.width,
+            child: CameraPreview(camera),
           ),
         ),
       ),
     );
   }
 
-  // ✅ Tap to focus with visual indicator
-  Future<void> _onTapToFocus(TapDownDetails details) async {
-    if (_camera == null || !_camera!.value.isInitialized) return;
+  void _updateCameraFocus() {
+    final camera = _camera;
+    if (camera == null || !camera.value.isInitialized) return;
 
     try {
-      // Calculate relative position
-      final renderBox = context.findRenderObject() as RenderBox;
+      final renderBox = context.findRenderObject() as RenderBox?;
+      if (renderBox != null) {
+        final offset = Offset(
+          _focusPoint.dx / renderBox.size.width,
+          _focusPoint.dy / renderBox.size.height,
+        );
+        camera.setFocusPoint(offset);
+        camera.setExposurePoint(offset);
+      }
+    } catch (e) {
+      debugPrint('Focus update error: $e');
+    }
+  }
+
+  Future<void> _onTapToFocus(TapDownDetails details) async {
+    final camera = _camera;
+    if (camera == null || !camera.value.isInitialized) return;
+
+    try {
+      final renderBox = context.findRenderObject() as RenderBox?;
+      if (renderBox == null) return;
+
       final offset = Offset(
         details.localPosition.dx / renderBox.size.width,
         details.localPosition.dy / renderBox.size.height,
       );
 
-      // Update focus indicator position
       setState(() {
         _focusPoint = details.localPosition;
       });
 
-      // Set focus and exposure point
-      await _camera!.setFocusPoint(offset);
-      await _camera!.setExposurePoint(offset);
-      await _camera!.setFocusMode(FocusMode.auto);
+      await camera.setFocusPoint(offset);
+      await camera.setExposurePoint(offset);
+      await camera.setFocusMode(FocusMode.auto);
     } catch (e) {
       debugPrint('❌ Focus error: $e');
     }
   }
 
-  // ✅ Pick PDF file
   Future<void> _pickPdfFile() async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -564,7 +628,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
         allowMultiple: false,
       );
 
-      if (result != null) {
+      if (result != null && result.files.isNotEmpty) {
         final file = result.files.first;
         _scanController.addPdf(file);
 
@@ -578,9 +642,6 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
           );
         }
       }
-
-      // Reset mode back to Photo
-      setState(() => _mode = "Photo");
     } catch (e) {
       debugPrint('❌ PDF picker error: $e');
       if (mounted) {
@@ -591,7 +652,10 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
           ),
         );
       }
-      setState(() => _mode = "Photo");
+    } finally {
+      if (mounted) {
+        setState(() => _mode = "Photo");
+      }
     }
   }
 
@@ -602,23 +666,41 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   );
 
   Future<void> _capture() async {
-    if (!_isReady || _capturing) return;
+    final camera = _camera;
+    if (!_isReady || _capturing || camera == null || !camera.value.isInitialized) {
+      return;
+    }
+
     setState(() => _capturing = true);
     try {
-      final xFile = await _camera!.takePicture();
+      final xFile = await camera.takePicture();
       _scanController.addImage(xFile);
     } catch (e) {
       debugPrint('❌ Capture error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to capture image'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } finally {
-      setState(() => _capturing = false);
+      if (mounted) {
+        setState(() => _capturing = false);
+      }
     }
   }
 
   Future<void> _toggleFlash() async {
-    if (!_isReady) return;
+    final camera = _camera;
+    if (!_isReady || camera == null || !camera.value.isInitialized) return;
+
     try {
-      await _camera!.setFlashMode(_flashOn ? FlashMode.off : FlashMode.torch);
-      setState(() => _flashOn = !_flashOn);
+      await camera.setFlashMode(_flashOn ? FlashMode.off : FlashMode.torch);
+      if (mounted) {
+        setState(() => _flashOn = !_flashOn);
+      }
     } catch (e) {
       debugPrint('❌ Flash toggle error: $e');
     }
@@ -626,21 +708,35 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
 
   Future<void> _openGallery() async {
     try {
-      final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final xFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+
       if (xFile != null) {
         _scanController.addImage(xFile);
       }
     } catch (e) {
       debugPrint('❌ Gallery picker error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to pick image from gallery'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   Future<void> _runScanAndNavigate() async {
     final success = await _scanController.runScan();
 
-    if (success && mounted) {
+    if (!mounted) return;
+
+    if (success) {
       context.go(RoutePath.scanResultAll.addBasePath);
-    } else if (mounted) {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Scan failed. Please try again.'),
