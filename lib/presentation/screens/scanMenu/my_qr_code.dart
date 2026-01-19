@@ -19,7 +19,7 @@ class AlaCarteQRScreen extends StatelessWidget {
 
   const AlaCarteQRScreen({
     super.key,
-    this.qrData = "https://menusidekick.com/dietary-preferences/user123",
+    this.qrData = "https://menusidekick.app/dietary-preferences/gabe",
   });
 
   @override
