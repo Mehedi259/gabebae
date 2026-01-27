@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -5,12 +8,19 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+// Load keystore properties
+val keystoreProperties = Properties()
+val keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    namespace = "com.example.gabebae"
+    namespace = "com.menusidekick.gabebae"
     compileSdk = flutter.compileSdkVersion
 
-    // ⚡ Fix NDK version mismatch
-    ndkVersion = "27.0.12077973"
+    // ⚡ Fix NDK version mismatch - updated to required version
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -22,11 +32,21 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.gabebae"
+        applicationId = "com.menusidekick.gabebae"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+    }
+
+    // Add signing configurations
+    signingConfigs {
+        create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
     }
 
     buildTypes {
@@ -41,8 +61,8 @@ android {
                 "proguard-rules.pro"
             )
 
-            // Temporary: use debug signingConfig if no release key
-            signingConfig = signingConfigs.getByName("debug")
+            // ✅ Use release signing config instead of debug
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
