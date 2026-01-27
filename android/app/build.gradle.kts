@@ -3,14 +3,13 @@ import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
-    id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("org.jetbrains.kotlin.android")
     id("dev.flutter.flutter-gradle-plugin")
-    // ✅ Add Google Services plugin for Google Sign-In
-    id("com.google.gms.google-services") version "4.4.0" apply false
+
+
+
 }
 
-// Load keystore properties
 val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file("key.properties")
 if (keystorePropertiesFile.exists()) {
@@ -21,7 +20,6 @@ android {
     namespace = "com.menusidekick.gabebae"
     compileSdk = flutter.compileSdkVersion
 
-    // ⚡ Fix NDK version mismatch - updated to required version
     ndkVersion = "28.2.13676358"
 
     compileOptions {
@@ -30,7 +28,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = "11"
     }
 
     defaultConfig {
@@ -40,11 +38,9 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        // ✅ Required for Google Sign-In
         multiDexEnabled = true
     }
 
-    // Add signing configurations
     signingConfigs {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"] as String
@@ -56,17 +52,14 @@ android {
 
     buildTypes {
         release {
-            // Enable code shrinking and resource shrinking
             isMinifyEnabled = true
             isShrinkResources = true
 
-            // Use default + custom proguard rules
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
 
-            // ✅ Use release signing config instead of debug
             signingConfig = signingConfigs.getByName("release")
         }
     }
@@ -76,7 +69,6 @@ flutter {
     source = "../.."
 }
 
-// ✅ Add dependencies for Google Sign-In
 dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("androidx.multidex:multidex:2.0.1")
