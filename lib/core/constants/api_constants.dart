@@ -8,7 +8,11 @@ class ApiConstants {
   // =================== Authentication Endpoints ===================
   static const String requestOtp = "/auth/request-otp/";
   static const String verifyOtp = "/auth/verify-otp/";
-  static const String usersMe = "/users/me/"; // Add this line
+  static const String usersMe = "/users/me/";
+
+  // ✅ Social Authentication Endpoints
+  static const String googleAuth = "/auth/google/";
+  static const String appleAuth = "/auth/apple/";
 
   // =================== Profile Setup Endpoints ===================
   static const String eatingStyle = "/eating-style/";

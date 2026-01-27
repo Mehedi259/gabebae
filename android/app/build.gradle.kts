@@ -6,6 +6,8 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // ✅ Add Google Services plugin for Google Sign-In
+    id("com.google.gms.google-services") version "4.4.0" apply false
 }
 
 // Load keystore properties
@@ -37,6 +39,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        // ✅ Required for Google Sign-In
+        multiDexEnabled = true
     }
 
     // Add signing configurations
@@ -69,4 +74,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// ✅ Add dependencies for Google Sign-In
+dependencies {
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("androidx.multidex:multidex:2.0.1")
 }

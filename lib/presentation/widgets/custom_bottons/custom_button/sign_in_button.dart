@@ -9,6 +9,7 @@ class SignInButton extends StatelessWidget {
   final String text;
   final Widget icon;
   final VoidCallback onTap;
+  final bool isLoading;
 
   const SignInButton({
     super.key,
@@ -17,14 +18,16 @@ class SignInButton extends StatelessWidget {
     required this.text,
     required this.icon,
     required this.onTap,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20), // ✅ দুই পাশে 20px margin
-      child: GestureDetector(
-        onTap: onTap,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: InkWell(
+        onTap: isLoading ? null : onTap,
+        borderRadius: BorderRadius.circular(100),
         child: Container(
           width: double.infinity,
           height: 54,
@@ -36,16 +39,30 @@ class SignInButton extends StatelessWidget {
               width: bgColor == Colors.white ? 1 : 0,
             ),
             boxShadow: const [
-              BoxShadow(color: Colors.black12, blurRadius: 3, offset: Offset(0, 2)),
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 3,
+                offset: Offset(0, 2),
+              ),
             ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              icon,
+              if (isLoading)
+                SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(textColor),
+                  ),
+                )
+              else
+                icon,
               const SizedBox(width: 12),
               Text(
-                text,
+                isLoading ? 'Signing in...' : text,
                 style: TextStyle(
                   fontFamily: "SF Pro Display",
                   fontSize: 16,
