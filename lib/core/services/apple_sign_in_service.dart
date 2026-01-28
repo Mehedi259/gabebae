@@ -8,7 +8,6 @@ import 'api_service.dart';
 class AppleSignInService {
   /// Check if Apple Sign In is available
   static Future<bool> isAvailable() async {
-    // Apple Sign In is only available on iOS 13+ and macOS 10.15+
     if (Platform.isIOS || Platform.isMacOS) {
       return await SignInWithApple.isAvailable();
     }
@@ -20,7 +19,6 @@ class AppleSignInService {
     try {
       developer.log('🍎 Starting Apple Sign In...', name: 'AppleSignInService');
 
-      // Check availability
       final isAvailable = await AppleSignInService.isAvailable();
       if (!isAvailable) {
         return {
@@ -29,7 +27,6 @@ class AppleSignInService {
         };
       }
 
-      // Request credential from Apple
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -38,13 +35,9 @@ class AppleSignInService {
       );
 
       developer.log('✅ Apple Sign In successful', name: 'AppleSignInService');
-      developer.log('Identity Token: ${credential.identityToken?.substring(0, 20)}...', name: 'AppleSignInService');
-      developer.log('Email: ${credential.email ?? "not provided"}', name: 'AppleSignInService');
 
-      // Extract email (Apple only provides it on first sign in)
       String? email = credential.email;
 
-      // If email is null, try to get it from storage (for returning users)
       if (email == null || email.isEmpty) {
         email = await StorageHelper.getUserEmail();
         developer.log('⚠️ Email not provided by Apple, using stored: $email', name: 'AppleSignInService');
@@ -57,19 +50,25 @@ class AppleSignInService {
         };
       }
 
-      // Send to backend
       final response = await _sendToBackend(
         idToken: credential.identityToken ?? '',
         email: email,
       );
 
       if (response['success']) {
-        // Save user data
+        // ✅ Save all data
         await StorageHelper.saveToken(response['access']);
         await StorageHelper.saveRefreshToken(response['refresh']);
         await StorageHelper.saveUserEmail(email);
 
+
+        if (response['user_id'] != null) {
+          await StorageHelper.saveUserId(response['user_id']);
+          developer.log('✅ User ID saved: ${response['user_id']}', name: 'AppleSignInService');
+        }
+
         developer.log('✅ Apple authentication completed', name: 'AppleSignInService');
+
         return {
           'success': true,
           'message': 'Successfully signed in with Apple',
@@ -82,7 +81,6 @@ class AppleSignInService {
       developer.log('❌ Apple Sign In Error: $e', name: 'AppleSignInService');
       developer.log('Stack trace: $stackTrace', name: 'AppleSignInService');
 
-      // Handle specific errors
       if (e is SignInWithAppleAuthorizationException) {
         if (e.code == AuthorizationErrorCode.canceled) {
           return {
@@ -122,11 +120,17 @@ class AppleSignInService {
 
       developer.log('✅ Backend response received', name: 'AppleSignInService');
 
+      int? userId;
+      if (response['user'] != null && response['user']['id'] != null) {
+        userId = response['user']['id'] as int;
+      }
+
       return {
         'success': true,
         'created': response['created'] ?? false,
         'access': response['access'],
         'refresh': response['refresh'],
+        'user_id': userId,
       };
     } catch (e) {
       developer.log('❌ Backend Error: $e', name: 'AppleSignInService');
@@ -137,7 +141,7 @@ class AppleSignInService {
     }
   }
 
-  /// Sign out from Apple (just clear local data)
+  /// Sign out from Apple
   static Future<void> signOut() async {
     try {
       await StorageHelper.clearAll();
