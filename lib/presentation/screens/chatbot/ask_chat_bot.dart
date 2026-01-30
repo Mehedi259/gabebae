@@ -13,7 +13,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../../../utils/app_colors/app_colors.dart';
 import '../../../core/controllers/chat_controller.dart';
+import '../../../core/controllers/subscription_controller.dart';
 import '../../../global/model/chat_model.dart';
+import '../subscription/widget/expired_subscription_popup.dart';
 
 /// =======================================
 /// Main Chat Screen with API Integration
@@ -27,6 +29,7 @@ class MenuSidekickChatScreen extends StatefulWidget {
 
 class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   final ChatController _chatController = Get.put(ChatController());
+  final SubscriptionController _subscriptionController = Get.put(SubscriptionController());
   final ScrollController _scrollController = ScrollController();
   int _currentIndex = 2;
 
@@ -37,10 +40,38 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
   void initState() {
     super.initState();
     _initializeChat();
+    _checkSubscription();
   }
 
   Future<void> _initializeChat() async {
     await _chatController.createNewConversation();
+  }
+
+  /// Check subscription status and show popup if needed
+  Future<void> _checkSubscription() async {
+    // Wait a bit for the screen to load
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    // Check if subscription is needed
+    if (_subscriptionController.needsSubscription &&
+        !_subscriptionController.hasActiveSubscription) {
+      _showSubscriptionPopup();
+    }
+  }
+
+  void _showSubscriptionPopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => SubscriptionRequiredPopup(
+        onSubscribe: () {
+          Navigator.pop(context);
+          context.go(RoutePath.subscription.addBasePath);
+        },
+      ),
+    );
   }
 
   void _onNavTap(int index) {
@@ -346,6 +377,13 @@ class _MenuSidekickChatScreenState extends State<MenuSidekickChatScreen> {
 
   void _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
+
+    // Check subscription before sending message
+    if (_subscriptionController.needsSubscription &&
+        !_subscriptionController.hasActiveSubscription) {
+      _showSubscriptionPopup();
+      return;
+    }
 
     final success = await _chatController.sendMessage(text);
     if (success) {

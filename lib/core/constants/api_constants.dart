@@ -22,6 +22,10 @@ class ApiConstants {
   static const String magicList = "/magic-list/";
   static const String profiles = "/profiles/";
   static const String activeProfile = "/profiles/active/";
+  static const String subscriptionPlan = "/payment/plans/";
+  static const String selectedSubscription = "/payment/iap/validate/";
+  static const String checkSubscription = "/payment/check-subscription/";
+
 
   // =================== Home Screen Endpoints ===================
   static const String getEatingStyleIcons = "/eating-style/";
@@ -51,7 +55,6 @@ class ApiConstants {
       "/combo/$profileId/$profileName";
 
   /// POST /api/myplate/
-  /// Fields: meal_name, plate_combo (JSON array), image (multipart file)
   static const String createMyPlate = "/myplate/";
 
   /// GET /api/myplate/

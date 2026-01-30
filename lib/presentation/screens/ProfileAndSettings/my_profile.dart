@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _buildMenuItem(
                   icon: Assets.images.subscriptions.image(width: 32, height: 32),
                   title: l10n.subscriptions,
-                  onTap: () => context.go(RoutePath.subscription.addBasePath),
+                  onTap: () => context.go(RoutePath.currentSubscription.addBasePath),
                 ),
                 _buildMenuItem(
                   icon: Assets.images.helpSupport.image(width: 32, height: 32),

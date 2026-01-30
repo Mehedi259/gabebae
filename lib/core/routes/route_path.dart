@@ -70,6 +70,8 @@ class RoutePath {
   //==================================== Subscription screens =====================================
 
   static const String subscription = 'subscription';
+  static const String trialSubscription = 'trialSubscription';
+  static const String currentSubscription = 'currentSubscription';
 
 
 }

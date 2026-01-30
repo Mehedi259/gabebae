@@ -1,8 +1,8 @@
 import 'package:MenuSideKick/presentation/screens/subscription/widget/sucess_popup.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../core/routes/routes.dart';
@@ -11,14 +11,14 @@ import '../../../utils/app_colors/app_colors.dart';
 import '../../widgets/custom_bottons/custom_button/button.dart';
 import '../../../core/controllers/subscription_controller.dart';
 
-class SubscriptionsScreen extends StatefulWidget {
-  const SubscriptionsScreen({super.key});
+class TrialSubscriptionsScreen extends StatefulWidget {
+  const TrialSubscriptionsScreen({super.key});
 
   @override
-  State<SubscriptionsScreen> createState() => _SubscriptionsScreenState();
+  State<TrialSubscriptionsScreen> createState() => _TrialSubscriptionsScreenState();
 }
 
-class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
+class _TrialSubscriptionsScreenState extends State<TrialSubscriptionsScreen> {
   final SubscriptionController _subscriptionController = Get.put(SubscriptionController());
 
   @override
@@ -43,8 +43,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
             ),
           )
               : CustomButton(
-            text: "Subscribe",
-            onTap: _handleSubscribe,
+            text: l10n.startTrialButton,
+            onTap: _handleStartTrial,
           ),
         );
       }),
@@ -88,17 +88,21 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 16),
-              const Text(
-                "Subscribe to Unlock Premium Features",
+              Text(
+                l10n.startFreeTrial,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
                   color: Color(0xFF374151),
                 ),
               ),
+              const SizedBox(height: 24),
+              Assets.images.plan.image(width: double.infinity, height: 338),
               const SizedBox(height: 16),
               _buildSubscriptionOptions(),
+              const SizedBox(height: 16),
+              _buildStartTrialButton(),
             ],
           ),
         );
@@ -110,10 +114,6 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return AppBar(
-      leading: IconButton(
-        icon: Assets.icons.back.svg(width: 16, height: 18),
-        onPressed: () => context.go(RoutePath.home.addBasePath),
-      ),
       title: Text(
         l10n.subscriptions,
         textAlign: TextAlign.center,
@@ -130,6 +130,8 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   }
 
   Widget _buildSubscriptionOptions() {
+    final l10n = AppLocalizations.of(context)!;
+
     return Obx(() {
       final plans = _subscriptionController.availablePlans;
 
@@ -143,19 +145,33 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
       }
 
       return Column(
-        children: plans.map((plan) {
-          final isSelected = _subscriptionController.selectedPlanId.value == plan.name;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _buildSubscriptionOption(
-              title: plan.name == 'monthly' ? 'Monthly' : 'Yearly',
-              price: plan.displayPrice,
-              planId: plan.name,
-              isSelected: isSelected,
-              onTap: () => _subscriptionController.selectPlan(plan.name),
+        children: [
+          ...plans.map((plan) {
+            final isSelected = _subscriptionController.selectedPlanId.value == plan.name;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildSubscriptionOption(
+                title: plan.name == 'monthly' ? l10n.monthly : l10n.yearly,
+                price: plan.displayPrice,
+                planId: plan.name,
+                isSelected: isSelected,
+                showFreeTag: isSelected,
+                onTap: () => _subscriptionController.selectPlan(plan.name),
+              ),
+            );
+          }).toList(),
+          const SizedBox(height: 8),
+          Center(
+            child: Text(
+              l10n.noPaymentToday,
+              style: GoogleFonts.quicksand(
+                fontWeight: FontWeight.w400,
+                fontSize: 14,
+                color: const Color(0xFF444444),
+              ),
             ),
-          );
-        }).toList(),
+          ),
+        ],
       );
     });
   }
@@ -165,8 +181,11 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
     required String price,
     required String planId,
     required bool isSelected,
+    required bool showFreeTag,
     required VoidCallback onTap,
   }) {
+    final l10n = AppLocalizations.of(context)!;
+
     return GestureDetector(
       onTap: onTap,
       child: Stack(
@@ -250,12 +269,53 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
               ],
             ),
           ),
+
+          // ✅ Show Free Tag Only When Selected
+          if (showFreeTag)
+            Positioned(
+              right: -10,
+              top: -10,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC97B63),
+                  borderRadius: BorderRadius.circular(9999),
+                  border: Border.all(color: const Color(0xFFE5E7EB)),
+                ),
+                child: Text(
+                  l10n.threeDaysFree,
+                  style: GoogleFonts.quicksand(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
 
-  Future<void> _handleSubscribe() async {
+  Widget _buildStartTrialButton() {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Column(
+      children: [
+        Text(
+          l10n.trialTerms,
+          style: GoogleFonts.quicksand(
+            fontWeight: FontWeight.w400,
+            fontSize: 12,
+            color: const Color(0xff88a096),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleStartTrial() async {
     final success = await _subscriptionController.startPurchase();
 
     if (!mounted) return;

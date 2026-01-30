@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../presentation/screens/ProfileAndSettings/about_us.dart';
 import '../../presentation/screens/ProfileAndSettings/account_settings.dart';
+import '../../presentation/screens/ProfileAndSettings/current_plan.dart';
 import '../../presentation/screens/ProfileAndSettings/edit_profile.dart';
 import '../../presentation/screens/ProfileAndSettings/help_and_support.dart';
 import '../../presentation/screens/ProfileAndSettings/my_profile.dart';
@@ -39,6 +40,7 @@ import '../../presentation/screens/scanMenu/scan_result_ordering_tips.dart';
 import '../../presentation/screens/scanMenu/scan_result_save_your_meal.dart';
 import '../../presentation/screens/scanMenu/my_qr_code.dart';
 import '../../presentation/screens/subscription/subscription.dart';
+import '../../presentation/screens/subscription/trial_subscription.dart';
 import 'route_observer.dart';
 import 'route_path.dart';
 
@@ -284,9 +286,21 @@ class AppRouter {
 
       /// Subscription
       GoRoute(
+        name: RoutePath.trialSubscription,
+        path: RoutePath.trialSubscription.addBasePath,
+        builder: (context, state) => const TrialSubscriptionsScreen(),
+      ),
+
+      GoRoute(
         name: RoutePath.subscription,
         path: RoutePath.subscription.addBasePath,
         builder: (context, state) => const SubscriptionsScreen(),
+      ),
+
+      GoRoute(
+        name: RoutePath.currentSubscription,
+        path: RoutePath.currentSubscription.addBasePath,
+        builder: (context, state) => const CurrentSubscriptionScreen(),
       ),
     ],
     observers: [routeObserver],

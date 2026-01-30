@@ -112,7 +112,7 @@ class SuccessPopup extends StatelessWidget {
 
                   // Continue Button
                   GestureDetector(
-                    onTap: () => context.go(RoutePath.privacyPolicyPs.addBasePath),
+                    onTap: () => context.go(RoutePath.home.addBasePath),
                     child: Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 18),

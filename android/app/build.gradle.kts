@@ -72,4 +72,6 @@ flutter {
 dependencies {
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("androidx.multidex:multidex:2.0.1")
+    implementation("com.android.billingclient:billing:6.0.1")
+    implementation("com.android.billingclient:billing-ktx:6.0.1")
 }

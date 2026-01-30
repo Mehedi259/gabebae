@@ -13,6 +13,8 @@ import '../../../core/custom_assets/assets.gen.dart';
 import '../../../core/routes/route_path.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../core/controllers/scan_menu_controller.dart';
+import '../../../core/controllers/subscription_controller.dart';
+import '../subscription/widget/expired_subscription_popup.dart';
 import 'widgets/scan_menu_help_dialog.dart';
 import 'widgets/scan_menu_top_bar.dart';
 import 'widgets/scan_menu_bottom_controls.dart';
@@ -35,6 +37,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   String _mode = "Photo";
 
   final ScanMenuController _scanController = Get.put(ScanMenuController());
+  final SubscriptionController _subscriptionController = Get.put(SubscriptionController());
 
   late final AnimationController _slideCtrl;
   late final AnimationController _pulseCtrl;
@@ -54,6 +57,9 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     WidgetsBinding.instance.addObserver(this);
 
     _scanController.resetScan();
+
+    // Check subscription status
+    _checkSubscription();
 
     _slideCtrl = AnimationController(
       vsync: this,
@@ -88,6 +94,33 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
     );
 
     _initCamera();
+  }
+
+  /// Check subscription status and show popup if needed
+  Future<void> _checkSubscription() async {
+    // Wait a bit for the screen to load
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    if (!mounted) return;
+
+    // Check if subscription is needed
+    if (_subscriptionController.needsSubscription &&
+        !_subscriptionController.hasActiveSubscription) {
+      _showSubscriptionPopup();
+    }
+  }
+
+  void _showSubscriptionPopup() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => SubscriptionRequiredPopup(
+        onSubscribe: () {
+          Navigator.pop(context);
+          context.go(RoutePath.subscription.addBasePath);
+        },
+      ),
+    );
   }
 
   @override
@@ -730,6 +763,13 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   }
 
   Future<void> _runScanAndNavigate() async {
+    // Check subscription before running scan
+    if (_subscriptionController.needsSubscription &&
+        !_subscriptionController.hasActiveSubscription) {
+      _showSubscriptionPopup();
+      return;
+    }
+
     final success = await _scanController.runScan();
 
     if (!mounted) return;
