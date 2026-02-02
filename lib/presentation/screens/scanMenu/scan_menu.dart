@@ -117,7 +117,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
       builder: (context) => SubscriptionRequiredPopup(
         onSubscribe: () {
           Navigator.pop(context);
-          context.go(RoutePath.subscription.addBasePath);
+          context.push(RoutePath.subscription.addBasePath);
         },
       ),
     );

@@ -50,11 +50,8 @@ class SubscriptionController extends GetxController {
         return;
       }
 
-      // Platform-specific setup
-      if (Platform.isAndroid) {
-        // FIX 1: enablePendingPurchases is a static method, call it on the class
-        InAppPurchaseAndroidPlatformAddition.enablePendingPurchases();
-      }
+      // Platform-specific setup - enablePendingPurchases is now automatic
+      // No need to call it explicitly as it's deprecated
 
       // Listen to purchase updates
       _subscription = _iap.purchaseStream.listen(
@@ -130,9 +127,15 @@ class SubscriptionController extends GetxController {
     try {
       if (availablePlans.isEmpty) return;
 
-      final Set<String> productIds = availablePlans.map((plan) {
-        return Platform.isIOS ? plan.appleProductId : plan.googleProductId;
-      }).toSet();
+      final Set<String> productIds = availablePlans
+          .map((plan) => Platform.isIOS ? plan.appleProductId : plan.googleProductId)
+          .where((id) => id.isNotEmpty) // Filter out empty product IDs
+          .toSet();
+
+      if (productIds.isEmpty) {
+        developer.log('⚠️ No valid product IDs found', name: 'SubscriptionController');
+        return;
+      }
 
       developer.log('📦 Loading products: $productIds', name: 'SubscriptionController');
 
@@ -285,11 +288,10 @@ class SubscriptionController extends GetxController {
       if (Platform.isAndroid) {
         final androidDetails = purchaseDetails as GooglePlayPurchaseDetails;
         purchaseToken = androidDetails.billingClientPurchase.purchaseToken;
-        transactionId = androidDetails.billingClientPurchase.orderId ?? '';
+        transactionId = androidDetails.billingClientPurchase.orderId;
       } else if (Platform.isIOS) {
         final iosDetails = purchaseDetails as AppStorePurchaseDetails;
         purchaseToken = iosDetails.verificationData.serverVerificationData;
-        // FIX 3: Use purchaseID instead of transactionIdentifier
         transactionId = iosDetails.purchaseID ?? '';
       }
 

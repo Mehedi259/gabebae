@@ -75,7 +75,7 @@ class ExpiredSubscriptionPopup extends StatelessWidget {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.go(RoutePath.subscription.addBasePath);
                   onRenew();
                 },
                 style: ElevatedButton.styleFrom(
@@ -185,7 +185,7 @@ class SubscriptionRequiredPopup extends StatelessWidget {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.go(RoutePath.subscription.addBasePath);
                   onSubscribe();
                 },
                 style: ElevatedButton.styleFrom(

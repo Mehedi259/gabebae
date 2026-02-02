@@ -2,7 +2,7 @@ name: MenuSideKick
 description: "Menu Side Kick"
 publish_to: 'none'
 
-version: 2.0.0+3
+version: 3.0.0+7
 
 environment:
   sdk: ^3.6.0

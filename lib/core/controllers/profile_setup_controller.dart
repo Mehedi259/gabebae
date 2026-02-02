@@ -389,15 +389,20 @@ class ProfileSetupController extends GetxController {
     developer.log('✅ Success: $msg', name: 'ProfileSetupController');
 
     try {
-      Get.snackbar(
-        'Success',
-        msg,
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 3),
-      );
+      // Use WidgetsBinding to ensure we're in the right context
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (Get.context != null) {
+          Get.snackbar(
+            'Success',
+            msg,
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
+          );
+        }
+      });
     } catch (e) {
       developer.log('⚠️ Could not show snackbar: $e', name: 'ProfileSetupController');
     }
