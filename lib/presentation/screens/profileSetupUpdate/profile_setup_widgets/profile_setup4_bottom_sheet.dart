@@ -83,7 +83,7 @@ class ProfileSetup4BottomSheet extends StatelessWidget {
               bottom: 24,
               child: CustomButton(
                 text: l10n.readyToGlow,
-                onTap: () => context.go(RoutePath.profileSetup5.addBasePath),
+                onTap: () => context.go(RoutePath.profileSetup5Update.addBasePath),
               ),
             ),
           ],

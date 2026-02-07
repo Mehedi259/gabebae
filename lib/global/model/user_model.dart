@@ -5,12 +5,14 @@ class UserProfile {
   final String profileName;
   final String? avatar;
   final String? profileImage;
+  final bool? isActive;
 
   UserProfile({
     required this.id,
     required this.profileName,
     this.avatar,
     this.profileImage,
+    this.isActive,
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class UserProfile {
       profileName: json['profile_name'] ?? '',
       avatar: json['avatar'],
       profileImage: json['profile_image'],
+      isActive: json['is_active'],
     );
   }
 
@@ -28,6 +31,7 @@ class UserProfile {
       'profile_name': profileName,
       'avatar': avatar,
       'profile_image': profileImage,
+      'is_active': isActive,
     };
   }
 }
@@ -52,18 +56,33 @@ class UserMeResponse {
   });
 
   factory UserMeResponse.fromJson(Map<String, dynamic> json) {
+    // Parse profiles list
+    final profilesList = (json['profiles'] as List<dynamic>?)
+        ?.map((e) => UserProfile.fromJson(e as Map<String, dynamic>))
+        .toList();
+    
+    // Find active profile from profiles list if active_profile field is not present
+    UserProfile? activeProf;
+    if (json['active_profile'] != null) {
+      activeProf = UserProfile.fromJson(json['active_profile']);
+    } else if (profilesList != null) {
+      // Find the profile with is_active: true
+      try {
+        activeProf = profilesList.firstWhere((profile) => profile.isActive == true);
+      } catch (e) {
+        // No active profile found
+        activeProf = null;
+      }
+    }
+    
     return UserMeResponse(
       id: json['id'] ?? 0,
       username: json['username'],
       email: json['email'],
       firstName: json['first_name'],
       lastName: json['last_name'],
-      activeProfile: json['active_profile'] != null
-          ? UserProfile.fromJson(json['active_profile'])
-          : null,
-      profiles: (json['profiles'] as List<dynamic>?)
-          ?.map((e) => UserProfile.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      activeProfile: activeProf,
+      profiles: profilesList,
     );
   }
 

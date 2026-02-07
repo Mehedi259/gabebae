@@ -62,14 +62,14 @@ class ScanMenuBottomControls extends StatelessWidget {
                       onTap: () => onModeChange("PDF"),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ScanMenuModeButton(
-                      title: l10n.url,
-                      isSelected: selectedMode == "URL",
-                      onTap: () => onModeChange("URL"),
-                    ),
-                  ),
+                  // const SizedBox(width: 12),
+                  // Expanded(
+                  //   child: ScanMenuModeButton(
+                  //     title: l10n.url,
+                  //     isSelected: selectedMode == "URL",
+                  //     onTap: () => onModeChange("URL"),
+                  //   ),
+                  // ),
                 ],
               ),
 

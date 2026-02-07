@@ -134,7 +134,7 @@ class ProfileSetup2BottomSheet extends StatelessWidget {
             width: double.infinity,
             child: CustomButton(
               text: l10n.looksGood,
-              onTap: () => context.go(RoutePath.profileSetup3.addBasePath),
+              onTap: () => context.go(RoutePath.profileSetup3Update.addBasePath),
             ),
           ),
         ],

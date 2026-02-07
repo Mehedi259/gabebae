@@ -30,14 +30,14 @@ class ScanMenuModeButton extends StatelessWidget {
           fit: BoxFit.cover,
         );
         break;
-      case "URL":
-        icon = Image.asset(
-          Assets.images.camurl.path,
-          width: 14,
-          height: 14,
-          fit: BoxFit.cover,
-        );
-        break;
+      // case "URL":
+      //   icon = Image.asset(
+      //     Assets.images.camurl.path,
+      //     width: 14,
+      //     height: 14,
+      //     fit: BoxFit.cover,
+      //   );
+      //   break;
       default:
         icon = const SizedBox();
     }

@@ -128,7 +128,14 @@ class SubscriptionController extends GetxController {
       if (availablePlans.isEmpty) return;
 
       final Set<String> productIds = availablePlans
-          .map((plan) => Platform.isIOS ? plan.appleProductId : plan.googleProductId)
+          .map((plan) {
+            String productId = Platform.isIOS ? plan.appleProductId : plan.googleProductId;
+            // Fix: Replace hyphen with underscore for Android product IDs
+            if (Platform.isAndroid) {
+              productId = productId.replaceAll('-', '_');
+            }
+            return productId;
+          })
           .where((id) => id.isNotEmpty) // Filter out empty product IDs
           .toSet();
 
@@ -193,7 +200,12 @@ class SubscriptionController extends GetxController {
       developer.log('🛒 Starting purchase for: ${plan.name}', name: 'SubscriptionController');
 
       // Get the product ID based on platform
-      final productId = Platform.isIOS ? plan.appleProductId : plan.googleProductId;
+      String productId = Platform.isIOS ? plan.appleProductId : plan.googleProductId;
+      
+      // Fix: Replace hyphen with underscore for Android product IDs
+      if (Platform.isAndroid) {
+        productId = productId.replaceAll('-', '_');
+      }
 
       // Find the product details
       final product = _products.firstWhereOrNull(
@@ -295,9 +307,17 @@ class SubscriptionController extends GetxController {
         transactionId = iosDetails.purchaseID ?? '';
       }
 
+      // Use the actual product ID from the purchase (which has underscore)
+      // Backend should accept both formats or we need to convert back
+      String productId = purchaseDetails.productID;
+      // Convert underscore back to hyphen for backend if needed
+      if (Platform.isAndroid) {
+        productId = productId.replaceAll('_', '-');
+      }
+
       final response = await SubscriptionService.validatePurchase(
         platform: platform,
-        productId: purchaseDetails.productID,
+        productId: productId,
         purchaseToken: purchaseToken,
         transactionId: transactionId,
       );
