@@ -38,6 +38,11 @@ class _ProfileSetup1ScreenUpdateState extends State<ProfileSetup1ScreenUpdate>
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
     _controller.forward();
+    
+    // Load active profile data when screen initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      profileController.loadActiveProfileForUpdate();
+    });
   }
 
   @override

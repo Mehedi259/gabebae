@@ -110,6 +110,21 @@ class ProfileSetupService {
     }
   }
 
+  /// Get Active Profile
+  static Future<Map<String, dynamic>> getActiveProfile() async {
+    try {
+      developer.log('🔍 Fetching active profile', name: 'ProfileSetupService');
+
+      final response = await ApiService.getRequest('/profiles/active/');
+
+      developer.log('✅ Active profile fetched', name: 'ProfileSetupService');
+      return response as Map<String, dynamic>;
+    } catch (e) {
+      developer.log('❌ Error fetching active profile: $e', name: 'ProfileSetupService');
+      rethrow;
+    }
+  }
+
   /// Update Active Profile
   static Future<ProfileResponse> updateProfile(ProfileCreateRequest request) async {
     try {

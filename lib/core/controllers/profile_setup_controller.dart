@@ -45,6 +45,63 @@ class ProfileSetupController extends GetxController {
     fetchAvatars();
   }
 
+  /// Load Active Profile for Update
+  Future<void> loadActiveProfileForUpdate() async {
+    try {
+      developer.log('🔄 Loading active profile for update...', name: 'ProfileSetupController');
+      
+      final response = await ProfileSetupService.getActiveProfile();
+      
+      // Load profile data into controller
+      nameController.text = response['profile_name'] ?? '';
+      country.value = response['country'] ?? 'USA';
+      selectedAvatar.value = response['avatar'];
+      
+      // Parse date
+      if (response['date_of_birth'] != null) {
+        try {
+          dateOfBirth.value = DateTime.parse(response['date_of_birth']);
+        } catch (e) {
+          dateOfBirth.value = DateTime(2000, 1, 1);
+        }
+      }
+      
+      // Load eating styles
+      selectedEatingStyles.clear();
+      if (response['eating_style'] != null) {
+        for (var style in response['eating_style']) {
+          selectedEatingStyles[style['eating_style_name']] = style['level'];
+        }
+      }
+      
+      // Load allergies
+      selectedAllergies.clear();
+      if (response['allergies'] != null) {
+        selectedAllergies.addAll(List<String>.from(response['allergies']));
+      }
+      
+      // Load medical conditions
+      selectedMedicalConditions.clear();
+      if (response['medical_conditions'] != null) {
+        selectedMedicalConditions.addAll(List<String>.from(response['medical_conditions']));
+      }
+      
+      // Load magic list
+      selectedMagicListItems.clear();
+      magicList.clear();
+      if (response['magic_list'] != null) {
+        final items = List<String>.from(response['magic_list']);
+        magicList.addAll(items);
+        selectedMagicListItems.addAll(items);
+      }
+      
+      developer.log('✅ Active profile loaded: ${nameController.text}', name: 'ProfileSetupController');
+    } catch (e) {
+      developer.log('❌ Error loading active profile: $e', name: 'ProfileSetupController');
+      _showError('Failed to load profile data');
+    }
+  }
+
   /// Fetch Eating Styles
   Future<void> fetchEatingStyles() async {
     try {
