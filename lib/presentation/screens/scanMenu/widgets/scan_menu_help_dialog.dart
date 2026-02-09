@@ -125,14 +125,7 @@ class ScanMenuHelpDialog extends StatelessWidget {
                 l10n.scanOptionPDFDesc,
                 const Color(0xFFFFC986),
               ),
-              const SizedBox(height: 10),
 
-              _buildScanOption(
-                "🔗",
-                l10n.scanOptionURL,
-                l10n.scanOptionURLDesc,
-                const Color(0xFFC26932),
-              ),
               const SizedBox(height: 24),
 
               /// ---- Close Button ----

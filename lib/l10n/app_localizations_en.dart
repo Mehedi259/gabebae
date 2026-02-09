@@ -943,14 +943,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get scanOptionPhotoDesc =>
-      'Place the menu flat, hold the phone steady.';
+      'Take a photo with your camera or upload an existing image of a menu.';
 
   @override
-  String get scanOptionPDF => 'PDF';
+  String get scanOptionPDF => 'PDF(Beta)';
 
   @override
-  String get scanOptionPDFDesc =>
-      'Natural light is best. Avoid strong reflections.';
+  String get scanOptionPDFDesc => 'Upload a menu PDF from your Files';
 
   @override
   String get scanOptionURL => 'URL';

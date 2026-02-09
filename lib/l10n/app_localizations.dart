@@ -1879,19 +1879,19 @@ abstract class AppLocalizations {
   /// No description provided for @scanOptionPhotoDesc.
   ///
   /// In en, this message translates to:
-  /// **'Place the menu flat, hold the phone steady.'**
+  /// **'Take a photo with your camera or upload an existing image of a menu.'**
   String get scanOptionPhotoDesc;
 
   /// No description provided for @scanOptionPDF.
   ///
   /// In en, this message translates to:
-  /// **'PDF'**
+  /// **'PDF(Beta)'**
   String get scanOptionPDF;
 
   /// No description provided for @scanOptionPDFDesc.
   ///
   /// In en, this message translates to:
-  /// **'Natural light is best. Avoid strong reflections.'**
+  /// **'Upload a menu PDF from your Files'**
   String get scanOptionPDFDesc;
 
   /// No description provided for @scanOptionURL.

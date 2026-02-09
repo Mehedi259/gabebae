@@ -101,8 +101,8 @@ class _TrialSubscriptionsScreenState extends State<TrialSubscriptionsScreen> {
               Assets.images.plan.image(width: double.infinity, height: 338),
               const SizedBox(height: 16),
               _buildSubscriptionOptions(),
-              const SizedBox(height: 16),
-              _buildStartTrialButton(),
+              // const SizedBox(height: 16),
+              // _buildStartTrialButton(),
             ],
           ),
         );
