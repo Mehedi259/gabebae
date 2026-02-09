@@ -159,7 +159,7 @@ class _ProfileSetup1ScreenUpdateState extends State<ProfileSetup1ScreenUpdate>
                                 scale: animation,
                                 child: buildFoodCard(
                                   title: eatingStyle.eatingStyleName,
-                                  subtitle: eatingStyle.details ?? '',
+                                  subtitle: '',
                                   image: eatingStyle.eatingStyleIcon,
                                   isNetworkImage: true,
                                 ),
