@@ -23,8 +23,6 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
 
@@ -145,10 +143,20 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
       return Column(
         children: plans.map((plan) {
           final isSelected = _subscriptionController.selectedPlanId.value == plan.name;
+          // Determine title based on plan name or interval
+          String title;
+          if (plan.name == 'monthly' || plan.interval == 'month') {
+            title = 'Monthly';
+          } else if (plan.name == 'annual' || plan.name == 'yearly' || plan.interval == 'year') {
+            title = 'Yearly';
+          } else {
+            title = plan.name.capitalize ?? plan.name;
+          }
+          
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: _buildSubscriptionOption(
-              title: plan.name == 'monthly' ? 'Monthly' : 'Yearly',
+              title: title,
               price: plan.displayPrice,
               planId: plan.name,
               isSelected: isSelected,

@@ -148,10 +148,20 @@ class _TrialSubscriptionsScreenState extends State<TrialSubscriptionsScreen> {
         children: [
           ...plans.map((plan) {
             final isSelected = _subscriptionController.selectedPlanId.value == plan.name;
+            // Determine title based on plan name or interval
+            String title;
+            if (plan.name == 'monthly' || plan.interval == 'month') {
+              title = l10n.monthly;
+            } else if (plan.name == 'annual' || plan.name == 'yearly' || plan.interval == 'year') {
+              title = l10n.yearly;
+            } else {
+              title = plan.name.capitalize ?? plan.name;
+            }
+            
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: _buildSubscriptionOption(
-                title: plan.name == 'monthly' ? l10n.monthly : l10n.yearly,
+                title: title,
                 price: plan.displayPrice,
                 planId: plan.name,
                 isSelected: isSelected,
