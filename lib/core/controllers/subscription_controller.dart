@@ -25,6 +25,9 @@ class SubscriptionController extends GetxController {
   final InAppPurchase _iap = InAppPurchase.instance;
   StreamSubscription<List<PurchaseDetails>>? _subscription;
   final RxList<ProductDetails> _products = <ProductDetails>[].obs;
+  
+  // Completer for purchase flow
+  Completer<bool>? _purchaseCompleter;
 
   @override
   void onInit() {
@@ -216,6 +219,9 @@ class SubscriptionController extends GetxController {
         throw Exception('Product not found: $productId');
       }
 
+      // Create a new completer for this purchase
+      _purchaseCompleter = Completer<bool>();
+
       // Create purchase param
       final PurchaseParam purchaseParam = PurchaseParam(
         productDetails: product,
@@ -234,15 +240,28 @@ class SubscriptionController extends GetxController {
       }
 
       if (!purchaseInitiated) {
+        _purchaseCompleter?.complete(false);
         throw Exception('Failed to initiate purchase');
       }
 
-      developer.log('✅ Purchase initiated', name: 'SubscriptionController');
-      return true; // Will be completed in _handlePurchaseUpdates
+      developer.log('✅ Purchase initiated, waiting for result...', name: 'SubscriptionController');
+      
+      // Wait for the purchase to complete (with timeout)
+      final result = await _purchaseCompleter!.future.timeout(
+        const Duration(minutes: 2),
+        onTimeout: () {
+          developer.log('⏱️ Purchase timeout', name: 'SubscriptionController');
+          isProcessingPurchase.value = false;
+          return false;
+        },
+      );
+      
+      return result;
     } catch (e) {
       developer.log('❌ Purchase error: $e', name: 'SubscriptionController');
       errorMessage.value = _handlePurchaseError(e);
       isProcessingPurchase.value = false;
+      _purchaseCompleter?.complete(false);
       return false;
     }
   }
@@ -268,6 +287,16 @@ class SubscriptionController extends GetxController {
           await _loadStatus();
 
           developer.log('✅ Purchase completed successfully', name: 'SubscriptionController');
+          
+          // Complete the purchase completer with success
+          if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+            _purchaseCompleter!.complete(true);
+          }
+        } else {
+          // Validation failed
+          if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+            _purchaseCompleter!.complete(false);
+          }
         }
 
         isProcessingPurchase.value = false;
@@ -275,10 +304,20 @@ class SubscriptionController extends GetxController {
         developer.log('❌ Purchase error: ${purchaseDetails.error}', name: 'SubscriptionController');
         errorMessage.value = purchaseDetails.error?.message ?? 'Purchase failed';
         isProcessingPurchase.value = false;
+        
+        // Complete the purchase completer with failure
+        if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+          _purchaseCompleter!.complete(false);
+        }
       } else if (purchaseDetails.status == PurchaseStatus.canceled) {
         developer.log('ℹ️ Purchase canceled', name: 'SubscriptionController');
         errorMessage.value = 'Purchase canceled';
         isProcessingPurchase.value = false;
+        
+        // Complete the purchase completer with failure
+        if (_purchaseCompleter != null && !_purchaseCompleter!.isCompleted) {
+          _purchaseCompleter!.complete(false);
+        }
       }
 
       // Always complete purchase on platform side

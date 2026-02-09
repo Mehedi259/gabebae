@@ -342,16 +342,16 @@ class _TrialSubscriptionsScreenState extends State<TrialSubscriptionsScreen> {
         ),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            _subscriptionController.errorMessage.value.isNotEmpty
-                ? _subscriptionController.errorMessage.value
-                : 'Purchase failed. Please try again.',
+      // Only show error if it's not a cancellation
+      final errorMsg = _subscriptionController.errorMessage.value;
+      if (errorMsg.isNotEmpty && !errorMsg.toLowerCase().contains('cancel')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMsg),
+            backgroundColor: Colors.red,
           ),
-          backgroundColor: Colors.red,
-        ),
-      );
+        );
+      }
     }
   }
 }
