@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
       builder: (_, __) {
         return Obx(() => GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: "MenuSideKick",
+          title: "Menu SideKick",
 
           /// Localization setup
           localizationsDelegates: const [
