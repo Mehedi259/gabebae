@@ -41,7 +41,7 @@ class _PrivacyPolicyScreenPsState extends State<PrivacyPolicyScreenPs> {
           height: 56,
           child: ElevatedButton(
             onPressed: agreeToTerms
-                ? () => context.go(RoutePath.home.addBasePath)
+                ? () => context.go(RoutePath.trialSubscription.addBasePath)
                 : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: agreeToTerms

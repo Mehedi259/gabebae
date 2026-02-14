@@ -138,7 +138,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
                       },
                       child: _buildHealthCard(
                         title: condition.medicalConditionName,
-                        subtitle: condition.medicalDescription,
+                        // subtitle: condition.medicalDescription,
                         imagePath: condition.medicalConditionIcon,
                         isNetworkImage: true,
                       ),
@@ -178,7 +178,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
                       },
                       child: _buildHealthCard(
                         title: l10n.seeMore,
-                        subtitle: '',
+                        // subtitle: '',
                         imagePath: Assets.images.plus.path,
                         showSwitch: false,
                       ),
@@ -196,7 +196,7 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
 
   Widget _buildHealthCard({
     required String title,
-    required String subtitle,
+    // required String subtitle,
     required String imagePath,
     bool showSwitch = true,
     bool isNetworkImage = false,
@@ -263,18 +263,18 @@ class _ProfileSetup3ScreenState extends State<ProfileSetup3Screen>
                       color: Color(0xFF111827),
                     ),
                   ),
-                  if (subtitle.isNotEmpty) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF6B7280),
-                      ),
-                    ),
-                  ]
+                  // if (subtitle.isNotEmpty) ...[
+                  //   const SizedBox(height: 4),
+                  //   Text(
+                  //     subtitle,
+                  //     style: const TextStyle(
+                  //       fontFamily: "Poppins",
+                  //       fontSize: 14,
+                  //       fontWeight: FontWeight.w400,
+                  //       color: Color(0xFF6B7280),
+                  //     ),
+                  //   ),
+                  // ]
                 ],
               ),
             ),

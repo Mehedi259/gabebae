@@ -41,7 +41,7 @@ class _ProfileSetup6ScreenState extends State<ProfileSetup6Screen> {
       } else {
         timer.cancel();
         Future.delayed(const Duration(milliseconds: 900), () {
-          context.go(RoutePath.trialSubscription.addBasePath);
+          context.go(RoutePath.privacyPolicyPs.addBasePath);
         });
       }
     });
