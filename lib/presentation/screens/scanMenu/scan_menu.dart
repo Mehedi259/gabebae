@@ -43,7 +43,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
   late final Animation<double> _focusScaleAnim;
   late final Animation<double> _focusOpacityAnim;
 
-  bool _showFocusIndicator = true;
+  bool _showFocusIndicator = false;
   Offset _focusPoint = const Offset(0.5, 0.5);
   bool _isDisposing = false;
 
@@ -214,6 +214,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
               context.size!.width / 2,
               context.size!.height / 2,
             );
+            _showFocusIndicator = false;
           });
         }
       });
@@ -250,19 +251,7 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
                   return Positioned(
                     left: _focusPoint.dx - 110,
                     top: _focusPoint.dy - 160,
-                    child: GestureDetector(
-                      onPanUpdate: (details) {
-                        setState(() {
-                          _focusPoint = Offset(
-                            (_focusPoint.dx + details.delta.dx).clamp(
-                                110.0, MediaQuery.of(context).size.width - 110),
-                            (_focusPoint.dy + details.delta.dy).clamp(
-                                160.0, MediaQuery.of(context).size.height - 160),
-                          );
-                        });
-
-                        _updateCameraFocus();
-                      },
+                    child: IgnorePointer(
                       child: Transform.scale(
                         scale: _focusScaleAnim.value,
                         child: Opacity(
@@ -609,11 +598,21 @@ class _ScanMenuScreenState extends State<ScanMenuScreen>
 
       setState(() {
         _focusPoint = details.localPosition;
+        _showFocusIndicator = true;
       });
 
       await camera.setFocusPoint(offset);
       await camera.setExposurePoint(offset);
       await camera.setFocusMode(FocusMode.auto);
+
+      // Hide focus indicator after 2 seconds
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted && !_isDisposing) {
+          setState(() {
+            _showFocusIndicator = false;
+          });
+        }
+      });
     } catch (e) {
       debugPrint('❌ Focus error: $e');
     }
