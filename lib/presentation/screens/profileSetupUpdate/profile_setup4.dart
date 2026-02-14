@@ -217,11 +217,7 @@ class _ProfileSetup4ScreenUpdateState extends State<ProfileSetup4ScreenUpdate>
                           builder: (_) => const ProfileSetup4BottomSheet(),
                         );
                       },
-                      child: _buildMagicListCard(
-                        title: l10n.seeMore,
-                        showSwitch: false,
-                        isSpecial: true,
-                      ),
+                      child: _buildSeeMoreCard(l10n.seeMore),
                     ),
                   ),
 
@@ -319,5 +315,45 @@ class _ProfileSetup4ScreenUpdateState extends State<ProfileSetup4ScreenUpdate>
         ),
       );
     });
+  }
+
+  Widget _buildSeeMoreCard(String title) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(17),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x1A000000),
+            blurRadius: 6,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.add,
+            color: Color(0xFF6B7280),
+            size: 20,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontFamily: "Poppins",
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF111827),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
